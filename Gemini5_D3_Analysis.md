@@ -85,22 +85,22 @@
 
 ## Activity Diagram And Sequence Diagram
 ### Validate a Science Plan
-![Gemini 5 Validate a Science Plan](images/Gemini5%20-%20Validate%20a%20science%20plan.jpg)
+![Gemini 5 Validate a Science Plan](images/P1/Gemini5%20-%20Validate%20a%20science%20plan.jpg)
 
 ### Create Science Plan
-![Gemini 5 Create a Science Plan](images/Gemini5%20-%20Create%20science%20plan.jpg)
+![Gemini 5 Create a Science Plan](images/P1/Gemini5%20-%20Create%20science%20plan.jpg)
 
 ### Submit Science Plan
-![Gemini 5 Submit a Science Plan](images/Gemini5%20-%20Submit%20Science%20Plan.jpg)
+![Gemini 5 Submit a Science Plan](images/P1/Gemini5%20-%20Submit%20Science%20Plan.jpg)
 
 ### Monitor the Progress of a Science Plan Execution
-![Gemini 5 Monitor the progress of a science plan execution](images/Gemini5%20-%20Monitor%20the%20progress%20of%20a%20science%20plan%20execution.jpg)
+![Gemini 5 Monitor the progress of a science plan execution](images//P1Gemini5%20-%20Monitor%20the%20progress%20of%20a%20science%20plan%20execution.jpg)
 
 ### Test a Science Plan
-![Gemini 5 Test a Science Plan](images/Gemini5%20-%20Test%20a%20Science%20Plan.jpg)
+![Gemini 5 Test a Science Plan](images/P1/Gemini5%20-%20Test%20a%20Science%20Plan.jpg)
 
 ## Class Diagram
-![Gemini 5 Class Diagram](images/Gemini5%20-%20class%20did.jpg)
+![Gemini 5 Class Diagram](images/P1/Gemini5%20-%20class%20did.jpg)
 
 ## Group Members
 
