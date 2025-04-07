@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 function Register() {
+    const navigate = useNavigate();
+    const [error, setError] = useState("");
+
     const [username, setUsername] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
-    const [role, setRole] = useState("");
+    const [role, setRole] = useState("Astronomer");
     const [password, setPassword] = useState("");
 
     useEffect(() => {
@@ -20,7 +24,7 @@ function Register() {
 
         try {
             // Simulate API request for registration
-            const response = await fetch("/api/register", {
+            const response = await fetch("http://localhost:8080/api/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -32,7 +36,8 @@ function Register() {
 
             if (response.ok) {
                 // Assuming the response contains a JWT token
-                setToken(data.token); // Save the token in cookies
+                localStorage.setItem("token", data.token || ""); // Save the token in local storage
+                // setToken(data.token); // Save the token in cookies
                 navigate("/"); // Redirect to the home page after successful registration
             } else {
                 setError(data.message || "Registration failed");
@@ -98,7 +103,7 @@ function Register() {
                                 <option value="Astronomer">Astronomer</option>
                                 <option value="Administrator">Administrator</option>
                                 <option value="Telescope Operator">Telescope Operator</option>
-                                <option value="Science Observer">Science Observer</option>
+                                <option value="Science_Observer">Science Observer</option>
                                 <option value="Support">Support</option>
                             </select>
                         </div>

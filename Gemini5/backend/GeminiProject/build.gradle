@@ -25,6 +25,10 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	// implementation 'org.springframework.boot:spring-boot-starter-security'
+	// implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+	// implementation 'org.springframework.security:spring-security-web:6.0.0'
+    // implementation 'org.springframework.security:spring-security-config:6.0.0'
 }
 
 tasks.named('test') {

@@ -4,43 +4,39 @@ import com.example.GeminiProject.Model.Role;
 import com.example.GeminiProject.Model.Staff;
 import com.example.GeminiProject.Repository.StaffRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @Controller
+@RequestMapping("/api")
 public class GeminiController {
 
     @Autowired
     private StaffRepository staffRepository;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @CrossOrigin
-    @GetMapping("/")
+    @GetMapping("/home")
     public @ResponseBody String Home() {
         return "Hello Gemini";
     }
 
-    @CrossOrigin
+    @CrossOrigin(origins = "http://localhost:5173")
     @PostMapping("/register")
-    public @ResponseBody String register(@RequestBody Map<String, Object> body) throws JsonProcessingException {
+    public ResponseEntity<?> register(@RequestBody Map<String, Object> body) throws JsonProcessingException {
         String username = body.get("username").toString();
         String password = body.get("password").toString();
         String firstName = body.get("firstName").toString();
         String lastName = body.get("lastName").toString();
         String roleString = body.get("role").toString();
-//        Role role = Role.valueOf(roleString);
         Role role;
         try {
             role = Role.valueOf(roleString);
@@ -52,7 +48,7 @@ public class GeminiController {
             );
             problemDetail.setTitle("Invalid role");
             problemDetail.setDetail("The provided role is not valid");
-            return objectMapper.writeValueAsString(problemDetail);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
         }
 
         if (staffRepository.findByUsername(username).isPresent()) {
@@ -63,7 +59,7 @@ public class GeminiController {
             problemDetail.setTitle("Staff Registration Error");
             problemDetail.setDetail("STAFF_EXISTS");
 
-            return objectMapper.writeValueAsString(problemDetail);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
         }
 
         String staffId = Staff.generateStaffId(staffRepository, role);
@@ -71,12 +67,12 @@ public class GeminiController {
         staff.setStaffId(staffId);
         Staff savedStaff = staffRepository.save(staff);
 
-        return objectMapper.writeValueAsString(savedStaff);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedStaff);
     }
 
-    @CrossOrigin
+    @CrossOrigin(origins = "http://localhost:5173")
     @PostMapping("/login")
-    public @ResponseBody String login(@RequestBody Map<String, Object> body) throws JsonProcessingException {
+    public ResponseEntity<?> login(@RequestBody Map<String, Object> body) throws JsonProcessingException {
         String username = body.get("username").toString();
         String password = body.get("password").toString();
 
@@ -90,12 +86,11 @@ public class GeminiController {
             problemDetail.setTitle("Staff Login Error");
             problemDetail.setDetail("STAFF_NOT_FOUND");
 
-            return objectMapper.writeValueAsString(problemDetail);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
         }
 
         Staff staff = optionalStaff.get();
 
-//        ProblemDetail problemDetail;
         if (staff.getPassword().equals(password)) {
             ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                     HttpStatus.OK,
@@ -103,7 +98,7 @@ public class GeminiController {
             );
             problemDetail.setTitle("Staff Login Success");
             problemDetail.setDetail("STAFF_LOGIN_SUCCESS");
-            return objectMapper.writeValueAsString(problemDetail);
+            return ResponseEntity.ok(problemDetail);
         }
         else {
             ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
@@ -112,7 +107,7 @@ public class GeminiController {
             );
             problemDetail.setTitle("Staff Login Error");
             problemDetail.setDetail("STAFF_PASSWORD_INCORRECT");
-            return objectMapper.writeValueAsString(problemDetail);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
         }
     }
 
