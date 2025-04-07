@@ -13,6 +13,7 @@ function Home() {
 
     const handleLogout = () => {
         logout();
+        window.location.href = "/login"; // Redirect to the login page after logout
     };
 
     return (
