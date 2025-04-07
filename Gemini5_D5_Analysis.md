@@ -21,7 +21,7 @@
 ![Gemini 5 D5 Activity Diagrams Submit Science Plan](images/P2_D5/Gemini5%20-%20Activity_Diagram_Submit_Science_Plan.png)
 
 ### 3.3 Sequence Diagrams
-![Gemini 5 D5 Sequence Diagrams Submit Science Plan](images/P2_D5/Gemini5%20-%20Sequence_Diagram_Submit_Science_Plan.png)
+![Gemini 5 D5 Sequence Diagrams Submit Science Plan](images/P2_D5/Gemini5%20-%20Sequence_Diagram_Submit_Science_Plan.jpg)
 
 ## 4. UseCase Validate a Science Plan
 ### 4.1 Updated Usecase Description 
