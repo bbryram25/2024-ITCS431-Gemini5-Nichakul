@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="22863f48-ee42-4ed3-86f9-c772a217ec2d" name="Changes" comment="" />
+    <list default="true" id="22863f48-ee42-4ed3-86f9-c772a217ec2d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -37,6 +39,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.GeminiProjectApplication.executor": "Run",
+    "Application.java.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
@@ -56,10 +59,10 @@
   }
 }]]></component>
   <component name="RunManager">
-    <configuration name="GeminiProjectApplication" type="Application" factoryName="Application" nameIsGenerated="true">
+    <configuration name="java" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="ALTERNATIVE_JRE_PATH" value="corretto-17" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-      <option name="MAIN_CLASS_NAME" value="com.example.GeminiProject.GeminiProjectApplication" />
+      <module name="2024-ITCS431-Gemini5" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.example.GeminiProject.*" />
@@ -113,6 +116,7 @@
       <workItem from="1744015879558" duration="46000" />
       <workItem from="1744015937299" duration="102000" />
       <workItem from="1744016068489" duration="8000" />
+      <workItem from="1744028437839" duration="486000" />
     </task>
     <servers />
   </component>
