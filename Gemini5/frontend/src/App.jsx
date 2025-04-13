@@ -6,13 +6,19 @@ import Register from "./pages/Register";
 
 function App() {
   return (
-    <Router>
-        <Routes>
-            <Route path="/" element={ <Home/>} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-      </Routes>
-    </Router>
+      <Router
+          future={{
+              v7_startTransition: true,  // Enable the v7_startTransition flag
+              v7_relativeSplatPath: true,  // Enable the v7_relativeSplatPath flag
+          }}
+      >
+          <Routes>
+              <Route path="/" element={ <Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+          </Routes>
+      </Router>
+
   );
 }
 

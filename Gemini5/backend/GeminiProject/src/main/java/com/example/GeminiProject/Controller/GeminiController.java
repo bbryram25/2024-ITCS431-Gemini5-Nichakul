@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @Controller
 @RequestMapping("/api")
 public class GeminiController {
@@ -29,7 +29,7 @@ public class GeminiController {
         return "Hello Gemini";
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Map<String, Object> body) throws JsonProcessingException {
         String username = body.get("username").toString();
@@ -70,7 +70,7 @@ public class GeminiController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedStaff);
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, Object> body) throws JsonProcessingException {
         String username = body.get("username").toString();
