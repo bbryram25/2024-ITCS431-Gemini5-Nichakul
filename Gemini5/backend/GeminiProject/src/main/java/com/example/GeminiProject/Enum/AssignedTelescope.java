@@ -1,4 +1,4 @@
-package com.example.Enum;
+package com.example.GeminiProject.Enum;
 
 public enum AssignedTelescope {
     
