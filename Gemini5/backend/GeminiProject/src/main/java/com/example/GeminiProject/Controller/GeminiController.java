@@ -1,6 +1,6 @@
 package com.example.GeminiProject.Controller;
 
-import com.example.GeminiProject.Model.Role;
+import com.example.Enum.Role;
 import com.example.GeminiProject.Model.Staff;
 import com.example.GeminiProject.Repository.StaffRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -116,5 +116,7 @@ public class GeminiController {
     public @ResponseBody List<Staff> getAllStaff() {
         return staffRepository.findAll();
     }
+
+
 
 }

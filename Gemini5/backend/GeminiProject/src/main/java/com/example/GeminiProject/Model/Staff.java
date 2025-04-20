@@ -1,5 +1,6 @@
 package com.example.GeminiProject.Model;
 
+import com.example.Enum.Role;
 import com.example.GeminiProject.Repository.StaffRepository;
 import jakarta.persistence.*;
 
@@ -51,6 +52,7 @@ public class Staff {
     public Role getRole() {
         return role;
     }
+
     public void setStaffId(String staffId) {
         this.staffId = staffId;
     }
@@ -69,6 +71,7 @@ public class Staff {
     public void setRole(Role role) {
         this.role = role;
     }
+    
     public static String generateStaffId(StaffRepository staffRepository, Role role) {
         Optional<String> maxIdOpt = staffRepository.findMaxStaffId();
 
