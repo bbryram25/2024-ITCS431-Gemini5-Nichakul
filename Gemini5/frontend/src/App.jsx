@@ -4,7 +4,8 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Menu from "./pages/Menu";
-import CreatePlan from "./pages/CreatePlan";
+import CreateSciPlan from "./pages/CreateSciPlan";
+import DataProcessing from "./pages/DataProcessing"
 
 function App() {
   return (
@@ -19,7 +20,8 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/menu" element={<Menu />} />
-              <Route path="/CreatePlan" element={<CreatePlan />} />
+              <Route path="/createSciPlan" element={<CreateSciPlan />} />
+              <Route path="/dataProcessing" element={<DataProcessing />} />
           </Routes>
       </Router>
 
