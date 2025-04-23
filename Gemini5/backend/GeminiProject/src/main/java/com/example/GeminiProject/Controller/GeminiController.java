@@ -17,6 +17,12 @@ import com.example.GeminiProject.Enum.AssignedTelescope;
 import com.example.GeminiProject.Enum.SciencePlanStatus;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import com.example.GeminiProject.Enum.ColorType;
+import com.example.GeminiProject.Enum.FileQuality;
+import com.example.GeminiProject.Enum.FileType;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -139,6 +145,27 @@ public class GeminiController {
     @GetMapping("/enums/status")
     public ResponseEntity<List<String>> getStatusEnums() {
         return ResponseEntity.ok(Arrays.stream(SciencePlanStatus.values())
+                                    .map(Enum::name)
+                                    .collect(Collectors.toList()));
+    }
+
+    @GetMapping("/enums/file-type")
+    public ResponseEntity<List<String>> getFileTypesEnums() {
+        return ResponseEntity.ok(Arrays.stream(FileType.values())
+                                    .map(Enum::name)
+                                    .collect(Collectors.toList()));
+    }
+
+    @GetMapping("/enums/file-quality")
+    public ResponseEntity<List<String>> getFileQualitiesEnums() {
+        return ResponseEntity.ok(Arrays.stream(FileQuality.values())
+                                    .map(Enum::name)
+                                    .collect(Collectors.toList()));
+    }
+
+    @GetMapping("/enums/color-type")
+    public ResponseEntity<List<String>> getColorTypesEnums() {
+        return ResponseEntity.ok(Arrays.stream(ColorType.values())
                                     .map(Enum::name)
                                     .collect(Collectors.toList()));
     }

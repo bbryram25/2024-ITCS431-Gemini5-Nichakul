@@ -4,7 +4,8 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Menu from "./pages/Menu";
-// import CreatePlan from "./pages/CreatePlan";
+// import CreateSciPlan from "./pages/CreateSciPlan";
+import DataProcessing from "./pages/DataProcessing"
 import Submit from './pages/submit';  
 import ValidatePlan from "./pages/ValidatePlan";
 import SciencePlanList from "./pages/SciencePlanList";
@@ -24,11 +25,12 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/menu" element={<Menu />} />
-              {/* <Route path="/CreatePlan" element={<CreatePlan />} /> */}
+              {/* <Route path="/createSciPlan" element={<CreateSciPlan />} /> */}
               <Route path="/Submit" element={<Submit />} />
               <Route path="/validate-plan" element={<ValidatePlan />} />
               <Route path="/show-list" element={<SciencePlanList />} />
 
+              <Route path="/dataProcessing" element={<DataProcessing />} />
           </Routes>
       </Router>
 
