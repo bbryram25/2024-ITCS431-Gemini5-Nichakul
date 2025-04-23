@@ -1,7 +1,9 @@
 package com.example.GeminiProject.Controller;
 
 import com.example.GeminiProject.Enum.Role;
+import com.example.GeminiProject.Model.SciencePlan;
 import com.example.GeminiProject.Model.Staff;
+import com.example.GeminiProject.Repository.SciencePlanRepository;
 import com.example.GeminiProject.Repository.StaffRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.HttpStatus;
@@ -15,8 +17,6 @@ import com.example.GeminiProject.Enum.AssignedTelescope;
 import com.example.GeminiProject.Enum.SciencePlanStatus;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import org.springframework.web.bind.annotation.GetMapping;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,6 +28,9 @@ public class GeminiController {
 
     @Autowired
     private StaffRepository staffRepository;
+    
+    @Autowired
+    private SciencePlanRepository sciencePlanRepository;
 
     @CrossOrigin
     @GetMapping("/home")
@@ -139,5 +142,31 @@ public class GeminiController {
                                     .map(Enum::name)
                                     .collect(Collectors.toList()));
     }
+
+
+
+
+
+
+    // trysub
+@PostMapping("/submit-science-plan")
+public ResponseEntity<?> submitSciencePlan(@RequestBody Map<String, String> request) {
+    String planId = request.get("planId");
+    Optional<SciencePlan> optionalPlan = sciencePlanRepository.findById(planId);
+
+    if (optionalPlan.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Plan not found");
+    }
+
+    SciencePlan plan = optionalPlan.get();
+    if (plan.getStatus() != SciencePlanStatus.TESTED) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Plan must be TESTED before submission");
+    }
+
+    plan.setStatus(SciencePlanStatus.SUBMITTED);
+    sciencePlanRepository.save(plan);
+    return ResponseEntity.ok("Science plan submitted successfully");
+}
+
 
 }
