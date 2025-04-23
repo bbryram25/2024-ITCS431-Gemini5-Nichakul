@@ -53,7 +53,7 @@ function Login() {
         setMessage("Login successful"); // Optionally show success message
         setUsername(""); // Clear the username field
         setPassword(""); // Clear the password field
-        navigate("/"); // Redirect to home after successful login
+        navigate("/menu"); // Redirect to home after successful login
         console.log("Login successful");
         // localStorage.setItem("token", data.token || ""); // Save the token in local storage
         // setMessage(data.detail);
