@@ -6,37 +6,52 @@ function ValidatePlan() {
   const [isEditing, setIsEditing] = useState(false);
   const [validationMessage, setValidationMessage] = useState("");
 
+  // useEffect(() => {
+  //   document.title = "Validate Science Plan | GEMINI5";
+
+  //   const plans = [
+  //     {
+  //       planID: "1234",
+  //       planName: "Sample Plan",
+  //       creator: "Dr. Astro",
+  //       funding: 5000.00,
+  //       objective: "To study space dust.",
+  //       startDate: "2025-04-30T08:00",
+  //       endDate: "2025-05-30T08:00",
+  //       target: "Mars",
+  //       starSystemType: "Red Dwarf",
+  //       telescopeLocation: "Hawaii",
+  //       dataProcessing: {
+  //         fileType: "FITS",
+  //         quality: "High",
+  //         imageSettings: {
+  //           colorType: "RGB",
+  //           contrast: "Medium",
+  //           brightness: "Normal",
+  //           saturation: "High",
+  //         },
+  //       },
+  //       status: "SUBMITTED",
+  //     },
+  //   ];
+  //   setSubmittedPlans(plans);
+  // }, []);
   useEffect(() => {
     document.title = "Validate Science Plan | GEMINI5";
+    fetchPlans();
+  }, []);  
 
-    const plans = [
-      {
-        planID: "1234",
-        planName: "Sample Plan",
-        creator: "",
-        funding: 5000.00,
-        objective: "To study space dust.",
-        startDate: "2025-04-30T08:00",
-        endDate: "2025-05-30T08:00",
-        target: "Mars",
-        starSystemType: "",
-        telescope: "Hawaii",
-        telescopeLocation: "Hawaii",
-        dataProcessing: {
-          fileType: "",
-          quality: "High",
-          imageSettings: {
-            colorType: "RGB",
-            contrast: "Medium",
-            brightness: "Normal",
-            saturation: "High",
-          },
-        },
-        status: "SUBMITTED",
-      },
-    ];
-    setSubmittedPlans(plans);
-  }, []);
+  const fetchPlans = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/science-plans"); // your real API endpoint
+      const data = await response.json();
+      const submitted = data.filter((plan) => plan.status === "SUBMITTED");
+      setSubmittedPlans(submitted);
+    } catch (error) {
+      console.error("Error fetching plans:", error);
+    }
+  };
+  
 
   const handleSelectPlan = (plan) => {
     setSelectedPlan(plan);
@@ -47,17 +62,10 @@ function ValidatePlan() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     if (name === "funding") {
-      const formattedValue = value
-        .replace(/[^0-9.]/g, "")
-        .replace(/^(\d+)(\.\d{0,2})?.*$/, "$1$2");
-
-      setSelectedPlan((prev) => ({
-        ...prev,
-        [name]: formattedValue,
-      }));
-    } else if (name.includes("dataProcessing.") || name.includes("imageSettings.")) {
+      const formattedValue = value.replace(/[^0-9.]/g, "").replace(/^([0-9]*\.?[0-9]{0,2}).*/, "$1");
+      setSelectedPlan((prev) => ({ ...prev, [name]: formattedValue }));
+    } else if (name.includes(".")) {
       const keys = name.split(".");
       setSelectedPlan((prev) => {
         const updated = { ...prev };
@@ -69,10 +77,7 @@ function ValidatePlan() {
         return updated;
       });
     } else {
-      setSelectedPlan((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
+      setSelectedPlan((prev) => ({ ...prev, [name]: value }));
     }
   };
 
@@ -84,18 +89,20 @@ function ValidatePlan() {
       "starSystemType",
       "startDate",
       "endDate",
-      "telescope",
       "telescopeLocation",
       "dataProcessing.fileType",
       "dataProcessing.quality",
       "dataProcessing.imageSettings.colorType",
+      "dataProcessing.imageSettings.contrast",
+      "dataProcessing.imageSettings.brightness",
+      "dataProcessing.imageSettings.saturation",
     ];
 
     const isValid = requiredFields.every((field) => {
-      const fieldParts = field.split(".");
+      const keys = field.split(".");
       let value = selectedPlan;
-      for (const part of fieldParts) {
-        value = value ? value[part] : "";
+      for (const key of keys) {
+        value = value ? value[key] : "";
       }
       return Boolean(value);
     });
@@ -121,78 +128,61 @@ function ValidatePlan() {
     setValidationMessage("");
   };
 
-  const renderFormFields = (fields) => {
-    return fields.map((field) => {
-      if (field === "funding") {
-        return (
-          <div key={field} className="flex flex-col">
-            <label className="block font-semibold">Funding (USD):</label>
-            <input
-              type="text"
-              name={field}
-              value={selectedPlan[field] || ""}
-              onChange={handleChange}
-              className="w-full p-1 border rounded"
-              disabled={!isEditing}
-              placeholder="Enter funding"
-            />
-          </div>
-        );
-      }
+  const renderField = (label, fieldPath, type = "text") => {
+    const value = fieldPath.split(".").reduce((obj, key) => obj?.[key] ?? "", selectedPlan);
 
-      if (field === "telescope" || field === "telescopeLocation") {
-        return (
-          <div key={field} className="flex flex-col">
-            <label className="block font-semibold capitalize">{field.replace(/([A-Z])/g, " $1")}:</label>
-            <select
-              name={field}
-              value={selectedPlan[field] || ""}
-              onChange={handleChange}
-              disabled={!isEditing}
-              className="w-full p-1 border rounded"
-            >
-              <option value="">Select a location</option>
-              <option value="Hawaii">Hawaii</option>
-              <option value="Chile">Chile</option>
-            </select>
-          </div>
-        );
-      }
-
-      if (field.includes(".")) {
-        const keys = field.split(".");
-        let value = selectedPlan;
-        keys.forEach((key) => (value = value ? value[key] : ""));
-
-        return (
-          <div key={field} className="flex flex-col">
-            <label className="block font-semibold capitalize">{field.replace(/\./g, " > ")}</label>
-            <input
-              type="text"
-              name={field}
-              value={value}
-              onChange={handleChange}
-              className="w-full p-1 border rounded"
-              disabled={!isEditing}
-            />
-          </div>
-        );
-      }
-
+    if (fieldPath === "telescopeLocation") {
       return (
-        <div key={field} className="flex flex-col">
-          <label className="block font-semibold capitalize">{field.replace(/([A-Z])/g, " $1")}:</label>
-          <input
-            type={field.includes("Date") ? "datetime-local" : "text"}
-            name={field}
-            value={selectedPlan[field] || ""}
+        <div key={fieldPath} className="flex flex-col">
+          <label className="block font-semibold">Telescope Location</label>
+          <select
+            name={fieldPath}
+            value={value}
             onChange={handleChange}
             className="w-full p-1 border rounded"
             disabled={!isEditing}
+          >
+            <option value="">Select Location</option>
+            <option value="Hawaii">Hawaii</option>
+            <option value="Chile">Chile</option>
+          </select>
+        </div>
+      );
+    }
+    if (fieldPath === "objective") {
+      return (
+        <div key={fieldPath} className="flex flex-col">
+          <label className="block font-semibold">{label}</label>
+          <textarea
+            name={fieldPath}
+            value={value}
+            onChange={(e) => {
+              handleChange(e);
+              e.target.style.height = "auto";
+              e.target.style.height = `${e.target.scrollHeight}px`;
+            }}
+            className="w-full p-2 border rounded resize-none overflow-hidden"
+            disabled={!isEditing}
+            rows={1}
+            style={{ minHeight: "3rem" }}
           />
         </div>
       );
-    });
+    }
+    return (
+      <div key={fieldPath} className="flex flex-col">
+        <label className="block font-semibold">{label}</label>
+        <input
+          type={type}
+          name={fieldPath}
+          value={value}
+          onChange={handleChange}
+          className="w-full p-1 border rounded"
+          disabled={!isEditing}
+        />
+        {fieldPath === "funding" && <small className="text-gray-500">USD (e.g. 1234.56)</small>}
+      </div>
+    );
   };
 
   return (
@@ -205,57 +195,115 @@ function ValidatePlan() {
         <table className="w-full table-auto text-black bg-white rounded-xl mb-6">
           <thead>
             <tr className="text-center">
-            <th className="p-2 text-center">Plan ID</th>
-            <th className="p-2 text-center">Plan Name</th>
-            <th className="p-2 text-center">Creator</th>
-            <th className="p-2 text-center">Funding</th>
-            <th className="p-2 text-center">Status</th>
-            <th className="p-2 text-center">Actions</th>
-
+              <th className="p-2">Plan ID</th>
+              <th className="p-2">Plan Name</th>
+              <th className="p-2">Creator</th>
+              <th className="p-2">Funding</th>
+              <th className="p-2">Status</th>
+              <th className="p-2">Actions</th>
             </tr>
           </thead>
           <tbody>
-      {submittedPlans.map((plan) => (
-        <tr key={plan.planID} className="text-center">
-          <td className="p-2">{plan.planID}</td>
-          <td className="p-2">{plan.planName}</td>
-          <td className="p-2">{plan.creator || "-"}</td>
-          <td className="p-2">${parseFloat(plan.funding).toFixed(2)}</td>
-          <td className="p-2">{plan.status}</td>
-          <td className="p-2">
-        <button
-          className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-800"
-          onClick={() => handleSelectPlan(plan)}
-        >
-          Review
-        </button>
-      </td>
-    </tr>
-  ))}
-</tbody>
-
+            {submittedPlans.map((plan) => (
+              <tr key={plan.planID} className="text-center">
+                <td className="p-2">{plan.planId}</td>
+                <td className="p-2">{plan.planName}</td>
+                <td className="p-2">{plan.creator || "-"}</td>
+                <td className="p-2">${parseFloat(plan.funding).toFixed(2)}</td>
+                <td className="p-2">{plan.status}</td>
+                <td className="p-2">
+                  <button
+                    className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-800"
+                    onClick={() => handleSelectPlan(plan)}
+                  >
+                    Review
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       )}
 
       {selectedPlan && (
         <div className="bg-white text-black p-6 rounded-xl shadow-md space-y-4">
           <h3 className="text-xl font-semibold mb-2">Reviewing Plan: {selectedPlan.planName}</h3>
+          {/* 
+          <div className="grid grid-cols-2 gap-3">
+            <h4 className="col-span-2 text-lg font-semibold">Plan Metadata</h4>
+            {renderField("Creator", "creator")}
+            {renderField("Funding (USD)", "funding")}
+            {renderField("Objective", "objective", "textarea")}
 
+            <h4 className="col-span-2 text-lg font-semibold">Star System</h4>
+            {renderField("Star System Type", "starSystemType")}
+
+            <h4 className="col-span-2 text-lg font-semibold">Schedule Availability</h4>
+            {renderField("Start Date", "startDate", "datetime-local")}
+            {renderField("End Date", "endDate", "datetime-local")}
+
+            <h4 className="col-span-2 text-lg font-semibold">Telescope Location</h4>
+            {renderField("Location", "telescopeLocation")}
+
+            <h4 className="col-span-2 text-lg font-semibold">Data Processing</h4>
+            {renderField("File Type", "dataProcessing.fileType")}
+            {renderField("Quality", "dataProcessing.quality")}
+            {renderField("Color Type", "dataProcessing.imageSettings.colorType")}
+            {renderField("Contrast", "dataProcessing.imageSettings.contrast")}
+            {renderField("Brightness", "dataProcessing.imageSettings.brightness")}
+            {renderField("Saturation", "dataProcessing.imageSettings.saturation")}
+          </div> */}
           <div className="grid grid-cols-2 gap-6">
-            {renderFormFields([
-              "creator",
-              "funding",
-              "objective",
-              "starSystemType",
-              "startDate",
-              "endDate",
-              "target",
-              "telescope",
-              "telescopeLocation",
-              "dataProcessing.fileType",
-              "dataProcessing.quality",
-              "dataProcessing.imageSettings.colorType",
-            ])}
+            {/* Plan Metadata */}
+            <div className="col-span-2 border border-gray-300 rounded p-4 bg-gray-50 text-black">
+              <h4 className="text-lg font-semibold mb-2">Plan Metadata</h4>
+              <div className="grid grid-cols-2 gap-4">
+                {renderField("Creator", "creator")}
+                {renderField("Funding (USD)", "funding")}
+                <div className="col-span-2">
+                  {renderField("Objective", "objective", "textarea")}
+                </div>
+
+              </div>
+            </div>
+
+            {/* Star System */}
+            <div className="col-span-2 border border-gray-300 rounded p-4 bg-gray-50 text-black">
+              <h4 className="text-lg font-semibold mb-2">Star System</h4>
+              <div className="grid grid-cols-2 gap-4">
+                {renderField("Star System Type", "starSystemType")}
+              </div>
+            </div>
+
+            {/* Schedule Availability */}
+            <div className="col-span-2 border border-gray-300 rounded p-4 bg-gray-50 text-black">
+              <h4 className="text-lg font-semibold mb-2">Schedule Availability</h4>
+              <div className="grid grid-cols-2 gap-4">
+                {renderField("Start Date", "startDate", "datetime-local")}
+                {renderField("End Date", "endDate", "datetime-local")}
+              </div>
+            </div>
+
+            {/* Telescope Location */}
+            <div className="col-span-2 border border-gray-300 rounded p-4 bg-gray-50 text-black">
+              <h4 className="text-lg font-semibold mb-2">Telescope Location</h4>
+              <div className="grid grid-cols-2 gap-4">
+                {renderField("Location", "telescopeLocation")}
+              </div>
+            </div>
+
+            {/* Data Processing */}
+            <div className="col-span-2 border border-gray-300 rounded p-4 bg-gray-50 text-black">
+              <h4 className="text-lg font-semibold mb-2">Data Processing</h4>
+              <div className="grid grid-cols-2 gap-4">
+                {renderField("File Type", "dataProcessing.fileType")}
+                {renderField("Quality", "dataProcessing.quality")}
+                {renderField("Color Type", "dataProcessing.imageSettings.colorType")}
+                {renderField("Contrast", "dataProcessing.imageSettings.contrast")}
+                {renderField("Brightness", "dataProcessing.imageSettings.brightness")}
+                {renderField("Saturation", "dataProcessing.imageSettings.saturation")}
+              </div>
+            </div>
           </div>
 
           <div className="text-center mt-6">
