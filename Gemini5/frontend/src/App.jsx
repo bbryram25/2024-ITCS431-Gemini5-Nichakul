@@ -28,6 +28,7 @@ function App() {
               <Route path="/createSciPlan" element={<CreateSciPlan />} />
               <Route path="/Submit" element={<Submit />} />
               <Route path="/validate-plan" element={<ValidatePlan />} />
+              <Route path="/validate-plan/:id" element={<ValidatePlan />} />
               <Route path="/show-list" element={<SciencePlanList />} />
 
               <Route path="/dataProcessing" element={<DataProcessing />} />
