@@ -1,6 +1,7 @@
 package com.example.GeminiProject.Model;
 
-import com.example.Enum.TelescopeStatus;
+import com.example.GeminiProject.Enum.TelescopeStatus;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

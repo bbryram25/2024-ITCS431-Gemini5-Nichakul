@@ -1,6 +1,6 @@
 package com.example.GeminiProject.Model;
 
-import com.example.Enum.Role;
+import com.example.GeminiProject.Enum.Role;
 import com.example.GeminiProject.Repository.StaffRepository;
 import jakarta.persistence.*;
 
