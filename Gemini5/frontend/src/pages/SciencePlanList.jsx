@@ -23,7 +23,7 @@ function SciencePlanList() {
   }, []);
 
   useEffect(() => {
-    // Filter plans based on selected status
+    console.log("Status Filter Changed:", statusFilter);
     if (statusFilter === "ALL") {
       setFilteredPlans(plans);
     } else {
@@ -31,9 +31,15 @@ function SciencePlanList() {
     }
   }, [statusFilter, plans]);
 
+  useEffect(() => {
+    console.log("Plans:", plans);
+    console.log("Filtered Plans:", filteredPlans);
+  }, [plans, filteredPlans]);
+
   const fetchPlans = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/science-plans");
+      console.log("Fetched plans:", response.data); // Log fetched data
       setPlans(response.data);
       setFilteredPlans(response.data); // set both full and filtered list initially
     } catch (error) {
@@ -84,14 +90,20 @@ function SciencePlanList() {
         {loading ? (
           <p className="text-center">Loading...</p>
         ) : filteredPlans.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-white p-10 rounded-3xl w-full max-w-4xl space-y-">
             {filteredPlans.map((plan) => (
-              <div key={plan.id} className="bg-white text-black rounded-xl p-4 shadow-md">
-                <h2 className="font-semibold text-lg mb-2">Plan: {plan.title}</h2>
-                <p>Status: {plan.status}</p>
-                <p>Telescope: {plan.telescope}</p>
-                {/* Add more fields if needed */}
-              </div>
+              <li key={plan.planId} className="p-4 border rounded-lg ">
+                <p><strong>ID:</strong> {plan.planId}</p>
+                <p><strong>Name:</strong> {plan.planName}</p>
+                <p><strong>Creator:</strong> {plan.creator}</p>
+                <p><strong>Funding:</strong> ${plan.funding}</p>
+                <p><strong>Objective:</strong> {plan.objective}</p>
+                <p><strong>Start Date:</strong> {new Date(plan.startDate).toLocaleString()}</p>
+                <p><strong>End Date:</strong> {new Date(plan.endDate).toLocaleString()}</p>
+                <p><strong>Target:</strong> {plan.target}</p>
+                <p><strong>Assigned Telescope:</strong> {plan.assignedTelescope}</p>
+                <p><strong>Status:</strong> {plan.status}</p>
+              </li>
             ))}
           </div>
         ) : (
