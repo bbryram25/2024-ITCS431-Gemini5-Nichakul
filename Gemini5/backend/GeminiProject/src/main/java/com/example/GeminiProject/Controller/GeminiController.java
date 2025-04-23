@@ -170,11 +170,6 @@ public class GeminiController {
                                     .collect(Collectors.toList()));
     }
 
-
-
-
-
-
     // trysub
 @PostMapping("/submit-science-plan")
 public ResponseEntity<?> submitSciencePlan(@RequestBody Map<String, String> request) {

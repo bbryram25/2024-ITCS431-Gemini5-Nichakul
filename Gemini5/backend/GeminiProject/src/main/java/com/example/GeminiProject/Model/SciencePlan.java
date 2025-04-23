@@ -23,13 +23,4 @@ public class SciencePlan {
     public void setStatus(SciencePlanStatus status) {
         this.status = status;
     }
-
-    // Getter and Setter for planId
-    public String getPlanId() {
-        return planId;
-    }
-
-    public void setPlanId(String planId) {
-        this.planId = planId;
-    }
 }
