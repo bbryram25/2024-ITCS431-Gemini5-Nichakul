@@ -1,4 +1,4 @@
-package com.example.GeminiProject.Enum;
+package com.example.Enum;
 
 public enum Role {
     Astronomer,
