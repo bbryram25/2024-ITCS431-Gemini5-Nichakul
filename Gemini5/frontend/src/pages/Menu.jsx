@@ -38,7 +38,7 @@ function Menu() {
             Validate Plan
           </button>
           <button
-            onClick={() => handleNavigation("/submit-plan")}
+            onClick={() => handleNavigation("/submit")}
             className="w-full py-2 rounded-full bg-black text-white font-semibold hover:opacity-90 transition"
           >
             Submit Plan
@@ -46,7 +46,7 @@ function Menu() {
         </div>
       </div>
     </div>
-  );ß
+  );
 }
 
 export default Menu;
