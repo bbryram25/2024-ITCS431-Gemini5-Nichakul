@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function SciencePlanList() {
+  const navigate = useNavigate();
   const [plans, setPlans] = useState([]);
   const [filteredPlans, setFilteredPlans] = useState([]);
   const [statusFilter, setStatusFilter] = useState("all");
@@ -103,6 +105,30 @@ function SciencePlanList() {
                 <p><strong>Target:</strong> {plan.target}</p>
                 <p><strong>Assigned Telescope:</strong> {plan.assignedTelescope}</p>
                 <p><strong>Status:</strong> {plan.status}</p>
+
+                <div className="flex justify-end pt-2">
+  <div className="flex gap-2">
+    <button
+      onClick={() => navigate(`/validate-plan/${plan.planId}`)}
+      
+      className="bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600 transition"
+    >
+      Validate
+    </button>
+
+    {plan.status !== "SUBMITTED" && (
+      <button
+        onClick={() => navigate(`/submit/${plan.planId}`)}
+        className="bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600 transition"
+      >
+        Submit
+      </button>
+    )}
+  </div>
+</div>
+
+
+
               </li>
             ))}
           </div>

@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+
 
 function ValidatePlan() {
+  const { id } = useParams();
+
   const [submittedPlans, setSubmittedPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -40,7 +44,23 @@ function ValidatePlan() {
     document.title = "Validate Science Plan | GEMINI5";
     fetchPlans();
   }, []);  
-
+  
+  useEffect(() => {
+    document.title = "Validate Science Plan | GEMINI5";
+    fetchPlanById();
+  }, [id]);
+  
+  const fetchPlanById = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/science-plans/${id}`);
+      const data = await response.json();
+      setSelectedPlan(data);
+      setSubmittedPlans([data]); // Optional: show in table
+    } catch (error) {
+      console.error("Error fetching plan by ID:", error);
+    }
+  };
+  
   const fetchPlans = async () => {
     try {
       const response = await fetch("http://localhost:8080/api/science-plans"); // your real API endpoint
@@ -52,7 +72,7 @@ function ValidatePlan() {
     }
   };
   
-
+  
   const handleSelectPlan = (plan) => {
     setSelectedPlan(plan);
     setIsEditing(false);
@@ -132,57 +152,54 @@ function ValidatePlan() {
     const value = fieldPath.split(".").reduce((obj, key) => obj?.[key] ?? "", selectedPlan);
 
     if (fieldPath === "telescopeLocation") {
-      return (
+        return (
         <div key={fieldPath} className="flex flex-col">
           <label className="block font-semibold">Telescope Location</label>
-          <select
+            <select
             name={fieldPath}
             value={value}
-            onChange={handleChange}
-            className="w-full p-1 border rounded"
+              onChange={handleChange}
+              className="w-full p-1 border rounded"
             disabled={!isEditing}
-          >
+            >
             <option value="">Select Location</option>
-            <option value="Hawaii">Hawaii</option>
-            <option value="Chile">Chile</option>
-          </select>
-        </div>
-      );
-    }
+              <option value="Hawaii">Hawaii</option>
+              <option value="Chile">Chile</option>
+            </select>
+          </div>
+        );
+      }
     if (fieldPath === "objective") {
-      return (
+        return (
         <div key={fieldPath} className="flex flex-col">
           <label className="block font-semibold">{label}</label>
           <textarea
             name={fieldPath}
-            value={value}
+              value={value}
             onChange={(e) => {
               handleChange(e);
               e.target.style.height = "auto";
               e.target.style.height = `${e.target.scrollHeight}px`;
             }}
             className="w-full p-2 border rounded resize-none overflow-hidden"
-            disabled={!isEditing}
-            rows={1}
-            style={{ minHeight: "3rem" }}
-          />
-        </div>
-      );
-    }
-    return (
+              disabled={!isEditing}
+            />
+          </div>
+        );
+      }
+      return (
       <div key={fieldPath} className="flex flex-col">
         <label className="block font-semibold">{label}</label>
-        <input
+          <input
           type={type}
           name={fieldPath}
           value={value}
-          onChange={handleChange}
-          className="w-full p-1 border rounded"
-          disabled={!isEditing}
-        />
-        {fieldPath === "funding" && <small className="text-gray-500">USD (e.g. 1234.56)</small>}
-      </div>
-    );
+            onChange={handleChange}
+            className="w-full p-1 border rounded"
+            disabled={!isEditing}
+          />
+        </div>
+      );
   };
 
   return (
@@ -204,55 +221,31 @@ function ValidatePlan() {
             </tr>
           </thead>
           <tbody>
-            {submittedPlans.map((plan) => (
-              <tr key={plan.planID} className="text-center">
+      {submittedPlans.map((plan) => (
+        <tr key={plan.planID} className="text-center">
                 <td className="p-2">{plan.planId}</td>
-                <td className="p-2">{plan.planName}</td>
-                <td className="p-2">{plan.creator || "-"}</td>
-                <td className="p-2">${parseFloat(plan.funding).toFixed(2)}</td>
-                <td className="p-2">{plan.status}</td>
-                <td className="p-2">
-                  <button
-                    className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-800"
-                    onClick={() => handleSelectPlan(plan)}
-                  >
-                    Review
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+          <td className="p-2">{plan.planName}</td>
+          <td className="p-2">{plan.creator || "-"}</td>
+          <td className="p-2">${parseFloat(plan.funding).toFixed(2)}</td>
+          <td className="p-2">{plan.status}</td>
+          <td className="p-2">
+        <button
+          className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-800"
+          onClick={() => handleSelectPlan(plan)}
+        >
+          Review
+        </button>
+      </td>
+    </tr>
+  ))}
+</tbody>
         </table>
       )}
 
       {selectedPlan && (
         <div className="bg-white text-black p-6 rounded-xl shadow-md space-y-4">
           <h3 className="text-xl font-semibold mb-2">Reviewing Plan: {selectedPlan.planName}</h3>
-          {/* 
-          <div className="grid grid-cols-2 gap-3">
-            <h4 className="col-span-2 text-lg font-semibold">Plan Metadata</h4>
-            {renderField("Creator", "creator")}
-            {renderField("Funding (USD)", "funding")}
-            {renderField("Objective", "objective", "textarea")}
 
-            <h4 className="col-span-2 text-lg font-semibold">Star System</h4>
-            {renderField("Star System Type", "starSystemType")}
-
-            <h4 className="col-span-2 text-lg font-semibold">Schedule Availability</h4>
-            {renderField("Start Date", "startDate", "datetime-local")}
-            {renderField("End Date", "endDate", "datetime-local")}
-
-            <h4 className="col-span-2 text-lg font-semibold">Telescope Location</h4>
-            {renderField("Location", "telescopeLocation")}
-
-            <h4 className="col-span-2 text-lg font-semibold">Data Processing</h4>
-            {renderField("File Type", "dataProcessing.fileType")}
-            {renderField("Quality", "dataProcessing.quality")}
-            {renderField("Color Type", "dataProcessing.imageSettings.colorType")}
-            {renderField("Contrast", "dataProcessing.imageSettings.contrast")}
-            {renderField("Brightness", "dataProcessing.imageSettings.brightness")}
-            {renderField("Saturation", "dataProcessing.imageSettings.saturation")}
-          </div> */}
           <div className="grid grid-cols-2 gap-6">
             {/* Plan Metadata */}
             <div className="col-span-2 border border-gray-300 rounded p-4 bg-gray-50 text-black">
