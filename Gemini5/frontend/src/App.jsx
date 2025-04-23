@@ -25,7 +25,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/menu" element={<Menu />} />
-              <Route path="/createSciPlan" element={<CreateSciPlan />} /> 
+              <Route path="/createSciPlan" element={<CreateSciPlan />} />
               <Route path="/Submit" element={<Submit />} />
               <Route path="/validate-plan" element={<ValidatePlan />} />
               <Route path="/show-list" element={<SciencePlanList />} />
