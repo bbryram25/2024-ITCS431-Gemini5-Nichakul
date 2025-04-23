@@ -1,6 +1,9 @@
 package com.example.GeminiProject.Controller;
 
 import com.example.GeminiProject.Enum.Role;
+import java.time.LocalDateTime;
+
+// import com.example.GeminiProject.Model.DataProcessing;
 import com.example.GeminiProject.Model.SciencePlan;
 import com.example.GeminiProject.Model.Staff;
 import com.example.GeminiProject.Repository.SciencePlanRepository;
@@ -10,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+// import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.GeminiProject.Enum.AssignedTelescope;
@@ -28,13 +31,14 @@ import java.util.Map;
 import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
-@Controller
+// @Controller
+@RestController
 @RequestMapping("/api")
 public class GeminiController {
 
     @Autowired
     private StaffRepository staffRepository;
-    
+
     @Autowired
     private SciencePlanRepository sciencePlanRepository;
 
@@ -55,12 +59,10 @@ public class GeminiController {
         Role role;
         try {
             role = Role.valueOf(roleString);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                     HttpStatus.BAD_REQUEST,
-                    "The provided role is not valid"
-            );
+                    "The provided role is not valid");
             problemDetail.setTitle("Invalid role");
             problemDetail.setDetail("The provided role is not valid");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
@@ -69,8 +71,7 @@ public class GeminiController {
         if (staffRepository.findByUsername(username).isPresent()) {
             ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                     HttpStatus.BAD_REQUEST,
-                    "Username already exists"
-            );
+                    "Username already exists");
             problemDetail.setTitle("Staff Registration Error");
             problemDetail.setDetail("STAFF_EXISTS");
 
@@ -96,8 +97,7 @@ public class GeminiController {
         if (optionalStaff.isEmpty()) {
             ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                     HttpStatus.BAD_REQUEST,
-                    "Username not found"
-            );
+                    "Username not found");
             problemDetail.setTitle("Staff Login Error");
             problemDetail.setDetail("STAFF_NOT_FOUND");
 
@@ -109,17 +109,14 @@ public class GeminiController {
         if (staff.getPassword().equals(password)) {
             ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                     HttpStatus.OK,
-                    "Successfully logged in"
-            );
+                    "Successfully logged in");
             problemDetail.setTitle("Staff Login Success");
             problemDetail.setDetail("STAFF_LOGIN_SUCCESS");
             return ResponseEntity.ok(problemDetail);
-        }
-        else {
+        } else {
             ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                     HttpStatus.BAD_REQUEST,
-                    "Incorrect password"
-            );
+                    "Incorrect password");
             problemDetail.setTitle("Staff Login Error");
             problemDetail.setDetail("STAFF_PASSWORD_INCORRECT");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
@@ -132,63 +129,100 @@ public class GeminiController {
         return staffRepository.findAll();
     }
 
-
-
-    //im just trying
+    // im just trying
     @GetMapping("/enums/assigned-telescope")
     public ResponseEntity<List<String>> getAssignedTelescopeEnums() {
         return ResponseEntity.ok(Arrays.stream(AssignedTelescope.values())
-                                    .map(Enum::name)
-                                    .collect(Collectors.toList()));
+                .map(Enum::name)
+                .collect(Collectors.toList()));
     }
-
     @GetMapping("/enums/status")
     public ResponseEntity<List<String>> getStatusEnums() {
         return ResponseEntity.ok(Arrays.stream(SciencePlanStatus.values())
-                                    .map(Enum::name)
-                                    .collect(Collectors.toList()));
+                .map(Enum::name)
+                .collect(Collectors.toList()));
     }
-
     @GetMapping("/enums/file-type")
     public ResponseEntity<List<String>> getFileTypesEnums() {
         return ResponseEntity.ok(Arrays.stream(FileType.values())
-                                    .map(Enum::name)
-                                    .collect(Collectors.toList()));
+                .map(Enum::name)
+                .collect(Collectors.toList()));
     }
-
     @GetMapping("/enums/file-quality")
     public ResponseEntity<List<String>> getFileQualitiesEnums() {
         return ResponseEntity.ok(Arrays.stream(FileQuality.values())
-                                    .map(Enum::name)
-                                    .collect(Collectors.toList()));
+                .map(Enum::name)
+                .collect(Collectors.toList()));
     }
-
     @GetMapping("/enums/color-type")
     public ResponseEntity<List<String>> getColorTypesEnums() {
         return ResponseEntity.ok(Arrays.stream(ColorType.values())
-                                    .map(Enum::name)
-                                    .collect(Collectors.toList()));
+                .map(Enum::name)
+                .collect(Collectors.toList()));
     }
 
     // trysub
-@PostMapping("/submit-science-plan")
-public ResponseEntity<?> submitSciencePlan(@RequestBody Map<String, String> request) {
-    String planId = request.get("planId");
-    Optional<SciencePlan> optionalPlan = sciencePlanRepository.findById(planId);
+    @PostMapping("/submit-science-plan")
+    public ResponseEntity<?> submitSciencePlan(@RequestBody Map<String, String> request) {
+        String planId = request.get("planId");
+        Optional<SciencePlan> optionalPlan = sciencePlanRepository.findById(planId);
 
-    if (optionalPlan.isEmpty()) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Plan not found");
+        if (optionalPlan.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Plan not found");
+        }
+
+        SciencePlan plan = optionalPlan.get();
+        if (plan.getStatus() != SciencePlanStatus.TESTED) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Plan must be TESTED before submission");
+        }
+
+        plan.setStatus(SciencePlanStatus.SUBMITTED);
+        sciencePlanRepository.save(plan);
+        return ResponseEntity.ok("Science plan submitted successfully");
     }
 
-    SciencePlan plan = optionalPlan.get();
-    if (plan.getStatus() != SciencePlanStatus.TESTED) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Plan must be TESTED before submission");
-    }
+    // tryyyyyingggg
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @PostMapping("/create-science-plan")
+    public ResponseEntity<?> createSciencePlan(@RequestBody Map<String, Object> body) {
+        String planId = body.get("planId").toString();
 
-    plan.setStatus(SciencePlanStatus.SUBMITTED);
-    sciencePlanRepository.save(plan);
-    return ResponseEntity.ok("Science plan submitted successfully");
+        if (sciencePlanRepository.findById(planId).isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Plan ID already exists");
+        }
+
+        try {
+            SciencePlan plan = new SciencePlan();
+
+            plan.setPlanId(planId);
+            plan.setPlanName(body.get("planName").toString());
+            plan.setCreator(body.get("creator").toString());
+            plan.setFunding(Double.parseDouble(body.get("funding").toString()));
+            plan.setObjective(body.get("objective").toString());
+            plan.setStartDate(LocalDateTime.parse(body.get("startDate").toString()));
+            plan.setEndDate(LocalDateTime.parse(body.get("endDate").toString()));
+            plan.setAssignedTelescope(AssignedTelescope.valueOf(body.get("assignedTelescope").toString()));
+            plan.setTarget(body.get("target").toString());
+            plan.setStatus(SciencePlanStatus.valueOf(body.get("status").toString()));
+            // plan.setDataProcessing(DataProcessing.valueOf(body.get("status").toString()));
+            
+            sciencePlanRepository.save(plan);
+            return ResponseEntity.status(HttpStatus.CREATED).body(plan);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error creating science plan: " + e.getMessage());
+        }
+    }
+    // @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    // @GetMapping("/science-plans")
+    // public List<SciencePlan> getAllSciencePlans() {
+    //     return sciencePlanRepository.findAll();
+    // }
+    @RequestMapping("/science-plans")
+    public List<SciencePlan> getAllSciencePlans() {
+    List<SciencePlan> plans = sciencePlanRepository.findAll();
+    System.out.println("Plans: " + plans); // Log plans to the console
+    return plans;
 }
-
 
 }
