@@ -19,7 +19,7 @@ function SciencePlanList() {
     } finally {
       setLoading(false);
     }
-  };
+  };  
 
   return (
     <div className="p-6 min-h-screen bg-gradient-to-b from-gray-900 to-indigo-900 text-white">

@@ -60,7 +60,7 @@ function ValidatePlan() {
           </div>
         ) : (
           <p>Loading plan...</p>
-        )}
+        )}  
       </div>
     </div>
   );

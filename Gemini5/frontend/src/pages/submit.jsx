@@ -16,7 +16,7 @@ function SubmitSciencePlan() {
 
   const handleSubmit = () => {
     if (plan.status === "TESTED") {
-      axios.post("/api/submit-science-plan", { planId })
+      axios.post("/api/submit-science-plan", { planId })  
         .then(response => {
           alert("Science Plan submitted successfully!");
           navigate("/science-plans");
