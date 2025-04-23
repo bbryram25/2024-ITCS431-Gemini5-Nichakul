@@ -10,13 +10,6 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import com.example.GeminiProject.Enum.AssignedTelescope;
-import com.example.GeminiProject.Enum.SciencePlanStatus;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import org.springframework.web.bind.annotation.GetMapping;
-
 
 import java.util.List;
 import java.util.Map;
@@ -123,32 +116,6 @@ public class GeminiController {
     public @ResponseBody List<Staff> getAllStaff() {
         return staffRepository.findAll();
     }
-
-
-
-
-
-    //im trying with create sci plan
-    @GetMapping("/enums/assigned-telescope")
-    public ResponseEntity<List<String>> getAssignedTelescopeEnums() {
-        return ResponseEntity.ok(Arrays.stream(AssignedTelescope.values())
-                                    .map(Enum::name)
-                                    .collect(Collectors.toList()));
-    }
-
-    @GetMapping("/enums/status")
-    public ResponseEntity<List<String>> getStatusEnums() {
-        return ResponseEntity.ok(Arrays.stream(SciencePlanStatus.values())
-                                    .map(Enum::name)
-                                    .collect(Collectors.toList()));
-    }
-
-    // @GetMapping("/api/data-processing-options")
-    // public ResponseEntity<List<String>> getDataProcessingOptions() {
-    //     // return both previous entries and "create new" option
-    //     List<String> previous = dataProcessingService.getPreviousOptions(); // or hardcoded for now
-    //     previous.add("Create new");
-    //     return ResponseEntity.ok(previous);
 
 
 
