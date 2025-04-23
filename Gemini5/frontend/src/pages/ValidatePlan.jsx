@@ -204,34 +204,36 @@ function ValidatePlan() {
       ) : (
         <table className="w-full table-auto text-black bg-white rounded-xl mb-6">
           <thead>
-            <tr className="text-left">
-              <th className="p-2">Plan ID</th>
-              <th className="p-2">Plan Name</th>
-              <th className="p-2">Creator</th>
-              <th className="p-2">Funding</th>
-              <th className="p-2">Status</th>
-              <th className="p-2">Actions</th>
+            <tr className="text-center">
+            <th className="p-2 text-center">Plan ID</th>
+            <th className="p-2 text-center">Plan Name</th>
+            <th className="p-2 text-center">Creator</th>
+            <th className="p-2 text-center">Funding</th>
+            <th className="p-2 text-center">Status</th>
+            <th className="p-2 text-center">Actions</th>
+
             </tr>
           </thead>
           <tbody>
-            {submittedPlans.map((plan) => (
-              <tr key={plan.planID}>
-                <td className="p-2">{plan.planID}</td>
-                <td className="p-2">{plan.planName}</td>
-                <td className="p-2">{plan.creator || "-"}</td>
-                <td className="p-2">${parseFloat(plan.funding).toFixed(2)}</td>
-                <td className="p-2">{plan.status}</td>
-                <td className="p-2">
-                  <button
-                    className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-800"
-                    onClick={() => handleSelectPlan(plan)}
-                  >
-                    Review
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+      {submittedPlans.map((plan) => (
+        <tr key={plan.planID} className="text-center">
+          <td className="p-2">{plan.planID}</td>
+          <td className="p-2">{plan.planName}</td>
+          <td className="p-2">{plan.creator || "-"}</td>
+          <td className="p-2">${parseFloat(plan.funding).toFixed(2)}</td>
+          <td className="p-2">{plan.status}</td>
+          <td className="p-2">
+        <button
+          className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-800"
+          onClick={() => handleSelectPlan(plan)}
+        >
+          Review
+        </button>
+      </td>
+    </tr>
+  ))}
+</tbody>
+
         </table>
       )}
 
@@ -239,7 +241,7 @@ function ValidatePlan() {
         <div className="bg-white text-black p-6 rounded-xl shadow-md space-y-4">
           <h3 className="text-xl font-semibold mb-2">Reviewing Plan: {selectedPlan.planName}</h3>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-6">
             {renderFormFields([
               "creator",
               "funding",
