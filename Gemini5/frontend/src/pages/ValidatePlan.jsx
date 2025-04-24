@@ -1,49 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-
 function ValidatePlan() {
   const { id } = useParams();
-
   const [submittedPlans, setSubmittedPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [validationMessage, setValidationMessage] = useState("");
 
-  // useEffect(() => {
-  //   document.title = "Validate Science Plan | GEMINI5";
-
-  //   const plans = [
-  //     {
-  //       planID: "1234",
-  //       planName: "Sample Plan",
-  //       creator: "Dr. Astro",
-  //       funding: 5000.00,
-  //       objective: "To study space dust.",
-  //       startDate: "2025-04-30T08:00",
-  //       endDate: "2025-05-30T08:00",
-  //       target: "Mars",
-  //       starSystemType: "Red Dwarf",
-  //       telescopeLocation: "Hawaii",
-  //       dataProcessing: {
-  //         fileType: "FITS",
-  //         quality: "High",
-  //         imageSettings: {
-  //           colorType: "RGB",
-  //           contrast: "Medium",
-  //           brightness: "Normal",
-  //           saturation: "High",
-  //         },
-  //       },
-  //       status: "SUBMITTED",
-  //     },
-  //   ];
-  //   setSubmittedPlans(plans);
-  // }, []);
   useEffect(() => {
     document.title = "Validate Science Plan | GEMINI5";
     fetchPlans();
-  }, []);  
+  }, []);
   
   useEffect(() => {
     document.title = "Validate Science Plan | GEMINI5";
@@ -72,7 +40,7 @@ function ValidatePlan() {
     }
   };
   
-  
+
   const handleSelectPlan = (plan) => {
     setSelectedPlan(plan);
     setIsEditing(false);
@@ -299,7 +267,15 @@ function ValidatePlan() {
             </div>
           </div>
 
-          <div className="text-center mt-6">
+          <div className="flex justify-center gap-4 mt-6">
+            <button
+              onClick={toggleEditMode}
+              className={`px-6 py-2 rounded text-white font-semibold ${
+                isEditing ? "bg-indigo-500 hover:bg-indigo-700" : "bg-emerald-500 hover:bg-emerald-700"
+              }`}
+            >
+              {isEditing ? "Cancel Edit" : "Edit Plan"}
+            </button>
             <button
               onClick={handleValidate}
               className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-800"
@@ -307,13 +283,6 @@ function ValidatePlan() {
               {isEditing ? "Validate Again" : "Validate Plan"}
             </button>
           </div>
-
-          <button
-            onClick={toggleEditMode}
-            className="mt-2 px-6 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-800"
-          >
-            {isEditing ? "Cancel Edit" : "Edit Plan"}
-          </button>
 
           {validationMessage && (
             <div className="text-center mt-4 text-lg font-medium">
