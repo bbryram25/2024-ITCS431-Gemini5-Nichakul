@@ -8,27 +8,48 @@ function ValidatePlan() {
   const [isEditing, setIsEditing] = useState(false);
   const [validationMessage, setValidationMessage] = useState("");
 
-  useEffect(() => {
-    document.title = "Validate Science Plan | GEMINI5";
-    fetchPlans();
-  }, []);
+  // useEffect(() => {
+  //   document.title = "Validate Science Plan | GEMINI5";
+  //   fetchPlans();
+  // }, []);
 
-  useEffect(() => {
-    document.title = "Validate Science Plan | GEMINI5";
-    fetchPlanById();
-  }, [id]);
+  // useEffect(() => {
+  //   document.title = "Validate Science Plan | GEMINI5";
+  //   fetchPlanById();
+  // }, [id]);
 
   //sample plan
-  const samplePlan = {
-    planId: 1,
-    planName: "Exoplanet Observation",
+  const samplePlan = [{
+    planId: "001",
+    planName: "Study of Black Holes",
     creator: "Dr. Jane Doe",
-    funding: "150000",
-    objective: "Observe nearby exoplanets for potential habitability.",
-    starSystemType: "Binary",
-    startDate: "2025-05-01T20:00",
-    endDate: "2025-05-03T04:00",
-    telescopeLocation: "Chile",
+    funding: 50000,
+    objective: "Observe gravitational waves near black holes.",
+    startDate: "2025-05-01T10:00:00",
+    endDate: "2025-05-08T10:00:00",
+    target: "NGC 1234",
+    assignedTelescope: "Gemini North",
+    status: "CREATED",
+    dataProcessing: {
+      fileType: "PNG",
+      quality: "Low",
+      imageSettings: {
+        colorType: "RGB",
+        contrast: "Medium",
+        brightness: "Normal",
+        saturation: "High",
+      },
+    },
+  }, {
+    planId: "002",
+    planName: "Exoplanet Atmosphere Analysis",
+    creator: "Prof. John Smith",
+    funding: 75000,
+    objective: "Analyze chemical composition of exoplanet atmospheres.",
+    startDate: "2025-05-02T14:30:00",
+    endDate: "2025-05-12T14:30:00",
+    target: "Kepler-186f",
+    assignedTelescope: "Gemini South",
     status: "SUBMITTED",
     dataProcessing: {
       fileType: "PNG",
@@ -40,36 +61,46 @@ function ValidatePlan() {
         saturation: "High",
       },
     },
-  };
-  
+  }];
 
-  const fetchPlanById = async () => {
-    try {
-      const response = await fetch(`http://localhost:8080/api/science-plans/${id}`);
-      const data = await response.json();
-      setSelectedPlan(data);
-      setSubmittedPlans([data]); // Optional: show in table
-    } catch (error) {
-      console.error("Error fetching plan by ID:", error);
-      console.error("USING SAMPLE PLAN");
-      setSelectedPlan(samplePlan);
-      setSubmittedPlans([samplePlan]);
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/science-plans");
+        const data = await response.json();
+        const submitted = data.filter((plan) => plan.status === "SUBMITTED");
+        setSubmittedPlans(submitted);
+      } catch (error) {
+        console.error("Error fetching all plans:", error);
+        setSubmittedPlans(samplePlan);
+      }
+    };
+
+    const fetchPlanById = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/science-plans/${id}`);
+        const data = await response.json();
+        setSelectedPlan(data);
+        setSubmittedPlans([data]);
+      } catch (error) {
+        console.error("Error fetching plan by ID:", error);
+        const fallback = samplePlan.find((p) => p.planId.toString() === id);
+        if (fallback) {
+          setSelectedPlan(fallback);
+          setSubmittedPlans([fallback]);
+        } else {
+          setSelectedPlan(null);
+          setSubmittedPlans([]);
+        }
+      }
+    };
+
+    if (id) {
+      fetchPlanById();
+    } else {
+      fetchPlans();
     }
-  };
-
-  const fetchPlans = async () => {
-    try {
-      const response = await fetch("http://localhost:8080/api/science-plans"); // your real API endpoint
-      const data = await response.json();
-      const submitted = data.filter((plan) => plan.status === "SUBMITTED");
-      setSubmittedPlans(submitted);
-    } catch (error) {
-      console.error("Error fetching plans:", error);
-      console.error("USING SAMPLE PLAN");
-      setSubmittedPlans([samplePlan]);
-    }
-  };
-
+  }, [id]);
 
   const handleSelectPlan = (plan) => {
     setSelectedPlan(plan);
@@ -202,11 +233,12 @@ function ValidatePlan() {
 
   return (
     <div className="w-screen min-h-screen p-6 bg-gradient-to-b from-gray-900 to-indigo-900 text-white">
-      <h2 className="text-2xl font-bold mb-6">Submitted Science Plans</h2>
+      <h2 className="text-2xl font-bold mb-6">Science Plans</h2>
 
       {submittedPlans.length === 0 ? (
         <p>No submitted science plans.</p>
       ) : (
+
         <table className="w-full table-auto text-black bg-white rounded-xl mb-6">
           <thead>
             <tr className="text-center">
@@ -242,7 +274,7 @@ function ValidatePlan() {
 
       {selectedPlan && (
         <div className="bg-white text-black p-6 rounded-xl shadow-md space-y-4">
-          <h3 className="text-xl font-semibold mb-2">Reviewing Plan: {selectedPlan.planName}</h3>
+          <h3 className="text-xl font-semibold mb-2">Reviewing Plan: (ID: {selectedPlan.planId}) {selectedPlan.planName}</h3>
 
           <div className="grid grid-cols-2 gap-6">
             {/* Plan Metadata */}
@@ -320,8 +352,8 @@ function ValidatePlan() {
           )}
         </div>
       )}
-        </div>
-      );
+    </div>
+  );
 }
 
-      export default ValidatePlan;
+export default ValidatePlan;

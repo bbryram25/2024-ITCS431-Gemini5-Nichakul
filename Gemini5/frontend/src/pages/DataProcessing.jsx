@@ -26,19 +26,47 @@ function DataProcessing() {
     const isColorMode = form.colorType === "Color";
     const isBWMode = form.colorType === "BlackAndWhite";
 
+    const fallbackEnums = {
+        fileTypes: ["PNG", "JPEG", "RAW"],
+        fileQualities: ["Low", "Fine"],
+        colorTypes: ["Color", "BlackAndWhite"],
+    };
+
+    // useEffect(() => {
+    //     fetch("http://localhost:8080/api/enums/file-type")
+    //         .then(res => res.json())
+    //         .then(setFileTypes);
+
+    //     fetch("http://localhost:8080/api/enums/file-quality")
+    //         .then(res => res.json())
+    //         .then(setFileQualities);
+
+    //     fetch("http://localhost:8080/api/enums/color-type")
+    //         .then(res => res.json())
+    //         .then(setColorTypes);
+    // }, []);
 
     useEffect(() => {
-        fetch("http://localhost:8080/api/enums/file-type")
-            .then(res => res.json())
-            .then(setFileTypes);
+        const fetchEnums = async () => {
+            try {
+                const [typeRes, qualityRes, colorRes] = await Promise.all([
+                    fetch("http://localhost:8080/api/enums/file-type"),
+                    fetch("http://localhost:8080/api/enums/file-quality"),
+                    fetch("http://localhost:8080/api/enums/color-type")
+                ]);
 
-        fetch("http://localhost:8080/api/enums/file-quality")
-            .then(res => res.json())
-            .then(setFileQualities);
+                setFileTypes(typeRes.ok ? await typeRes.json() : fallbackEnums.fileTypes);
+                setFileQualities(qualityRes.ok ? await qualityRes.json() : fallbackEnums.fileQualities);
+                setColorTypes(colorRes.ok ? await colorRes.json() : fallbackEnums.colorTypes);
+            } catch (err) {
+                console.warn("Falling back to static enums due to network error:", err);
+                setFileTypes(fallbackEnums.fileTypes);
+                setFileQualities(fallbackEnums.fileQualities);
+                setColorTypes(fallbackEnums.colorTypes);
+            }
+        };
 
-        fetch("http://localhost:8080/api/enums/color-type")
-            .then(res => res.json())
-            .then(setColorTypes);
+        fetchEnums();
     }, []);
 
     const handleChange = (e) => {

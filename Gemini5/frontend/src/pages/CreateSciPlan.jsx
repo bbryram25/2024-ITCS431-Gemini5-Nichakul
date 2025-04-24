@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 function CreatePlan() {
     const [form, setForm] = useState({
-        planID: "",
+        planId: "",
         planName: "",
         creator: "",
         funding: "",
@@ -19,18 +19,34 @@ function CreatePlan() {
     const [statuses, setStatuses] = useState([]);
     const [dataProcessingOptions, setDataProcessingOptions] = useState([]);
 
+    const fallbackTelescopes = ["Hawaii", "Chile"];
+    const fallbackStatuses = ["CREATED", "TESTED", "SUBMITTED", "VALIDATED", "RUNNING", "INVALIDATED", "COMPLETE"];
+    const fallbackDataProcessing = [ "DataProcessing01", "DataProcessing02"]
+
     useEffect(() => {
         fetch("http://localhost:8080/api/enums/assigned-telescope")
             .then((res) => res.json())
-            .then(setTelescopes);
+            .then(setTelescopes)
+            .catch(() => {
+                console.warn("Failed to fetch from backend. Using fallback.");
+                setTelescopes(fallbackTelescopes);
+            });
 
         fetch("http://localhost:8080/api/enums/status")
             .then((res) => res.json())
-            .then(setStatuses);
+            .then(setStatuses)
+            .catch(() => {
+                console.warn("Failed to fetch from backend. Using fallback.");
+                setStatuses(fallbackStatuses);
+            });
 
         fetch("http://localhost:8080/api/data-processing-options")
             .then((res) => res.json())
-            .then(setDataProcessingOptions);
+            .then(setDataProcessingOptions)
+            .catch(() =>{
+                console.warn("Failed to fetch from backend. Using fallback.");
+                setDataProcessingOptions(fallbackDataProcessing);
+            });
     }, []);
 
     const handleCheckboxChange = (field, value) => {
@@ -49,8 +65,21 @@ function CreatePlan() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(form);
-        // POST to backend here
+        // console.log(form);
+        const requiredFields = [
+            // "planId", "creator"
+            "planName", "funding", "objective", "startDate", 
+            "endDate", "target", "status", "dataProcessing", "assignedTelescope"
+        ];
+    
+        for (let field of requiredFields) {
+            if (!form[field]) {
+                alert(`Please fill in the ${field}`);
+                return;
+            }
+        }
+        console.log("Saving form:", form);
+        alert("New science plan has been saved successfully!");
     };
 
     return (
@@ -82,7 +111,7 @@ function CreatePlan() {
                 {/* Plan ID (auto-generated)*/}
                 <div className="flex items-center gap-4 mb-4">
                     <label htmlFor="planID" className="w-32 font-medium">Plan ID</label>
-                    <input
+                    {/* <input
                         id="planID"
                         name="planID"
                         type="text"
@@ -90,7 +119,7 @@ function CreatePlan() {
                         onChange={handleChange}
                         className="flex-1 px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-500"
                         required
-                    />
+                    /> */}
                 </div>
 
                 {/* Plan Name */}
@@ -110,14 +139,14 @@ function CreatePlan() {
                 {/* Creator (auto-filled) */}
                 <div className="flex items-center gap-4 mb-4">
                     <label htmlFor="creator" className="w-32 font-medium">Creator</label>
-                    <input
+                    {/* <input
                         id="creator"
                         name="creator"
                         type="text"
                         value={form.creator}
                         readOnly
                         className="flex-1 px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-500"
-                    />
+                    /> */}
                 </div>
 
                 {/* Funding */}
@@ -201,12 +230,12 @@ function CreatePlan() {
                                 <input
                                     type="radio"
                                     value={option}
-                                    checked={form.telescope === option} // Check if the current option is selected
+                                    checked={form.assignedTelescope === option} // Check if the current option is selected
                                     onChange={(e) => {
                                         const value = e.target.value;
                                         setForm(prev => ({
                                             ...prev,
-                                            telescope: value,
+                                            assignedTelescope: value,
                                         }));
                                     }}
                                 />

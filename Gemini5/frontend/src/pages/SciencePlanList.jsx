@@ -8,9 +8,11 @@ function SciencePlanList() {
   const [filteredPlans, setFilteredPlans] = useState([]);
   const [statusFilter, setStatusFilter] = useState("all");
   const [loading, setLoading] = useState(true);
+  const [searchId, setSearchId] = useState("");
 
   // const statusOptions = ["all", "created", "tested", "submitted", "validated", "executed"];
   const statusOptions = [
+    "Select Filter",
     "ALL",
     "CREATED",
     "TESTED",
@@ -24,19 +26,30 @@ function SciencePlanList() {
     fetchPlans();
   }, []);
 
-  useEffect(() => {
-    console.log("Status Filter Changed:", statusFilter);
-    if (statusFilter === "ALL") {
-      setFilteredPlans(plans);
-    } else {
-      setFilteredPlans(plans.filter((plan) => plan.status === statusFilter));
-    }
-  }, [statusFilter, plans]);
+  // useEffect(() => {
+  //   console.log("Status Filter Changed:", statusFilter);
+  //   if (statusFilter === "ALL") {
+  //     setFilteredPlans(plans);
+  //   } else {
+  //     setFilteredPlans(plans.filter((plan) => plan.status === statusFilter));
+  //   }
+  // }, [statusFilter, plans]);
 
   useEffect(() => {
-    console.log("Plans:", plans);
-    console.log("Filtered Plans:", filteredPlans);
-  }, [plans, filteredPlans]);
+    // Filter based on both searchId and statusFilter
+    const filtered = plans.filter((plan) => {
+      const statusMatch =
+        statusFilter === "" || plan.status === statusFilter || statusFilter === "ALL"; // No status selected or match found
+      const idMatch = searchId === "" || plan.planId.toString().includes(searchId); // Search by ID or show all if empty
+      return statusMatch && idMatch;
+    });
+    setFilteredPlans(filtered);
+  }, [statusFilter, searchId, plans]);
+
+  // useEffect(() => {
+  //   console.log("Plans:", plans);
+  //   console.log("Filtered Plans:", filteredPlans);
+  // }, [plans, filteredPlans]);
 
   const fetchPlans = async () => {
     try {
@@ -46,14 +59,43 @@ function SciencePlanList() {
       setFilteredPlans(response.data); // set both full and filtered list initially
     } catch (error) {
       console.error("Error fetching science plans:", error);
+      // Fallback sample data
+      const samplePlans = [
+        {
+          planId: "001",
+          planName: "Study of Black Holes",
+          creator: "Dr. Jane Doe",
+          funding: 50000,
+          objective: "Observe gravitational waves near black holes.",
+          startDate: "2025-05-01T10:00:00",
+          endDate: "2025-05-08T10:00:00",
+          target: "NGC 1234",
+          assignedTelescope: "Gemini North",
+          status: "CREATED"
+        },
+        {
+          planId: "002",
+          planName: "Exoplanet Atmosphere Analysis",
+          creator: "Prof. John Smith",
+          funding: 75000,
+          objective: "Analyze chemical composition of exoplanet atmospheres.",
+          startDate: "2025-05-02T14:30:00",
+          endDate: "2025-05-12T14:30:00",
+          target: "Kepler-186f",
+          assignedTelescope: "Gemini South",
+          status: "SUBMITTED"
+        }
+      ];
+      setPlans(samplePlans);
+      setFilteredPlans(samplePlans);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-b from-gray-900 to-indigo-900">
-      <div className="bg-white p-10 rounded-3xl shadow-lg w-full max-w-2xl space-y-4">
+    <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-b from-gray-900 to-indigo-900 overflow-auto p-4">
+      <div className="bg-white p-10 rounded-3xl shadow-lg w-full max-w-4xl space-y-6">
         <h2 className="text-center text-xl font-semibold mb-6">
           Science Plan List
         </h2>
@@ -87,14 +129,27 @@ function SciencePlanList() {
             ))}
           </select>
         </div>
-
+        <div className="flex items-center gap-4 mb-4">
+          <label htmlFor="searchId" className="w-32 font-medium text-black">
+            Search by ID :
+          </label>
+          <input
+            id="searchId"
+            type="text"
+            value={searchId}
+            onChange={(e) => setSearchId(e.target.value)}
+            placeholder="Enter Plan ID"
+            className="flex-1 text-black px-4 py-2 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500"
+          />
+        </div>
 
         {loading ? (
           <p className="text-center">Loading...</p>
         ) : filteredPlans.length > 0 ? (
-          <div className="bg-white p-10 rounded-3xl w-full max-w-4xl space-y-">
+          <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
             {filteredPlans.map((plan) => (
-              <li key={plan.planId} className="p-4 border rounded-lg ">
+              // <li key={plan.planId} className="p-4 border rounded-lg ">
+              <div key={plan.planId} className="p-4 border rounded-lg bg-white shadow">
                 <p><strong>ID:</strong> {plan.planId}</p>
                 <p><strong>Name:</strong> {plan.planName}</p>
                 <p><strong>Creator:</strong> {plan.creator}</p>
@@ -107,35 +162,32 @@ function SciencePlanList() {
                 <p><strong>Status:</strong> {plan.status}</p>
 
                 <div className="flex justify-end pt-2">
-  <div className="flex gap-2">
-    <button
-      onClick={() => navigate(`/validate-plan/${plan.planId}`)}
-      
-      className="bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600 transition"
-    >
-      Validate
-    </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => navigate(`/validate-plan/${plan.planId}`)}
+                      className="bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600 transition"
+                    >
+                      Validate
+                    </button>
 
-    {plan.status !== "SUBMITTED" && (
-      <button
-        onClick={() => navigate(`/submit/${plan.planId}`)}
-        className="bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600 transition"
-      >
-        Submit
-      </button>
-    )}
-  </div>
-</div>
-
-
-
-              </li>
+                    {plan.status !== "SUBMITTED" && (
+                      <button
+                        onClick={() => navigate(`/submit/${plan.planId}`)}
+                        className="bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600 transition"
+                      >
+                        Submit
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         ) : (
-          <p className="text-center text-gray-300">No plans found for this status.</p>
+          <p className="text-center text-gray-300">No plans found.</p>
         )}
-      </div></div>
+      </div>
+    </div>
   );
 }
 
