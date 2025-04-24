@@ -18,6 +18,31 @@ function ValidatePlan() {
     fetchPlanById();
   }, [id]);
 
+  //sample plan
+  const samplePlan = {
+    planId: 1,
+    planName: "Exoplanet Observation",
+    creator: "Dr. Jane Doe",
+    funding: "150000",
+    objective: "Observe nearby exoplanets for potential habitability.",
+    starSystemType: "Binary",
+    startDate: "2025-05-01T20:00",
+    endDate: "2025-05-03T04:00",
+    telescopeLocation: "Chile",
+    status: "SUBMITTED",
+    dataProcessing: {
+      fileType: "PNG",
+      quality: "Low",
+      imageSettings: {
+        colorType: "RGB",
+        contrast: "Medium",
+        brightness: "Normal",
+        saturation: "High",
+      },
+    },
+  };
+  
+
   const fetchPlanById = async () => {
     try {
       const response = await fetch(`http://localhost:8080/api/science-plans/${id}`);
@@ -26,6 +51,9 @@ function ValidatePlan() {
       setSubmittedPlans([data]); // Optional: show in table
     } catch (error) {
       console.error("Error fetching plan by ID:", error);
+      console.error("USING SAMPLE PLAN");
+      setSelectedPlan(samplePlan);
+      setSubmittedPlans([samplePlan]);
     }
   };
 
@@ -37,6 +65,8 @@ function ValidatePlan() {
       setSubmittedPlans(submitted);
     } catch (error) {
       console.error("Error fetching plans:", error);
+      console.error("USING SAMPLE PLAN");
+      setSubmittedPlans([samplePlan]);
     }
   };
 

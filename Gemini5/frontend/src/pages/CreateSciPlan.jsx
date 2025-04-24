@@ -122,7 +122,7 @@ function CreatePlan() {
 
                 {/* Funding */}
                 <div className="flex items-center gap-4 mb-4">
-                    <label htmlFor="funding" className="w-32 font-medium">Funding ($)</label>
+                    <label htmlFor="funding" className="w-32 font-medium">Funding (USD)</label>
                     <input
                         id="funding"
                         name="funding"

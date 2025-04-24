@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { setToken } from "../auth";
 
 function Login() {
@@ -53,7 +53,7 @@ function Login() {
         setMessage("Login successful"); // Optionally show success message
         setUsername(""); // Clear the username field
         setPassword(""); // Clear the password field
-        navigate("/menu"); // Redirect to home after successful login
+        navigate("/home"); // Redirect to home after successful login
         console.log("Login successful");
         // localStorage.setItem("token", data.token || ""); // Save the token in local storage
         // setMessage(data.detail);
@@ -64,7 +64,7 @@ function Login() {
         setMessage(data.detail || "Login failed");
       }
     } catch (error) {
-        console.error("Error during login:", error);
+      console.error("Error during login:", error);
       setMessage("An error occurred");
     }
   };
@@ -79,6 +79,12 @@ function Login() {
           <h2 className="text-center text-xl font-semibold mb-6">
             Log in to your account
           </h2>
+          {message && (
+            <div className="mb-4 text-center text-sm text-red-600 font-medium">
+              Username or Password is incorrect!
+            </div>
+          )}
+
           <form className="space-y-4" onSubmit={handleLogIn}>
             <div>
               <label className="block text-sm font-medium text-gray-700">
