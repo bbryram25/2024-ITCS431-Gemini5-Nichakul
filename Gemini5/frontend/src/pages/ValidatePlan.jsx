@@ -306,7 +306,7 @@ function ValidatePlan() {
             >
               {isEditing ? "Validate Again" : "Validate Plan"}
             </button>
-          </div>
+          
 
           <button
             onClick={toggleEditMode}
@@ -314,6 +314,7 @@ function ValidatePlan() {
           >
             {isEditing ? "Cancel Edit" : "Edit Plan"}
           </button>
+          </div>
 
           {validationMessage && (
             <div className="text-center mt-4 text-lg font-medium">
