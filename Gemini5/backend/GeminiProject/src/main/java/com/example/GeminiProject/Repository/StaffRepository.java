@@ -15,4 +15,7 @@ public interface StaffRepository extends JpaRepository<Staff, String> {
 
     @Query("SELECT s FROM Staff s")
     List<Staff> getAllStaff();
+
+    @Query("SELECT s FROM Staff s WHERE s.staffId = ?1")
+    Optional<Staff> getStaffById(String id);
 }
