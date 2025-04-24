@@ -1,55 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-
 function ValidatePlan() {
   const { id } = useParams();
-
   const [submittedPlans, setSubmittedPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [validationMessage, setValidationMessage] = useState("");
 
-  // useEffect(() => {
-  //   document.title = "Validate Science Plan | GEMINI5";
-
-  //   const plans = [
-  //     {
-  //       planID: "1234",
-  //       planName: "Sample Plan",
-  //       creator: "Dr. Astro",
-  //       funding: 5000.00,
-  //       objective: "To study space dust.",
-  //       startDate: "2025-04-30T08:00",
-  //       endDate: "2025-05-30T08:00",
-  //       target: "Mars",
-  //       starSystemType: "Red Dwarf",
-  //       telescopeLocation: "Hawaii",
-  //       dataProcessing: {
-  //         fileType: "FITS",
-  //         quality: "High",
-  //         imageSettings: {
-  //           colorType: "RGB",
-  //           contrast: "Medium",
-  //           brightness: "Normal",
-  //           saturation: "High",
-  //         },
-  //       },
-  //       status: "SUBMITTED",
-  //     },
-  //   ];
-  //   setSubmittedPlans(plans);
-  // }, []);
   useEffect(() => {
     document.title = "Validate Science Plan | GEMINI5";
     fetchPlans();
-  }, []);  
-  
+  }, []);
+
   useEffect(() => {
     document.title = "Validate Science Plan | GEMINI5";
     fetchPlanById();
   }, [id]);
-  
+
   const fetchPlanById = async () => {
     try {
       const response = await fetch(`http://localhost:8080/api/science-plans/${id}`);
@@ -60,7 +28,7 @@ function ValidatePlan() {
       console.error("Error fetching plan by ID:", error);
     }
   };
-  
+
   const fetchPlans = async () => {
     try {
       const response = await fetch("http://localhost:8080/api/science-plans"); // your real API endpoint
@@ -71,8 +39,8 @@ function ValidatePlan() {
       console.error("Error fetching plans:", error);
     }
   };
-  
-  
+
+
   const handleSelectPlan = (plan) => {
     setSelectedPlan(plan);
     setIsEditing(false);
@@ -152,54 +120,54 @@ function ValidatePlan() {
     const value = fieldPath.split(".").reduce((obj, key) => obj?.[key] ?? "", selectedPlan);
 
     if (fieldPath === "telescopeLocation") {
-        return (
+      return (
         <div key={fieldPath} className="flex flex-col">
           <label className="block font-semibold">Telescope Location</label>
-            <select
+          <select
             name={fieldPath}
             value={value}
-              onChange={handleChange}
-              className="w-full p-1 border rounded"
+            onChange={handleChange}
+            className="w-full p-1 border rounded"
             disabled={!isEditing}
-            >
+          >
             <option value="">Select Location</option>
-              <option value="Hawaii">Hawaii</option>
-              <option value="Chile">Chile</option>
-            </select>
-          </div>
-        );
-      }
+            <option value="Hawaii">Hawaii</option>
+            <option value="Chile">Chile</option>
+          </select>
+        </div>
+      );
+    }
     if (fieldPath === "objective") {
-        return (
+      return (
         <div key={fieldPath} className="flex flex-col">
           <label className="block font-semibold">{label}</label>
           <textarea
             name={fieldPath}
-              value={value}
+            value={value}
             onChange={(e) => {
               handleChange(e);
               e.target.style.height = "auto";
               e.target.style.height = `${e.target.scrollHeight}px`;
             }}
             className="w-full p-2 border rounded resize-none overflow-hidden"
-              disabled={!isEditing}
-            />
-          </div>
-        );
-      }
-      return (
-      <div key={fieldPath} className="flex flex-col">
-        <label className="block font-semibold">{label}</label>
-          <input
-          type={type}
-          name={fieldPath}
-          value={value}
-            onChange={handleChange}
-            className="w-full p-1 border rounded"
             disabled={!isEditing}
           />
         </div>
       );
+    }
+    return (
+      <div key={fieldPath} className="flex flex-col">
+        <label className="block font-semibold">{label}</label>
+        <input
+          type={type}
+          name={fieldPath}
+          value={value}
+          onChange={handleChange}
+          className="w-full p-1 border rounded"
+          disabled={!isEditing}
+        />
+      </div>
+    );
   };
 
   return (
@@ -221,24 +189,24 @@ function ValidatePlan() {
             </tr>
           </thead>
           <tbody>
-      {submittedPlans.map((plan) => (
-        <tr key={plan.planID} className="text-center">
+            {submittedPlans.map((plan) => (
+              <tr key={plan.planID} className="text-center">
                 <td className="p-2">{plan.planId}</td>
-          <td className="p-2">{plan.planName}</td>
-          <td className="p-2">{plan.creator || "-"}</td>
-          <td className="p-2">${parseFloat(plan.funding).toFixed(2)}</td>
-          <td className="p-2">{plan.status}</td>
-          <td className="p-2">
-        <button
-          className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-800"
-          onClick={() => handleSelectPlan(plan)}
-        >
-          Review
-        </button>
-      </td>
-    </tr>
-  ))}
-</tbody>
+                <td className="p-2">{plan.planName}</td>
+                <td className="p-2">{plan.creator || "-"}</td>
+                <td className="p-2">${parseFloat(plan.funding).toFixed(2)}</td>
+                <td className="p-2">{plan.status}</td>
+                <td className="p-2">
+                  <button
+                    className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-800"
+                    onClick={() => handleSelectPlan(plan)}
+                  >
+                    Review
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       )}
 
@@ -299,21 +267,20 @@ function ValidatePlan() {
             </div>
           </div>
 
-          <div className="text-center mt-6">
+          <div className="flex justify-center gap-4 mt-6">
+            <button
+              onClick={toggleEditMode}
+              className={`px-6 py-2 rounded text-white font-semibold ${isEditing ? "bg-indigo-500 hover:bg-indigo-700" : "bg-emerald-500 hover:bg-emerald-700"
+                }`}
+            >
+              {isEditing ? "Cancel Edit" : "Edit Plan"}
+            </button>
             <button
               onClick={handleValidate}
               className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-800"
             >
               {isEditing ? "Validate Again" : "Validate Plan"}
             </button>
-          
-
-          <button
-            onClick={toggleEditMode}
-            className="mt-2 px-6 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-800"
-          >
-            {isEditing ? "Cancel Edit" : "Edit Plan"}
-          </button>
           </div>
 
           {validationMessage && (
@@ -323,8 +290,8 @@ function ValidatePlan() {
           )}
         </div>
       )}
-    </div>
-  );
+        </div>
+      );
 }
 
-export default ValidatePlan;
+      export default ValidatePlan;
