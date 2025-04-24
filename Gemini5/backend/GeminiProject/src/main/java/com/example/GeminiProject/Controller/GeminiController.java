@@ -152,7 +152,7 @@ public class GeminiController {
         String location = body.get("location").toString();
         Telescope telescope = new Telescope(telescopeId, telescopeName, designation, location);
         telescopeRepository.save(telescope);
-        return ResponseEntity.ok(ResponseWrapper.success(telescope, "Telescope created successfully", HttpStatus.OK));
+        return ResponseEntity.ok(ResponseWrapper.success(telescope, "Telescope created successfully", HttpStatus.CREATED));
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
