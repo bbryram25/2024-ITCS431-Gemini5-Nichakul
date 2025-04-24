@@ -3,13 +3,14 @@ package com.example.GeminiProject.Controller;
 import com.example.GeminiProject.Enum.Role;
 
 import com.example.GeminiProject.Model.Staff;
+import com.example.GeminiProject.Model.Telescope;
 import com.example.GeminiProject.Repository.SciencePlanRepository;
 import com.example.GeminiProject.Repository.StaffRepository;
+import com.example.GeminiProject.Repository.TelescopeRepository;
 import com.example.GeminiProject.Response.ResponseWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +28,9 @@ public class GeminiController {
 
     @Autowired
     private SciencePlanRepository sciencePlanRepository;
+
+    @Autowired
+    private TelescopeRepository telescopeRepository;
 
     @CrossOrigin
     @GetMapping("/home")
@@ -73,51 +77,94 @@ public class GeminiController {
         Optional<Staff> optionalStaff = staffRepository.findByUsername(username);
 
         if (optionalStaff.isEmpty()) {
-            ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-                    HttpStatus.BAD_REQUEST,
-                    "Username not found");
-            problemDetail.setTitle("Staff Login Error");
-            problemDetail.setDetail("STAFF_NOT_FOUND");
-
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ResponseWrapper.error("Username does not exist", HttpStatus.BAD_REQUEST));
         }
 
         Staff staff = optionalStaff.get();
 
         if (staff.getPassword().equals(password)) {
-            ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-                    HttpStatus.OK,
-                    "Successfully logged in");
-            problemDetail.setTitle("Staff Login Success");
-            problemDetail.setDetail("STAFF_LOGIN_SUCCESS");
-            return ResponseEntity.ok(problemDetail);
+            return ResponseEntity.ok(ResponseWrapper.success(staff, "Login successful", HttpStatus.OK));
         } else {
-            ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-                    HttpStatus.BAD_REQUEST,
-                    "Incorrect password");
-            problemDetail.setTitle("Staff Login Error");
-            problemDetail.setDetail("STAFF_PASSWORD_INCORRECT");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ResponseWrapper.error("Incorrect password", HttpStatus.BAD_REQUEST));
         }
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @GetMapping("/staffs")
-    public @ResponseBody List<Staff> getAllStaff() {
+    public ResponseEntity<?> getAllStaff() {
         List<Staff> staffs = staffRepository.getAllStaff();
         if (staffs.isEmpty()) {
-            
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseWrapper.notFound("No staffs found", HttpStatus.NOT_FOUND));
         }
-        return staffs;
+        return ResponseEntity.ok(ResponseWrapper.success(staffs, "Staffs retrieved successfully", HttpStatus.OK));
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @GetMapping("/staff/{id}")
-    public @ResponseBody Optional<Staff> getStaffById(@PathVariable("id") String id) {
-
-        return staffRepository.getStaffById(id);
+    public ResponseEntity<?> getStaffById(@PathVariable("id") String id) {
+        Staff staff = staffRepository.getStaffById(id).orElse(null);
+        if (staff == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseWrapper.notFound("Staff not found", HttpStatus.NOT_FOUND));
+        }
+        return ResponseEntity.ok(ResponseWrapper.success(staff, "Staff retrieved successfully", HttpStatus.OK));
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @DeleteMapping("deleteStaff/{id}")
+    public ResponseEntity<?> deleteStaff(@PathVariable("id") String id) {
+        Staff staff = staffRepository.getStaffById(id).orElse(null);
+        if (staff == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseWrapper.notFound("Staff not found", HttpStatus.NOT_FOUND));
+        }
+        staffRepository.delete(staff);
+        return ResponseEntity.ok(ResponseWrapper.success(staff, "Staff deleted successfully", HttpStatus.OK));
+    }
+
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @GetMapping("telescopes")
+    public ResponseEntity<?> getAllTelescope() {
+        List<Telescope> telescopes = telescopeRepository.findAll();
+        if (telescopes.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseWrapper.notFound("No telescope found", HttpStatus.NOT_FOUND));
+        }
+        return ResponseEntity.ok(ResponseWrapper.success(telescopes, "Telescope retrieved successfully", HttpStatus.OK));
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @GetMapping("telescope/{id}")
+    public ResponseEntity<?> getTelescopeById(@PathVariable("id") String id) {
+        Telescope telescope = telescopeRepository.findById(id).orElse(null);
+        if (telescope == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseWrapper.notFound("Telescope not found", HttpStatus.NOT_FOUND));
+        }
+        return ResponseEntity.ok(ResponseWrapper.success(telescope, "Telescope retrieved successfully", HttpStatus.OK));
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @PostMapping("/createTelescope")
+    public ResponseEntity<?> createTelescope(@RequestBody Map<String, Object> body){
+        String telescopeId = Telescope.generateTelescopeId(telescopeRepository);
+        String telescopeName = body.get("telescopeName").toString();
+        String designation = body.get("designation").toString();
+        String location = body.get("location").toString();
+        Telescope telescope = new Telescope(telescopeId, telescopeName, designation, location);
+        telescopeRepository.save(telescope);
+        return ResponseEntity.ok(ResponseWrapper.success(telescope, "Telescope created successfully", HttpStatus.OK));
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @DeleteMapping("deleteTelescope/{id}")
+    public ResponseEntity<?> deleteTelescope(@PathVariable("id") String id) {
+        Telescope telescope = telescopeRepository.findById(id).orElse(null);
+        if (telescope == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseWrapper.notFound("Telescope not found", HttpStatus.NOT_FOUND));
+        }
+        telescopeRepository.delete(telescope);
+        return ResponseEntity.ok(ResponseWrapper.success(telescope, "Telescope deleted successfully", HttpStatus.OK));
+    }
 
     // // trysub
     // @PostMapping("/submit-science-plan")

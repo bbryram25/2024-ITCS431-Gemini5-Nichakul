@@ -85,7 +85,7 @@ public class Staff {
             }
         }
 
-        String prefix = role == Role.Astronomer ? "astro" : "sciob";
+        String prefix = role == Role.Astronomer ? "astro-" : "sciob-";
         return prefix + String.format("%03d", nextId);
     }
 }

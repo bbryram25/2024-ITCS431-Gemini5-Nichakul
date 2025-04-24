@@ -26,4 +26,9 @@ public class ResponseWrapper<T> {
     public static <T> ResponseWrapper<T> error(String message, HttpStatus status) {
         return new ResponseWrapper<>(false, message, null, status);
     }
+
+    public static <T> ResponseWrapper<T> notFound(String message, HttpStatus status) {
+        return new ResponseWrapper<>(false, message, null, HttpStatus.NOT_FOUND);
+    }
+    
 }

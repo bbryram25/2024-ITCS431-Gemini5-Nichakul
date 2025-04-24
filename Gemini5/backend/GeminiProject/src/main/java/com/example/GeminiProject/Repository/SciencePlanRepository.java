@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SciencePlanRepository extends JpaRepository<SciencePlan, String> {
-    // You can define custom query methods here if needed
+    
 }
