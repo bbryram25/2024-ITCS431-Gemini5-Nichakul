@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { dataProcessing } from "../data/dataProcessing";
 
 function CreatePlan() {
     const [form, setForm] = useState({
-        planId: "",
+        planID: "",
         planName: "",
         creator: "",
         funding: "",
@@ -21,7 +22,7 @@ function CreatePlan() {
 
     const fallbackTelescopes = ["Hawaii", "Chile"];
     const fallbackStatuses = ["CREATED", "TESTED", "SUBMITTED", "VALIDATED", "RUNNING", "INVALIDATED", "COMPLETE"];
-    const fallbackDataProcessing = [ "DataProcessing01", "DataProcessing02"]
+    const fallbackDataProcessing = ["DataProcessing01", "DataProcessing02"]
 
     useEffect(() => {
         fetch("http://localhost:8080/api/enums/assigned-telescope")
@@ -43,9 +44,9 @@ function CreatePlan() {
         fetch("http://localhost:8080/api/data-processing-options")
             .then((res) => res.json())
             .then(setDataProcessingOptions)
-            .catch(() =>{
+            .catch(() => {
                 console.warn("Failed to fetch from backend. Using fallback.");
-                setDataProcessingOptions(fallbackDataProcessing);
+                setDataProcessingOptions(dataProcessing);
             });
     }, []);
 
@@ -67,11 +68,11 @@ function CreatePlan() {
         e.preventDefault();
         // console.log(form);
         const requiredFields = [
-            // "planId", "creator"
-            "planName", "funding", "objective", "startDate", 
+            // "planID", "creator"
+            "planName", "funding", "objective", "startDate",
             "endDate", "target", "status", "dataProcessing", "assignedTelescope"
         ];
-    
+
         for (let field of requiredFields) {
             if (!form[field]) {
                 alert(`Please fill in the ${field}`);
@@ -292,7 +293,7 @@ function CreatePlan() {
                         onChange={(e) => {
                             if (e.target.value === "create-new") {
                                 // Navigate to the data-processing creation page
-                                window.location.href = "/dataProcessing"; // or use router.push if you're using Next.js
+                                window.location.href = "/dataProcessing";
                             } else {
                                 handleChange(e);
                             }
@@ -305,8 +306,13 @@ function CreatePlan() {
                         {dataProcessingOptions.length > 0 ? (
                             <>
                                 {dataProcessingOptions.map((option) => (
-                                    <option key={option} value={option}>
-                                        {option}
+                                    // <option key={option} value={option}>
+                                    //     {option}
+                                    <option
+                                        key={option.dataProcessingID}
+                                        value={option.dataProcessingID}
+                                    >
+                                        {option.dataProcessingName}
                                     </option>
                                 ))}
                                 <option value="create-new">Create new data processing</option>
