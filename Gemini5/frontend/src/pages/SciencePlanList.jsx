@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { sciencePlan } from "../data/sciencePlan";
 
 function SciencePlanList() {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ function SciencePlanList() {
     const filtered = plans.filter((plan) => {
       const statusMatch =
         statusFilter === "" || plan.status === statusFilter || statusFilter === "ALL"; // No status selected or match found
-      const idMatch = searchId === "" || plan.planId.toString().includes(searchId); // Search by ID or show all if empty
+      const idMatch = searchId === "" || plan.planID.toString().includes(searchId); // Search by ID or show all if empty
       return statusMatch && idMatch;
     });
     setFilteredPlans(filtered);
@@ -59,35 +60,8 @@ function SciencePlanList() {
       setFilteredPlans(response.data); // set both full and filtered list initially
     } catch (error) {
       console.error("Error fetching science plans:", error);
-      // Fallback sample data
-      const samplePlans = [
-        {
-          planId: "001",
-          planName: "Study of Black Holes",
-          creator: "Dr. Jane Doe",
-          funding: 50000,
-          objective: "Observe gravitational waves near black holes.",
-          startDate: "2025-05-01T10:00:00",
-          endDate: "2025-05-08T10:00:00",
-          target: "NGC 1234",
-          assignedTelescope: "Gemini North",
-          status: "CREATED"
-        },
-        {
-          planId: "002",
-          planName: "Exoplanet Atmosphere Analysis",
-          creator: "Prof. John Smith",
-          funding: 75000,
-          objective: "Analyze chemical composition of exoplanet atmospheres.",
-          startDate: "2025-05-02T14:30:00",
-          endDate: "2025-05-12T14:30:00",
-          target: "Kepler-186f",
-          assignedTelescope: "Gemini South",
-          status: "SUBMITTED"
-        }
-      ];
-      setPlans(samplePlans);
-      setFilteredPlans(samplePlans);
+      setPlans(sciencePlan);
+      setFilteredPlans(sciencePlan);
     } finally {
       setLoading(false);
     }
@@ -149,14 +123,14 @@ function SciencePlanList() {
           <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
             {filteredPlans.map((plan) => (
               // <li key={plan.planId} className="p-4 border rounded-lg ">
-              <div key={plan.planId} className="p-4 border rounded-lg bg-white shadow">
-                <p><strong>ID:</strong> {plan.planId}</p>
+              <div key={plan.planID} className="p-4 border rounded-lg bg-white shadow">
+                <p><strong>ID:</strong> {plan.planID}</p>
                 <p><strong>Name:</strong> {plan.planName}</p>
                 <p><strong>Creator:</strong> {plan.creator}</p>
                 <p><strong>Funding:</strong> ${plan.funding}</p>
                 <p><strong>Objective:</strong> {plan.objective}</p>
-                <p><strong>Start Date:</strong> {new Date(plan.startDate).toLocaleString()}</p>
-                <p><strong>End Date:</strong> {new Date(plan.endDate).toLocaleString()}</p>
+                <p><strong>Start Date:</strong> {new Date(plan.startDate).toISOString().slice(0, 16)}</p>
+                <p><strong>End Date:</strong> {new Date(plan.endDate).toISOString().slice(0, 16)}</p>
                 <p><strong>Target:</strong> {plan.target}</p>
                 <p><strong>Assigned Telescope:</strong> {plan.assignedTelescope}</p>
                 <p><strong>Status:</strong> {plan.status}</p>
@@ -164,7 +138,7 @@ function SciencePlanList() {
                 <div className="flex justify-end pt-2">
                   <div className="flex gap-2">
                     <button
-                      onClick={() => navigate(`/validate-plan/${plan.planId}`)}
+                      onClick={() => navigate(`/validate-plan/${plan.planID}`)}
                       className="bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600 transition"
                     >
                       Validate
@@ -172,7 +146,7 @@ function SciencePlanList() {
 
                     {plan.status !== "SUBMITTED" && (
                       <button
-                        onClick={() => navigate(`/submit/${plan.planId}`)}
+                        onClick={() => navigate(`/submit/${plan.planID}`)}
                         className="bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600 transition"
                       >
                         Submit
