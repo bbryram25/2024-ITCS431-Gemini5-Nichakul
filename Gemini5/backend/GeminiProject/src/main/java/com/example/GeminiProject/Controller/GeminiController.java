@@ -8,7 +8,7 @@ import com.example.GeminiProject.Model.DataProcessing;
 import com.example.GeminiProject.Model.Staff;
 import com.example.GeminiProject.Model.Telescope;
 import com.example.GeminiProject.Repository.DataProcessingRepository;
-import com.example.GeminiProject.Repository.SciencePlanRepository;
+// import com.example.GeminiProject.Repository.SciencePlanRepository;
 import com.example.GeminiProject.Repository.StaffRepository;
 import com.example.GeminiProject.Repository.TelescopeRepository;
 import com.example.GeminiProject.Response.ResponseWrapper;
@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+// import edu.gemini.app.ocs.model.SciencePlan;
 
 import java.util.List;
 import java.util.Map;
@@ -30,8 +31,8 @@ public class GeminiController {
     @Autowired
     private StaffRepository staffRepository;
 
-    @Autowired
-    private SciencePlanRepository sciencePlanRepository;
+    // @Autowired
+    // private SciencePlanRepository sciencePlanRepository;
 
     @Autowired
     private TelescopeRepository telescopeRepository;
@@ -249,69 +250,5 @@ public class GeminiController {
                 .body(ResponseWrapper.error("Error creating data processing: " + e.getMessage(), HttpStatus.BAD_REQUEST));
         }
     }
-
-    // // trysub
-    // @PostMapping("/submit-science-plan")
-    // public ResponseEntity<?> submitSciencePlan(@RequestBody Map<String, String> request) {
-    //     String planId = request.get("planId");
-    //     Optional<SciencePlan> optionalPlan = sciencePlanRepository.findById(planId);
-
-    //     if (optionalPlan.isEmpty()) {
-    //         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Plan not found");
-    //     }
-
-    //     SciencePlan plan = optionalPlan.get();
-    //     if (plan.getStatus() != SciencePlanStatus.TESTED) {
-    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Plan must be TESTED before submission");
-    //     }
-
-    //     plan.setStatus(SciencePlanStatus.SUBMITTED);
-    //     sciencePlanRepository.save(plan);
-    //     return ResponseEntity.ok("Science plan submitted successfully");
-    // }
-
-    // // tryyyyyingggg
-    // @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
-    // @PostMapping("/create-science-plan")
-    // public ResponseEntity<?> createSciencePlan(@RequestBody Map<String, Object> body) {
-    //     String planId = body.get("planId").toString();
-
-    //     if (sciencePlanRepository.findById(planId).isPresent()) {
-    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Plan ID already exists");
-    //     }
-
-    //     try {
-    //         SciencePlan plan = new SciencePlan();
-
-    //         plan.setPlanId(planId);
-    //         plan.setPlanName(body.get("planName").toString());
-    //         plan.setCreator(body.get("creator").toString());
-    //         plan.setFunding(Double.parseDouble(body.get("funding").toString()));
-    //         plan.setObjective(body.get("objective").toString());
-    //         plan.setStartDate(LocalDateTime.parse(body.get("startDate").toString()));
-    //         plan.setEndDate(LocalDateTime.parse(body.get("endDate").toString()));
-    //         plan.setAssignedTelescope(AssignedTelescope.valueOf(body.get("assignedTelescope").toString()));
-    //         plan.setTarget(body.get("target").toString());
-    //         plan.setStatus(SciencePlanStatus.valueOf(body.get("status").toString()));
-    //         // plan.setDataProcessing(DataProcessing.valueOf(body.get("status").toString()));
-            
-    //         sciencePlanRepository.save(plan);
-    //         return ResponseEntity.status(HttpStatus.CREATED).body(plan);
-
-    //     } catch (Exception e) {
-    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error creating science plan: " + e.getMessage());
-    //     }
-    // }
-    // @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
-    // @GetMapping("/science-plans")
-    // public List<SciencePlan> getAllSciencePlans() {
-    //     return sciencePlanRepository.findAll();
-    // }
-//     @RequestMapping("/science-plans")
-//     public List<SciencePlan> getAllSciencePlans() {
-//     List<SciencePlan> plans = sciencePlanRepository.findAll();
-//     System.out.println("Plans: " + plans); // Log plans to the console
-//     return plans;
-// }
 
 }
