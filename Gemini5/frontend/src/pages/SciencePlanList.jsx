@@ -127,10 +127,27 @@ function SciencePlanList() {
                 <p><strong>ID:</strong> {plan.planID}</p>
                 <p><strong>Name:</strong> {plan.planName}</p>
                 <p><strong>Creator:</strong> {plan.creator}</p>
-                <p><strong>Funding:</strong> ${plan.funding}</p>
+                <p><strong>Funding:</strong> ${Number(plan.funding).toFixed(2)}</p>
                 <p><strong>Objective:</strong> {plan.objective}</p>
-                <p><strong>Start Date:</strong> {new Date(plan.startDate).toISOString().slice(0, 16)}</p>
-                <p><strong>End Date:</strong> {new Date(plan.endDate).toISOString().slice(0, 16)}</p>
+                {/* <p><strong>Start Date:</strong> {new Date(plan.startDate).toISOString().slice(0, 16)}</p>
+                <p><strong>End Date:</strong> {new Date(plan.endDate).toISOString().slice(0, 16)}</p> */}
+                <p><strong>Start Date:</strong> {new Date(plan.startDate).toLocaleString("en-GB", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: false
+                }).replace(',', '')}</p>
+                <p><strong>End Date:</strong> {new Date(plan.endDate).toLocaleString("en-GB", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: false
+                }).replace(',', '')}</p>
+
                 <p><strong>Target:</strong> {plan.target}</p>
                 <p><strong>Assigned Telescope:</strong> {plan.assignedTelescope}</p>
                 <p><strong>Status:</strong> {plan.status}</p>
