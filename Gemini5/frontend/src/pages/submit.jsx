@@ -65,10 +65,10 @@ function submit() {
   }, [id, statusFilter]);
 
   const handleSelectPlan = (plan) => {
-    if (plan.status !== "TESTED") {
-      alert("This plan is not tested yet.");
-      return;
-    }
+    // if (plan.status !== "TESTED") {
+    // alert("This plan is not tested yet.");
+    // return;
+    // }
     setSelectedPlan(plan);
     window.scrollTo({ top: 0, behavior: "smooth" });
     navigate(`/submit-plan/${plan.planID}`);
@@ -76,7 +76,7 @@ function submit() {
   const handleSubmitConfirmation = async () => {
     const confirmed = window.confirm("Do you want to submit this plan?");
     if (confirmed) {
-      alert("Plan submitted successfully!");
+      alert("Plan is submitted successfully!");
       // try {
       //   const updatedPlan = { ...selectedPlan, status: "SUBMITTED" };
       //   await fetch(`http://localhost:8080/api/science-plans/${selectedPlan.planID}`, {
@@ -98,7 +98,6 @@ function submit() {
     }
   };
 
-
   return (
     <div className="w-screen min-h-screen p-6 bg-gradient-to-b from-gray-900 to-indigo-900 text-white">
       <div className="flex justify-between items-center mb-4">
@@ -113,19 +112,29 @@ function submit() {
         )} */}
         {!id && (
           <div className="flex flex-col">
-          <label htmlFor="statusFilter" className="mb-1 font-medium text-white-700">
-            Status
-          </label>
-        <select value={statusFilter} onChange={handleStatusFilterChange}>
-          <option value="ALL">ALL</option>
-          <option value="CREATED">CREATED</option>
-          <option value="TESTED">TESTED</option>
-          <option value="SUBMITTED">SUBMITTED</option>
-          <option value="VALIDATED">VALIDATED</option>
-          <option value="INVALIDATED">INVALIDATED</option>
-          <option value="EXECUTED">EXECUTED</option>
-        </select>
-        </div>
+            <label htmlFor="statusFilter" className="mb-1 font-medium text-white-700">
+              Status
+            </label>
+            <select value={statusFilter} onChange={handleStatusFilterChange}>
+              <option value="ALL">ALL</option>
+              <option value="CREATED">CREATED</option>
+              <option value="TESTED">TESTED</option>
+              <option value="SUBMITTED">SUBMITTED</option>
+              <option value="VALIDATED">VALIDATED</option>
+              <option value="INVALIDATED">INVALIDATED</option>
+              <option value="EXECUTED">EXECUTED</option>
+            </select>
+          </div>
+        )}
+        {id && selectedPlan && (
+          <div className="flex justify-start mb-4">
+            <button
+              className="text-blue-600 hover:underline focus:outline-none"
+              onClick={() => navigate('/submit-plan')}
+            >
+              All Plans
+            </button>
+          </div>
         )}
       </div>
 
@@ -358,14 +367,14 @@ function submit() {
             </div>
           </div>
           {selectedPlan?.status === "TESTED" && (
-          <div className="flex justify-center mt-6">
-            <button
-              className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-800"
-              onClick={handleSubmitConfirmation}
-            >
-              Submit
-            </button>
-          </div>
+            <div className="flex justify-center mt-6">
+              <button
+                className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-800"
+                onClick={handleSubmitConfirmation}
+              >
+                Submit
+              </button>
+            </div>
           )}
         </div>
       )}
