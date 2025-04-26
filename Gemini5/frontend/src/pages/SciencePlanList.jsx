@@ -154,6 +154,12 @@ function SciencePlanList() {
 
                 <div className="flex justify-end pt-2">
                   <div className="flex gap-2">
+                  <button
+                      onClick={() => navigate(`/submit-plan/${plan.planID}`)}
+                      className="bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600 transition"
+                    >
+                      Review
+                    </button>
                   {plan.status === "SUBMITTED" && (
                     <button
                       onClick={() => navigate(`/validate-plan/${plan.planID}`)}
@@ -163,7 +169,7 @@ function SciencePlanList() {
                     </button>
                   )}
 
-                    {plan.status !== "SUBMITTED" && (
+                    {plan.status === "TESTED" && (
                       <button
                         onClick={() => navigate(`/submit-plan/${plan.planID}`)}
                         className="bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600 transition"

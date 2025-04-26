@@ -102,7 +102,7 @@ function submit() {
   return (
     <div className="w-screen min-h-screen p-6 bg-gradient-to-b from-gray-900 to-indigo-900 text-white">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">List of Not Submitted Plans</h2>
+        <h2 className="text-xl font-bold">Science Plans</h2>
         {/* {notSubmittedPlans.length !== 0 && (
           <button
             className="text-blue-600 hover:underline focus:outline-none"
@@ -112,6 +112,10 @@ function submit() {
           </button>
         )} */}
         {!id && (
+          <div className="flex flex-col">
+          <label htmlFor="statusFilter" className="mb-1 font-medium text-white-700">
+            Status
+          </label>
         <select value={statusFilter} onChange={handleStatusFilterChange}>
           <option value="ALL">ALL</option>
           <option value="CREATED">CREATED</option>
@@ -121,6 +125,7 @@ function submit() {
           <option value="INVALIDATED">INVALIDATED</option>
           <option value="EXECUTED">EXECUTED</option>
         </select>
+        </div>
         )}
       </div>
 
@@ -352,6 +357,7 @@ function submit() {
               </div>
             </div>
           </div>
+          {selectedPlan?.status === "TESTED" && (
           <div className="flex justify-center mt-6">
             <button
               className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-800"
@@ -360,6 +366,7 @@ function submit() {
               Submit
             </button>
           </div>
+          )}
         </div>
       )}
     </div>
