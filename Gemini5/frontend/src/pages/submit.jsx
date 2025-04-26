@@ -16,6 +16,7 @@ function submit() {
 
   useEffect(() => {
     document.title = "Submit Science Plan | GEMINI5";
+    if (!id) setSelectedPlan(null);
     const fetchPlans = async () => {
       try {
         const response = await fetch("http://localhost:8080/api/science-plans");
@@ -122,8 +123,8 @@ function submit() {
               <option value="EXECUTED">EXECUTED</option>
             </select>
           </div>
-        )}
-        {id && selectedPlan && (
+        )} 
+        {/* {id && selectedPlan && (
           <div className="flex justify-start mb-4">
             <button
               className="text-blue-600 hover:underline focus:outline-none"
@@ -132,7 +133,7 @@ function submit() {
               All Plans
             </button>
           </div>
-        )}
+        )} */}
       </div>
 
       {notSubmittedPlans.length === 0 ? (
@@ -367,7 +368,7 @@ function submit() {
             <div className="flex justify-center space-x-4 mt-6">
               <button
                 className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-800"
-                onClick={() => navigate('/show-list')}
+                onClick={() => navigate('/submit-plan')}
               >
                 Cancel
               </button>
