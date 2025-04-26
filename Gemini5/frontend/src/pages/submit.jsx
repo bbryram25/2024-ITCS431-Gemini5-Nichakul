@@ -73,30 +73,27 @@ function submit() {
     window.scrollTo({ top: 0, behavior: "smooth" });
     navigate(`/submit-plan/${plan.planID}`);
   };
+
   const handleSubmitConfirmation = async () => {
+    if (!selectedPlan) {
+      alert("No plan selected!");
+      return;
+    }
+  
+    if (selectedPlan.status !== "TESTED") {
+      alert("Please test the science plan first before submitting.");
+      return;
+    }
+  
     const confirmed = window.confirm("Do you want to submit this plan?");
     if (confirmed) {
       alert("Plan is submitted successfully!");
-      // try {
-      //   const updatedPlan = { ...selectedPlan, status: "SUBMITTED" };
-      //   await fetch(`http://localhost:8080/api/science-plans/${selectedPlan.planID}`, {
-      //     method: "PUT", 
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify(updatedPlan),
-      //   });
-      //   alert("Plan submitted successfully!");
-      //   navigate('/submit-plan'); 
-      // } catch (error) {
-      //   console.error("Error submitting the plan:", error);
-      //   alert("Failed to submit plan.");
-      // }
+      // TODO: add API call to update plan status here
     } else {
       alert("Plan is not submitted!");
-      // Cancel clicked → stay at the same page
     }
   };
+  
 
   return (
     <div className="w-screen min-h-screen p-6 bg-gradient-to-b from-gray-900 to-indigo-900 text-white">
@@ -366,7 +363,7 @@ function submit() {
               </div>
             </div>
           </div>
-          {selectedPlan?.status === "TESTED" && (
+          {selectedPlan && (
             <div className="flex justify-center space-x-4 mt-6">
               <button
                 className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-800"
