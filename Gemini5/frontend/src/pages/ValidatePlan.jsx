@@ -23,6 +23,7 @@ function ValidatePlan() {
 
   useEffect(() => {
     document.title = "Validate Science Plan | GEMINI5";
+    if (!id) setSelectedPlan(null);
     const fetchPlans = async () => {
       try {
         const response = await fetch("http://localhost:8080/api/science-plans");
