@@ -97,7 +97,7 @@ function ValidatePlan() {
       "creator",
       "funding",
       "objective",
-      "starSystem",
+      "target",
       "startDate",
       "endDate",
       "assignedTelescope",
@@ -171,14 +171,16 @@ function ValidatePlan() {
     <div className="w-screen min-h-screen p-6 bg-gradient-to-b from-gray-900 to-indigo-900 text-white">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Submitted Plans</h2>
-        {submittedPlans.length !== 0 && (
-          <button
-            className="text-blue-600 hover:underline focus:outline-none"
-            onClick={() => navigate('/validate-plan')}
-          >
-            All Plans
-          </button>
-        )}
+        {submittedPlans.length !== 0 
+        // && (
+          // <button
+          //   className="text-blue-600 hover:underline focus:outline-none"
+          //   onClick={() => navigate('/validate-plan')}
+          // >
+          //   All Plans
+          // </button>
+        // )
+        }
       </div>
 
 
