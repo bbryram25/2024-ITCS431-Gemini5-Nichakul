@@ -62,7 +62,7 @@ function Home() {
                         Validate Science Plan
                     </button>
                     <button
-                        onClick={() => handleNavigation("/submit")}
+                        onClick={() => handleNavigation("/submit-plan")}
                         className="w-full py-2 rounded-full bg-black text-white font-semibold hover:opacity-90 transition"
                     >
                         Submit Science Plan

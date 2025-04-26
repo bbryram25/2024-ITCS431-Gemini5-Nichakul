@@ -31,7 +31,9 @@ function ValidatePlan() {
         setSubmittedPlans(submitted);
       } catch (error) {
         console.error("Error fetching all plans:", error);
-        setSubmittedPlans(sciencePlan);
+        setSubmittedPlans(
+          sciencePlan.filter((plan) => plan.status === "SUBMITTED")
+        );
       }
     };
 
@@ -169,17 +171,21 @@ function ValidatePlan() {
     <div className="w-screen min-h-screen p-6 bg-gradient-to-b from-gray-900 to-indigo-900 text-white">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Science Plans</h2>
-        <button
-          className="text-blue-600 hover:underline focus:outline-none"
-          onClick={() => navigate('/validate-plan')}
-        >
-          All Plans
-        </button>
+        {submittedPlans.length !== 0 && (
+          <button
+            className="text-blue-600 hover:underline focus:outline-none"
+            onClick={() => navigate('/validate-plan')}
+          >
+            All Plans
+          </button>
+        )}
       </div>
 
 
       {submittedPlans.length === 0 ? (
-        <p>No submitted science plans.</p>
+        <div className="flex flex-col items-center justify-center h-full">
+          <p>No submitted science plans.</p>
+        </div>
       ) : (
 
         <table className="w-full table-auto text-black bg-white rounded-xl mb-6">
@@ -288,11 +294,11 @@ function ValidatePlan() {
 
             {/* Star System */}
             <div className="col-span-2 border border-gray-300 rounded p-4 bg-gray-50">
-              <h4 className="text-lg font-semibold mb-2">Star System</h4>
+              <h4 className="text-lg font-semibold mb-2">Star System (Target)</h4>
               <input
                 type="text"
                 name="starSystem"
-                value={selectedPlan.starSystem || ""}
+                value={selectedPlan.target || ""}
                 onChange={handleChange}
                 disabled={!isEditing}
                 className="w-full p-1 border rounded"

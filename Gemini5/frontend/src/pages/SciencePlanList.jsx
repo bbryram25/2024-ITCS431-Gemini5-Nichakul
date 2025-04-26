@@ -148,22 +148,24 @@ function SciencePlanList() {
                   hour12: false
                 }).replace(',', '')}</p>
 
-                <p><strong>Target:</strong> {plan.target}</p>
+                <p><strong>Star System (Target):</strong> {plan.target}</p>
                 <p><strong>Assigned Telescope:</strong> {plan.assignedTelescope}</p>
                 <p><strong>Status:</strong> {plan.status}</p>
 
                 <div className="flex justify-end pt-2">
                   <div className="flex gap-2">
+                  {plan.status === "SUBMITTED" && (
                     <button
                       onClick={() => navigate(`/validate-plan/${plan.planID}`)}
                       className="bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600 transition"
                     >
                       Validate
                     </button>
+                  )}
 
                     {plan.status !== "SUBMITTED" && (
                       <button
-                        onClick={() => navigate(`/submit/${plan.planID}`)}
+                        onClick={() => navigate(`/submit-plan/${plan.planID}`)}
                         className="bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600 transition"
                       >
                         Submit

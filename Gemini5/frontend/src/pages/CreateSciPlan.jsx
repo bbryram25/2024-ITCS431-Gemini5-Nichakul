@@ -3,7 +3,7 @@ import { dataProcessing } from "../data/dataProcessing";
 
 function CreatePlan() {
     const [form, setForm] = useState({
-        planID: "",
+        // planID: "",
         planName: "",
         creator: "",
         funding: "",
@@ -22,7 +22,6 @@ function CreatePlan() {
 
     const fallbackTelescopes = ["Hawaii", "Chile"];
     const fallbackStatuses = ["CREATED", "TESTED", "SUBMITTED", "VALIDATED", "RUNNING", "INVALIDATED", "COMPLETE"];
-    const fallbackDataProcessing = ["DataProcessing01", "DataProcessing02"]
 
     useEffect(() => {
         fetch("http://localhost:8080/api/enums/assigned-telescope")
@@ -50,14 +49,14 @@ function CreatePlan() {
             });
     }, []);
 
-    const handleCheckboxChange = (field, value) => {
-        setForm((prev) => ({
-            ...prev,
-            [field]: prev[field].includes(value)
-                ? prev[field].filter((v) => v !== value)
-                : [...prev[field], value],
-        }));
-    };
+    // const handleCheckboxChange = (field, value) => {
+    //     setForm((prev) => ({
+    //         ...prev,
+    //         [field]: prev[field].includes(value)
+    //             ? prev[field].filter((v) => v !== value)
+    //             : [...prev[field], value],
+    //     }));
+    // };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -110,8 +109,8 @@ function CreatePlan() {
                 ))} */}
 
                 {/* Plan ID (auto-generated)*/}
-                <div className="flex items-center gap-4 mb-4">
-                    <label htmlFor="planID" className="w-32 font-medium">Plan ID</label>
+                {/* <div className="flex items-center gap-4 mb-4">
+                    <label htmlFor="planID" className="w-32 font-medium">Plan ID</label> */}
                     {/* <input
                         id="planID"
                         name="planID"
@@ -121,7 +120,7 @@ function CreatePlan() {
                         className="flex-1 px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-500"
                         required
                     /> */}
-                </div>
+                {/* </div> */}
 
                 {/* Plan Name */}
                 <div className="flex items-center gap-4 mb-4">
@@ -182,7 +181,7 @@ function CreatePlan() {
 
                 {/* Target */}
                 <div className="flex items-center gap-4 mb-4">
-                    <label htmlFor="target" className="w-32 font-medium">Target</label>
+                    <label htmlFor="target" className="w-32 font-medium">Star System (Target)</label>
                     <input
                         id="target"
                         name="target"
