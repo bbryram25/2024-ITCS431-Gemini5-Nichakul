@@ -367,13 +367,21 @@ function submit() {
             </div>
           </div>
           {selectedPlan?.status === "TESTED" && (
-            <div className="flex justify-center mt-6">
+            <div className="flex justify-center space-x-4 mt-6">
+              <button
+                className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-800"
+                onClick={() => navigate('/show-list')}
+              >
+                Cancel
+              </button>
+              
               <button
                 className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-800"
                 onClick={handleSubmitConfirmation}
               >
-                Submit
+                Confirm
               </button>
+              
             </div>
           )}
         </div>
