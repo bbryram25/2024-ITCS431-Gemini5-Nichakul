@@ -30,7 +30,8 @@ function App() {
               <Route path="/register" element={<Register />} />
               {/* <Route path="/menu" element={<Menu />} /> */}
               <Route path="/createSciPlan" element={<CreateSciPlan />} />
-              <Route path="/Submit" element={<Submit />} />
+              <Route path="/submit-plan/:id" element={<Submit />} />
+              <Route path="/submit-plan" element={<Submit />} />
               <Route path="/validate-plan" element={<ValidatePlan />} />
               <Route path="/validate-plan/:id" element={<ValidatePlan />} />
               <Route path="/show-list" element={<SciencePlanList />} />
