@@ -299,7 +299,7 @@ function ValidatePlan() {
               <h4 className="text-lg font-semibold mb-2">Star System (Target)</h4>
               <input
                 type="text"
-                name="starSystem"
+                name="target"
                 value={selectedPlan.target || ""}
                 onChange={handleChange}
                 disabled={!isEditing}
