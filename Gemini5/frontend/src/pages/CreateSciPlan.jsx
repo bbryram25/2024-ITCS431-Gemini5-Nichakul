@@ -78,6 +78,14 @@ function CreatePlan() {
                 return;
             }
         }
+
+        const start = new Date(form.startDate);
+        const end = new Date(form.endDate);
+
+        if (start >= end) {
+        alert("Start Date must be before End Date.");
+        return;
+    }
         console.log("Saving form:", form);
         alert("New science plan has been saved successfully!");
     };
