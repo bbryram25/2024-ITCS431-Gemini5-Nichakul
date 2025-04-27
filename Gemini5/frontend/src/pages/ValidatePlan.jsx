@@ -396,7 +396,7 @@ function ValidatePlan() {
                 <div className="flex flex-col">
                   <label className="font-semibold mb-1">File Quality</label>
                   <select
-                    name="dataProcessing.quality"
+                    name="dataProcessing.fileQuality"
                     value={selectedPlan.dataProcessing?.fileQuality || ""}
                     onChange={handleChange}
                     disabled={!isEditing}

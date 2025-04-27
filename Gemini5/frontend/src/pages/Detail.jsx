@@ -128,7 +128,7 @@ function Detail() {
             )}
 
             {/* Show only for Black and White mode */}
-            {selectedPlan.dataProcessing?.colorType === "Black and White mode" && (
+            {selectedPlan.dataProcessing?.colorType === "B&W mode" && (
               <>
                 <div>
                   <strong>Highlights:</strong> {selectedPlan.dataProcessing?.highlights || "N/A"}

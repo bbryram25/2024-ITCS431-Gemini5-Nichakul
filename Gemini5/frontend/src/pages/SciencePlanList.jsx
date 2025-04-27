@@ -12,7 +12,7 @@ function SciencePlanList() {
   const [searchId, setSearchId] = useState("");
 
   const statusOptions = [
-    "Select Filter",
+    // "Select Filter",
     "ALL",
     "CREATED",
     "TESTED",
