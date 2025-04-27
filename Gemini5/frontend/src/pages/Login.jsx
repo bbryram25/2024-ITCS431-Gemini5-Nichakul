@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { setToken } from "../auth";
+import { staff } from "../data/staff"; 
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -53,6 +54,7 @@ function Login() {
         setMessage("Login successful"); // Optionally show success message
         setUsername(""); // Clear the username field
         setPassword(""); // Clear the password field
+        localStorage.setItem("user", JSON.stringify(data.data));
         navigate("/home"); // Redirect to home after successful login
         console.log("Login successful");
         // localStorage.setItem("token", data.token || ""); // Save the token in local storage
@@ -66,6 +68,25 @@ function Login() {
     } catch (error) {
       console.error("Error during login:", error);
       setMessage("An error occurred");
+      // Fallback to sample data if backend login fails
+      const fallbackUser = staff.find(
+        (s) => s.username === username && s.password === password
+      );
+
+      if (fallbackUser) {
+        console.log("Login successful (from sample data)");
+
+        // Optionally set token if needed
+        // setToken("sample-token");
+
+        // Save user info to localStorage if needed
+        localStorage.setItem("user", JSON.stringify(fallbackUser));
+
+        setMessage("Login successful (sample data)");
+        navigate("/home");
+      } else {
+        setMessage("Username or Password is incorrect (sample)");
+      }
     }
   };
 

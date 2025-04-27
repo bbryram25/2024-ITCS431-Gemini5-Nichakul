@@ -10,6 +10,7 @@ function SciencePlanList() {
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [loading, setLoading] = useState(true);
   const [searchId, setSearchId] = useState("");
+  const [user, setUser] = useState(null);
 
   const statusOptions = [
     // "Select Filter",
@@ -25,6 +26,11 @@ function SciencePlanList() {
   useEffect(() => {
     document.title = "Science Plan List | GEMINI5";
     fetchPlans();
+
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser) {
+      setUser(storedUser);
+    }
   }, []);
 
   // Filter the plans based on both the search ID and status filter
@@ -64,6 +70,19 @@ function SciencePlanList() {
       minute: "2-digit",
       hour12: false,
     }).replace(",", "");
+  };
+
+  // Check if the user has the required role to access 
+  const hasRoleAccess = (allowedRoles) => {
+    return user && allowedRoles.includes(user.role);
+  };
+
+  const handleButtonClick = (allowedRoles, roleRequired, planID, path) => {
+    if (!hasRoleAccess(allowedRoles)) {
+      alert(`Only ${roleRequired} can access this.`);
+      return;
+    }
+    navigate(`/${path}/${planID}`);
   };
 
   return (
@@ -136,7 +155,8 @@ function SciencePlanList() {
 
                     {plan.status === "SUBMITTED" && (
                       <button
-                        onClick={() => navigate(`/validate-plan/${plan.planID}`)}
+                        // onClick={() => navigate(`/validate-plan/${plan.planID}`)}
+                        onClick={() => handleButtonClick(["ScienceObserver"], "ScienceObserver", plan.planID, "validate-plan")}
                         className="bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600 transition"
                       >
                         Validate
@@ -145,7 +165,8 @@ function SciencePlanList() {
 
                     {plan.status === "TESTED" && (
                       <button
-                        onClick={() => navigate(`/submit-plan/${plan.planID}`)}
+                        // onClick={() => navigate(`/submit-plan/${plan.planID}`)}
+                        onClick={() => handleButtonClick(["Astronomer"], "Astronomer", plan.planID, "submit-plan")}
                         className="bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600 transition"
                       >
                         Submit

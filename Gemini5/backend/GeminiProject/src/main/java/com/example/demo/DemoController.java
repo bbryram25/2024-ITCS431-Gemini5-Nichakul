@@ -1,6 +1,5 @@
 package com.example.demo;
 
-// import edu.gemini.app.ocs.OCS;
 import edu.gemini.app.ocs.model.DataProcRequirement;
 import edu.gemini.app.ocs.model.SciencePlan;
 import edu.gemini.app.ocs.model.StarSystem;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Response.ResponseWrapper;
 import com.example.demo.Enum.Role;
-// import com.example.demo.Model.Staff;
 import com.example.demo.Model.Staff;
 import com.example.demo.Repository.StaffRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -41,14 +39,6 @@ public class DemoController {
     @GetMapping("/home")
     public @ResponseBody String Home() {
         return "Hello Gemini";
-    }
-
-    @CrossOrigin
-    @GetMapping("/")
-    public ArrayList<SciencePlan> getAllSciencePlans() {
-        OCS o = new OCS();
-        System.out.println(o.getAllSciencePlans());
-        return o.getAllSciencePlans();
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
@@ -115,13 +105,24 @@ public class DemoController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
-    @GetMapping("/staff/{id}")
+    @GetMapping("/staffId/{id}")
     public ResponseEntity<?> getStaffById(@PathVariable("id") String id) {
         Staff staff = staffRepository.getStaffById(id).orElse(null);
         if (staff == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseWrapper.notFound("Staff not found", HttpStatus.NOT_FOUND));
         }
         return ResponseEntity.ok(ResponseWrapper.success(staff, "Staff retrieved successfully", HttpStatus.OK));
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @GetMapping("/staffName/{name}")
+    public ResponseEntity<?> getStaffByFullName(@PathVariable("name") String name) {
+        String[] names = name.split(" ");
+        Staff staff = staffRepository.getStaffByFullName(names[0], names[1]).orElse(null);
+        if (staff != null) {
+            return ResponseEntity.ok(ResponseWrapper.success(staff, "Staff retrieved successfully", HttpStatus.OK));
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseWrapper.notFound("Staff not found", HttpStatus.NOT_FOUND));
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
@@ -134,6 +135,7 @@ public class DemoController {
         staffRepository.delete(staff);
         return ResponseEntity.ok(ResponseWrapper.success(staff, "Staff deleted successfully", HttpStatus.OK));
     }
+
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @PostMapping("/createSciencePlan")
@@ -168,7 +170,6 @@ public class DemoController {
         dataProcRequirement.setLuminance(luminance);
         dataProcRequirement.setHue(hue);
 
-
         String creator = body.get("creator").toString();
         String submitter = body.get("submitter").toString();
         double funding = Double.parseDouble(body.get("funding").toString());
@@ -177,6 +178,18 @@ public class DemoController {
         String telescopeLocation = body.get("telescopeLocation").toString();
         String startDate = body.get("startDate").toString();
         String endDate = body.get("endDate").toString();
+
+        Staff creatorStaff = staffRepository.getStaffByFullName(creator.split(" ")[0], creator.split(" ")[1]).orElse(null);
+        if (creatorStaff == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ResponseWrapper.error("The provided creator is not valid", HttpStatus.BAD_REQUEST));
+        }
+
+        Staff submitterStaff = staffRepository.getStaffByFullName(submitter.split(" ")[0], submitter.split(" ")[1]).orElse(null);
+        if (submitterStaff == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ResponseWrapper.error("The provided submitter is not valid", HttpStatus.BAD_REQUEST));
+        }
 
         StarSystem.CONSTELLATIONS starSystemEnum = null;
         try {
@@ -207,7 +220,7 @@ public class DemoController {
         
         String message = o.createSciencePlan(sciencePlan);
 
-        if (!(message.equals("-1\nreferences\\images.txt (The system cannot find the path specified)"))){
+        if (!message.contains("images.txt")){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ResponseWrapper.error(message, HttpStatus.BAD_REQUEST));
         }
@@ -218,4 +231,47 @@ public class DemoController {
         return ResponseEntity.ok(ResponseWrapper.success(createdSciencePlan, "Science plan created successfully", HttpStatus.CREATED));
 
     }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @GetMapping("/sciencePlans")
+    public ResponseEntity<?> getAllSciencePlans() {
+        OCS o = new OCS();
+        ArrayList<SciencePlan> sciencePlans = o.getAllSciencePlans();
+        if (sciencePlans.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseWrapper.notFound("No science plans found", HttpStatus.NOT_FOUND));
+        }
+        return ResponseEntity.ok(ResponseWrapper.success(sciencePlans, "Science plans retrieved successfully", HttpStatus.OK));
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @GetMapping("/sciencePlan/{id}")
+    public ResponseEntity<?> getSciencePlanById(@PathVariable("id") int id) {
+        OCS o = new OCS();
+        SciencePlan sciencePlan = o.getSciencePlanByNo(id);
+        if (sciencePlan == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseWrapper.notFound("Science plan not found", HttpStatus.NOT_FOUND));
+        }
+        return ResponseEntity.ok(ResponseWrapper.success(sciencePlan, "Science plan retrieved successfully", HttpStatus.OK));
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @DeleteMapping("/deleteSciencePlan/{id}")
+    public ResponseEntity<?> deleteSciencePlan(@PathVariable("id") int id) {
+        OCS o = new OCS();
+        SciencePlan sciencePlan = o.getSciencePlanByNo(id);
+        if (sciencePlan == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseWrapper.notFound("Science plan not found", HttpStatus.NOT_FOUND));
+        }
+        o.deleteSciencePlanByNo(id);
+        return ResponseEntity.ok(ResponseWrapper.success(sciencePlan, "Science plan deleted successfully", HttpStatus.OK));
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @DeleteMapping("/deleteSciencePlans")
+    public ResponseEntity<?> deleteAllSciencePlan() {
+        OCS o = new OCS();
+        o.deleteAllSciencePlans();
+        return ResponseEntity.ok(ResponseWrapper.success(null, "All science plans deleted successfully", HttpStatus.OK));
+    }
+
 }

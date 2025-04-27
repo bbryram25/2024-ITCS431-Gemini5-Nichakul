@@ -21,4 +21,7 @@ public interface StaffRepository extends JpaRepository<Staff, String> {
 
     @Query("SELECT s FROM Staff s WHERE s.staffId = ?1")
     Optional<Staff> getStaffById(String id);
+
+    @Query("SELECT s FROM Staff s WHERE s.firstName = ?1 AND s.lastName = ?2")
+    Optional<Staff> getStaffByFullName(String firstName, String lastName);
 }
