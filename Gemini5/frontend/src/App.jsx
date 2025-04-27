@@ -11,6 +11,8 @@ import Submit from './pages/submit';
 import ValidatePlan from "./pages/ValidatePlan";
 import SciencePlanList from "./pages/SciencePlanList";
 import Navbar from "./components/Navbar";
+import Detail from "./pages/detail";
+
 
 
 
@@ -35,6 +37,8 @@ function App() {
               <Route path="/validate-plan" element={<ValidatePlan />} />
               <Route path="/validate-plan/:id" element={<ValidatePlan />} />
               <Route path="/show-list" element={<SciencePlanList />} />
+              <Route path="/detail/:id" element={<Detail />} />
+
 
               <Route path="/dataProcessing" element={<DataProcessing />} />
           </Routes>
