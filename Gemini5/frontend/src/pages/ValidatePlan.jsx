@@ -148,7 +148,7 @@ function ValidatePlan() {
       const start = new Date(selectedPlan.startDate);
       const end = new Date(selectedPlan.endDate);
       if (start >= end) {
-        alert("Start Date must be earlier than End Date.");
+        alert("Start Date cannot be after the End Date.");
         setValidationMessage(
           <>
             <div className="text-red-600 font-bold">Validate failed.</div>
