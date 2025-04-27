@@ -1,27 +1,22 @@
 import React, { useEffect, useState } from "react";
 // import { Link, Navigate } from "react-router-dom";
 import { Navigate, useNavigate } from "react-router-dom";
-import { isLoggedIn, logout } from "../auth";
-
+import { isLoggedIn, logout, getUser } from "../auth";
 
 function Home() {
-    // if (!isLoggedIn()) {
-    //     return <Navigate to="/login" replace />;
-    // }
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
 
     useEffect(() => {
         document.title = "Home | GEMINI5";
-        const storedUser = JSON.parse(localStorage.getItem("user"));
-        if (storedUser) {
-            setUser(storedUser);
+        const currentUser = getUser();
+        if (currentUser) {
+            setUser(currentUser);
+        } else {
+            navigate('/login');
         }
-    }, []);
+    }, [navigate]);
 
-    // const handleNavigation = (path) => {
-    //     navigate(path);
-    // };
     const handleNavigation = (path, allowedRoles) => {
         if (allowedRoles.includes(user.role)) {
             navigate(path);
@@ -29,27 +24,15 @@ function Home() {
             alert(`Only ${allowedRoles.join(" or ")} can access.`);
         }
     };
-    if (!user) return null;    
 
-    // useEffect(() => {
-    //     document.title = "GEMINI5";
-    // }, []);
+    if (!user) return null;    
 
     const handleLogout = () => {
         logout();
-        window.location.href = "/login"; // Redirect to the login page after logout
+        navigate("/login");
     };
 
     return (
-        // <>
-        //     <h1>Welcome to Gemini5</h1>
-        //     <button
-        //         onClick={handleLogout}
-        //         className="mt-4 px-6 py-2 bg-red-500 text-white rounded-full hover:bg-red-700 transition"
-        //     >
-        //         Logout
-        //     </button>
-        // </>
         <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-b from-gray-900 to-indigo-900">
             <div className="bg-white p-10 rounded-3xl shadow-lg w-full max-w-md">
                 <h2 className="text-center text-xl font-semibold mb-6">
@@ -63,31 +46,29 @@ function Home() {
                 )}
                 <div className="space-y-4">
                     <button
-                        onClick={() => navigate("/show-list")}
+                        onClick={() => navigate("/sciencePlans")}
                         className="w-full py-2 rounded-full bg-black text-white font-semibold hover:opacity-90 transition"
                     >
-                        Show Science Plan List
+                        List of Science Plan
                     </button>
                     <button
-                        // onClick={() => handleNavigation("/CreateSciPlan")}
-                        onClick={() => handleNavigation("/CreateSciPlan", ["Astronomer"])}
+                        onClick={() => handleNavigation("/createSciPlan", ["Astronomer"])}
                         className="w-full py-2 rounded-full bg-black text-white font-semibold hover:opacity-90 transition"
                     >
                         Create Science Plan
                     </button>
                     <button
-                        // onClick={() => handleNavigation("/validate-plan")}
-                        onClick={() => handleNavigation("/validate-plan", ["ScienceObserver"])}
-                        className="w-full py-2 rounded-full bg-black text-white font-semibold hover:opacity-90 transition"
-                    >
-                        Validate Science Plan
-                    </button>
-                    <button
-                        // onClick={() => handleNavigation("/submit-plan")}
-                        onClick={() => handleNavigation("/submit-plan", ["Astronomer"])}
+                        onClick={() => handleNavigation("/submitSciencePlan", ["Astronomer"])}
                         className="w-full py-2 rounded-full bg-black text-white font-semibold hover:opacity-90 transition"
                     >
                         Submit Science Plan
+                    </button>
+                    <button
+                        // onClick={() => handleNavigation("/validate-plan")}
+                        onClick={() => handleNavigation("/validateSciencePlan", ["ScienceObserver"])}
+                        className="w-full py-2 rounded-full bg-black text-white font-semibold hover:opacity-90 transition"
+                    >
+                        Validate Science Plan
                     </button>
                 </div>
             </div>

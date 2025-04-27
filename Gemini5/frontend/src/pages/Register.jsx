@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { getUser } from "../auth";  // Import getUser instead of using localStorage directly
 
 function Register() {
     const navigate = useNavigate();
@@ -14,16 +14,19 @@ function Register() {
 
     useEffect(() => {
         document.title = "Register | GEMINI5";
-    }, []);
+        // If user is already logged in, redirect to home
+        const user = getUser();
+        if (user) {
+            navigate('/');
+        }
+    }, [navigate]);
 
     const handleRegister = async (e) => {
         e.preventDefault();
 
-        // Prepare the data to send to the backend
         const registerData = { username, firstName, lastName, role, password };
 
         try {
-            // Simulate API request for registration
             const response = await fetch("http://localhost:8080/api/register", {
                 method: "POST",
                 headers: {
@@ -35,10 +38,7 @@ function Register() {
             const data = await response.json();
 
             if (response.ok) {
-                // Assuming the response contains a JWT token
-                localStorage.setItem("token", data.token || ""); // Save the token in local storage
-                // setToken(data.token); // Save the token in cookies
-                navigate("/"); // Redirect to the home page after successful registration
+                navigate("/login"); // Redirect to login after successful registration
             } else {
                 setError(data.message || "Registration failed");
             }
@@ -55,67 +55,60 @@ function Register() {
                     <h2 className="text-center text-xl font-semibold mb-6">
                         Register New Staff
                     </h2>
+                    {error && (
+                        <div className="mb-4 text-center text-sm text-red-600">
+                            {error}
+                        </div>
+                    )}
                     <form className="space-y-4" onSubmit={handleRegister}>
-
                         <div>
                             <label className="block text-sm font-medium text-gray-700">Username</label>
                             <input
                                 type="text"
-                                placeholder="Username"
-                                className="mt-1 w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
+                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
                                 required
                             />
                         </div>
-
                         <div>
                             <label className="block text-sm font-medium text-gray-700">First Name</label>
                             <input
                                 type="text"
-                                placeholder="First Name"
-                                className="mt-1 w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 value={firstName}
                                 onChange={(e) => setFirstName(e.target.value)}
+                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
                                 required
                             />
                         </div>
-
                         <div>
                             <label className="block text-sm font-medium text-gray-700">Last Name</label>
                             <input
                                 type="text"
-                                placeholder="Last Name"
-                                className="mt-1 w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 value={lastName}
                                 onChange={(e) => setLastName(e.target.value)}
+                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
                                 required
                             />
                         </div>
-
                         <div>
                             <label className="block text-sm font-medium text-gray-700">Role</label>
                             <select
-                                className="mt-1 w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 value={role}
                                 onChange={(e) => setRole(e.target.value)}
-                            >   
+                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
+                            >
                                 <option value="Astronomer">Astronomer</option>
-                                <option value="Administrator">Administrator</option>
-                                <option value="Telescope Operator">Telescope Operator</option>
-                                <option value="Science_Observer">Science Observer</option>
-                                <option value="Support">Support</option>
+                                <option value="ScienceObserver">Science Observer</option>
                             </select>
                         </div>
-
                         <div>
                             <label className="block text-sm font-medium text-gray-700">Password</label>
                             <input
                                 type="password"
-                                placeholder="Enter a password"
-                                className="mt-1 w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
                                 required
                             />
                         </div>
@@ -128,11 +121,10 @@ function Register() {
                         </button>
 
                         <div className="flex justify-center text-sm mt-2 text-gray-600">
-                            <Link to="/" className="hover:underline">
+                            <Link to="/login" className="hover:underline">
                                 Back to login
                             </Link>
                         </div>
-
                     </form>
                 </div>
             </div>

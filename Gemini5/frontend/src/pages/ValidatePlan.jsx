@@ -4,64 +4,72 @@ import { sciencePlan } from "../data/sciencePlan";
 import { useNavigate } from 'react-router-dom';
 
 function ValidatePlan() {
-  const { planID } = useParams();
+  const { id } = useParams();
   const [submittedPlans, setSubmittedPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [validationMessage, setValidationMessage] = useState("");
   const navigate = useNavigate();
 
+  // useEffect(() => {
+  //   document.title = "Validate Science Plan | GEMINI5";
+  //   fetchPlans();
+  // }, []);
+
+  // useEffect(() => {
+  //   document.title = "Validate Science Plan | GEMINI5";
+  //   fetchPlanById();
+  // }, [id]);
 
   useEffect(() => {
     document.title = "Validate Science Plan | GEMINI5";
     if (!id) setSelectedPlan(null);
     const fetchPlans = async () => {
-      // try {
-      //   const response = await fetch("http://localhost:8080/api/science-plans");
-      //   const data = await response.json();
-      //   const submitted = data.filter((plan) => plan.status === "SUBMITTED");
-      //   setSubmittedPlans(submitted);
-      // } catch (error) {
-      //   console.error("Error fetching all plans:", error);
-      //   setSubmittedPlans(
-      //     sciencePlan.filter((plan) => plan.status === "SUBMITTED")
-      //   );
-      // }
-      setSubmittedPlans(sciencePlan.filter((plan) => plan.status === "SUBMITTED"));
+      try {
+        const response = await fetch("http://localhost:8080/api/science-plans");
+        const data = await response.json();
+        const submitted = data.filter((plan) => plan.status === "SUBMITTED");
+        setSubmittedPlans(submitted);
+      } catch (error) {
+        console.error("Error fetching all plans:", error);
+        setSubmittedPlans(
+          sciencePlan.filter((plan) => plan.status === "SUBMITTED")
+        );
+      }
     };
 
     const fetchPlanById = async () => {
-      // try {
-      //   const response = await fetch(`http://localhost:8080/api/science-plans/${id}`);
-      //   const data = await response.json();
-      //   setSelectedPlan(data);
-      //   setSubmittedPlans([data]);
-      // } catch (error) {
-      //   console.error("Error fetching plan by ID:", error);
-      //   const fallback = sciencePlan.find((p) => p.planID.toString() === id);
-      //   if (fallback) {
-      //     setSelectedPlan(fallback);
-      //     setSubmittedPlans([fallback]);
-      //   } else {
-      //     setSelectedPlan(null);
-      //     setSubmittedPlans([]);
-      //   }
-      // }
+      try {
+        const response = await fetch(`http://localhost:8080/api/science-plans/${id}`);
+        const data = await response.json();
+        setSelectedPlan(data);
+        setSubmittedPlans([data]);
+      } catch (error) {
+        console.error("Error fetching plan by ID:", error);
+        const fallback = sciencePlan.find((p) => p.planID.toString() === id);
+        if (fallback) {
+          setSelectedPlan(fallback);
+          setSubmittedPlans([fallback]);
+        } else {
+          setSelectedPlan(null);
+          setSubmittedPlans([]);
+        }
+      }
     };
 
-      if (planID) {
-        fetchPlanById();
-      } else {
-        fetchPlans();
-      }
-  }, [planID]);
+    if (id) {
+      fetchPlanById();
+    } else {
+      fetchPlans();
+    }
+  }, [id]);
 
   const handleSelectPlan = (plan) => {
     setSelectedPlan(plan);
     setIsEditing(false);
     setValidationMessage("");
     window.scrollTo({ top: 0, behavior: "smooth" });
-    navigate(`/validate-plan/${plan.planID}`);
+    navigate(`/validateSciencePlan/${plan.planID}`);
   };
 
   const handleChange = (e) => {
@@ -181,7 +189,7 @@ function ValidatePlan() {
   return (
     <div className="w-screen min-h-screen p-6 bg-gradient-to-b from-gray-900 to-indigo-900 text-white">
       <div className="flex justify-between items-center mb-4">
-        {/* <h2 className="text-xl font-bold">Submitted Plans</h2>
+        <h2 className="text-xl font-bold text-center">Validate Science Plan</h2>
         {submittedPlans.length !== 0 
         // && (
           // <button
@@ -225,52 +233,14 @@ function ValidatePlan() {
                     className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-800"
                     onClick={() => handleSelectPlan(plan)}
                   >
-                    Review
+                    Validate
                   </button>
-                </td> */}
-        <h2 className="text-xl font-bold">Validate Science Plan</h2>
-      </div>
-
-
-      {submittedPlans.length === 0 ? 
-        (
-          <div className="flex flex-col items-center justify-center h-full">
-            <p>No submitted science plans.</p>
-          </div>
-        ) : (
-          <table className="w-full table-auto text-black bg-white rounded-xl mb-6">
-            <thead>
-              <tr className="text-center">
-                <th className="p-2">Plan ID</th>
-                <th className="p-2">Plan Name</th>
-                <th className="p-2">Creator</th>
-                <th className="p-2">Funding</th>
-                <th className="p-2">Status</th>
-                <th className="p-2">Actions</th>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {submittedPlans.map((plan) => (
-                <tr key={plan.planID} className="text-center">
-                  <td className="p-2">{plan.planID}</td>
-                  <td className="p-2">{plan.planName}</td>
-                  <td className="p-2">{plan.creator || "-"}</td>
-                  <td className="p-2">${parseFloat(plan.funding).toFixed(2)}</td>
-                  <td className="p-2">{plan.status}</td>
-                  <td className="p-2">
-                    <button
-                      className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-800"
-                      onClick={() => handleSelectPlan(plan)}
-                    >
-                      Review
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )
-      }
+            ))}
+          </tbody>
+        </table>
+      )}
 
       {selectedPlan && (
         <div className="bg-white text-black p-6 rounded-xl shadow-md space-y-4">

@@ -4,10 +4,12 @@ import { sciencePlan } from "../data/sciencePlan";
 import { useNavigate } from 'react-router-dom';
 
 function submit() {
-  const { planID } = useParams();
+  const { id } = useParams();
   const [notSubmittedPlans, setNotSubmittedPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [statusFilter, setStatusFilter] = useState("ALL");
+  const [loading, setLoading] = useState(true);
+
   const navigate = useNavigate();
 
   const handleStatusFilterChange = (event) => {
@@ -18,26 +20,25 @@ function submit() {
     document.title = "Submit Science Plan | GEMINI5";
     if (!id) setSelectedPlan(null);
     const fetchPlans = async () => {
-      // try {
-      //   const response = await fetch("http://localhost:8080/api/science-plans");
-      //   const data = await response.json();
-      //   // const notSubmitted = data.filter((plan) => plan.status !== "SUBMITTED");
-      //   const filtered = sciencePlan.filter((plan) =>
-      //     statusFilter === "ALL" || statusFilter === "" || plan.status === statusFilter
-      //   );
-      //   setNotSubmittedPlans(filtered);
-      // } catch (error) {
-      //   console.error("Error fetching all plans:", error);
-      //   // setNotSubmittedPlans(
-      //   //   sciencePlan.filter((plan) => plan.status !== "SUBMITTED")
-      //   // );
-      //   // const fallbackData = sciencePlan.filter((plan) => plan.status !== "SUBMITTED");
-      //   const filteredFallback = sciencePlan.filter((plan) =>
-      //     statusFilter === "ALL" || statusFilter === "" || plan.status === statusFilter
-      //   );
-      //   setNotSubmittedPlans(filteredFallback);
-      // }
-      setSubmittedPlans(sciencePlan.filter((plan) => plan.status === "TESTED" || plan.status == "CREATED"));
+      try {
+        const response = await fetch("http://localhost:8080/api/science-plans");
+        const data = await response.json();
+        // const notSubmitted = data.filter((plan) => plan.status !== "SUBMITTED");
+        const filtered = sciencePlan.filter((plan) =>
+          statusFilter === "ALL" || statusFilter === "" || plan.status === statusFilter
+        );
+        setNotSubmittedPlans(filtered);
+      } catch (error) {
+        console.error("Error fetching all plans:", error);
+        // setNotSubmittedPlans(
+        //   sciencePlan.filter((plan) => plan.status !== "SUBMITTED")
+        // );
+        // const fallbackData = sciencePlan.filter((plan) => plan.status !== "SUBMITTED");
+        const filteredFallback = sciencePlan.filter((plan) =>
+          statusFilter === "ALL" || statusFilter === "" || plan.status === statusFilter
+        );
+        setNotSubmittedPlans(filteredFallback);
+      }
     };
 
     const fetchPlanById = async () => {
@@ -59,12 +60,12 @@ function submit() {
       }
     };
 
-    if (planID) {
+    if (id) {
       fetchPlanById();
     } else {
       fetchPlans();
     }
-  }, [planID, statusFilter]);
+  }, [id, statusFilter]);
 
   const handleSelectPlan = (plan) => {
     // if (plan.status !== "TESTED") {
@@ -73,7 +74,7 @@ function submit() {
     // }
     setSelectedPlan(plan);
     window.scrollTo({ top: 0, behavior: "smooth" });
-    navigate(`/submit-plan/${plan.planID}`);
+    navigate(`/submitSciencePlan/${plan.planID}`);
   };
 
   const handleSubmitConfirmation = async () => {
@@ -104,22 +105,37 @@ function submit() {
         {/* {notSubmittedPlans.length !== 0 && (
           <button
             className="text-blue-600 hover:underline focus:outline-none"
-            onClick={() => navigate('/submit-plan')}
+            onClick={() => navigate('/submitSciencePlan')}
           >
             All
           </button>
         )} */}
-        {!planID && (
-        <select value={statusFilter} onChange={handleStatusFilterChange}>
-          <option value="ALL">ALL</option>
-          <option value="CREATED">CREATED</option>
-          <option value="TESTED">TESTED</option>
-          <option value="SUBMITTED">SUBMITTED</option>
-          <option value="VALIDATED">VALIDATED</option>
-          <option value="INVALIDATED">INVALIDATED</option>
-          <option value="EXECUTED">EXECUTED</option>
-        </select>
-        )}
+        {!id && (
+          <div className="flex flex-col">
+            <label htmlFor="statusFilter" className="mb-1 font-medium text-white-700">
+              Status
+            </label>
+            <select value={statusFilter} onChange={handleStatusFilterChange}>
+              <option value="ALL">ALL</option>
+              <option value="CREATED">CREATED</option>
+              <option value="TESTED">TESTED</option>
+              <option value="SUBMITTED">SUBMITTED</option>
+              <option value="VALIDATED">VALIDATED</option>
+              <option value="INVALIDATED">INVALIDATED</option>
+              <option value="EXECUTED">EXECUTED</option>
+            </select>
+          </div>
+        )} 
+        {/* {id && selectedPlan && (
+          <div className="flex justify-start mb-4">
+            <button
+              className="text-blue-600 hover:underline focus:outline-none"
+              onClick={() => navigate('/submitSciencePlan')}
+            >
+              All Plans
+            </button>
+          </div>
+        )} */}
       </div>
 
       {notSubmittedPlans.length === 0 ? (
@@ -354,7 +370,7 @@ function submit() {
             <div className="flex justify-center space-x-4 mt-6">
               <button
                 className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-800"
-                onClick={() => navigate('/submit-plan')}
+                onClick={() => navigate('/submitSciencePlan')}
               >
                 Cancel
               </button>

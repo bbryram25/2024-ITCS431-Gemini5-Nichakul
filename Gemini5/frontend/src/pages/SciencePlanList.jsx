@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { sciencePlan } from "../data/sciencePlan"; // Optional fallback data for development
+import { getUser } from "../auth";
 
 function SciencePlanList() {
   const navigate = useNavigate();
@@ -25,13 +26,19 @@ function SciencePlanList() {
   // Set document title
   useEffect(() => {
     document.title = "Science Plan List | GEMINI5";
+    const currentUser = getUser();
+    if (currentUser) {
+        setUser(currentUser);
+    } else {
+        navigate('/login');
+    }
     fetchPlans();
 
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser) {
       setUser(storedUser);
     }
-  }, []);
+  }, [navigate]);
 
   // Filter the plans based on both the search ID and status filter
   useEffect(() => {
@@ -87,7 +94,7 @@ function SciencePlanList() {
 
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-b from-gray-900 to-indigo-900 overflow-auto p-4">
-      <div className="bg-white p-10 rounded-3xl shadow-lg w-full max-w-4xl space-y-6">
+      <div className="bg-white p-10 rounded-3xl shadow-lg w-full max-w-5xl space-y-6">
         <h2 className="text-center text-xl font-semibold mb-6">
           Science Plan List
         </h2>
@@ -152,8 +159,7 @@ function SciencePlanList() {
                     >
                       Detail
                     </button>
-
-                    {plan.status === "SUBMITTED" && (
+                    {/* {plan.status === "SUBMITTED" && (
                       <button
                         // onClick={() => navigate(`/validate-plan/${plan.planID}`)}
                         onClick={() => handleButtonClick(["ScienceObserver"], "ScienceObserver", plan.planID, "validate-plan")}
@@ -171,7 +177,7 @@ function SciencePlanList() {
                       >
                         Submit
                       </button>
-                    )}
+                    )} */}
                   </div>
                 </div>
               </div>
