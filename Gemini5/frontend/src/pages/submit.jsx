@@ -4,7 +4,7 @@ import { sciencePlan } from "../data/sciencePlan";
 import { useNavigate } from 'react-router-dom';
 
 function submit() {
-  const { id } = useParams();
+  const { planID } = useParams();
   const [notSubmittedPlans, setNotSubmittedPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [statusFilter, setStatusFilter] = useState("ALL");
@@ -16,26 +16,28 @@ function submit() {
 
   useEffect(() => {
     document.title = "Submit Science Plan | GEMINI5";
+    if (!id) setSelectedPlan(null);
     const fetchPlans = async () => {
-      try {
-        const response = await fetch("http://localhost:8080/api/science-plans");
-        const data = await response.json();
-        // const notSubmitted = data.filter((plan) => plan.status !== "SUBMITTED");
-        const filtered = sciencePlan.filter((plan) =>
-          statusFilter === "ALL" || statusFilter === "" || plan.status === statusFilter
-        );
-        setNotSubmittedPlans(filtered);
-      } catch (error) {
-        console.error("Error fetching all plans:", error);
-        // setNotSubmittedPlans(
-        //   sciencePlan.filter((plan) => plan.status !== "SUBMITTED")
-        // );
-        // const fallbackData = sciencePlan.filter((plan) => plan.status !== "SUBMITTED");
-        const filteredFallback = sciencePlan.filter((plan) =>
-          statusFilter === "ALL" || statusFilter === "" || plan.status === statusFilter
-        );
-        setNotSubmittedPlans(filteredFallback);
-      }
+      // try {
+      //   const response = await fetch("http://localhost:8080/api/science-plans");
+      //   const data = await response.json();
+      //   // const notSubmitted = data.filter((plan) => plan.status !== "SUBMITTED");
+      //   const filtered = sciencePlan.filter((plan) =>
+      //     statusFilter === "ALL" || statusFilter === "" || plan.status === statusFilter
+      //   );
+      //   setNotSubmittedPlans(filtered);
+      // } catch (error) {
+      //   console.error("Error fetching all plans:", error);
+      //   // setNotSubmittedPlans(
+      //   //   sciencePlan.filter((plan) => plan.status !== "SUBMITTED")
+      //   // );
+      //   // const fallbackData = sciencePlan.filter((plan) => plan.status !== "SUBMITTED");
+      //   const filteredFallback = sciencePlan.filter((plan) =>
+      //     statusFilter === "ALL" || statusFilter === "" || plan.status === statusFilter
+      //   );
+      //   setNotSubmittedPlans(filteredFallback);
+      // }
+      setSubmittedPlans(sciencePlan.filter((plan) => plan.status === "TESTED" || plan.status == "CREATED"));
     };
 
     const fetchPlanById = async () => {
@@ -57,52 +59,48 @@ function submit() {
       }
     };
 
-    if (id) {
+    if (planID) {
       fetchPlanById();
     } else {
       fetchPlans();
     }
-  }, [id, statusFilter]);
+  }, [planID, statusFilter]);
 
   const handleSelectPlan = (plan) => {
-    if (plan.status !== "TESTED") {
-      alert("This plan is not tested yet.");
-      return;
-    }
+    // if (plan.status !== "TESTED") {
+    // alert("This plan is not tested yet.");
+    // return;
+    // }
     setSelectedPlan(plan);
     window.scrollTo({ top: 0, behavior: "smooth" });
     navigate(`/submit-plan/${plan.planID}`);
   };
+
   const handleSubmitConfirmation = async () => {
+    if (!selectedPlan) {
+      alert("No plan selected!");
+      return;
+    }
+  
+    if (selectedPlan.status !== "TESTED") {
+      alert("Please test the science plan first before submitting.");
+      return;
+    }
+  
     const confirmed = window.confirm("Do you want to submit this plan?");
     if (confirmed) {
-      alert("Plan submitted successfully!");
-      // try {
-      //   const updatedPlan = { ...selectedPlan, status: "SUBMITTED" };
-      //   await fetch(`http://localhost:8080/api/science-plans/${selectedPlan.planID}`, {
-      //     method: "PUT", 
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify(updatedPlan),
-      //   });
-      //   alert("Plan submitted successfully!");
-      //   navigate('/submit-plan'); 
-      // } catch (error) {
-      //   console.error("Error submitting the plan:", error);
-      //   alert("Failed to submit plan.");
-      // }
+      alert("Plan is submitted successfully!");
+      // TODO: add API call to update plan status here
     } else {
       alert("Plan is not submitted!");
-      // Cancel clicked → stay at the same page
     }
   };
-
+  
 
   return (
     <div className="w-screen min-h-screen p-6 bg-gradient-to-b from-gray-900 to-indigo-900 text-white">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">List of Not Submitted Plans</h2>
+        <h2 className="text-xl font-bold">Science Plans</h2>
         {/* {notSubmittedPlans.length !== 0 && (
           <button
             className="text-blue-600 hover:underline focus:outline-none"
@@ -111,7 +109,7 @@ function submit() {
             All
           </button>
         )} */}
-        {!id && (
+        {!planID && (
         <select value={statusFilter} onChange={handleStatusFilterChange}>
           <option value="ALL">ALL</option>
           <option value="CREATED">CREATED</option>
@@ -352,14 +350,24 @@ function submit() {
               </div>
             </div>
           </div>
-          <div className="flex justify-center mt-6">
-            <button
-              className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-800"
-              onClick={handleSubmitConfirmation}
-            >
-              Submit
-            </button>
-          </div>
+          {selectedPlan && (
+            <div className="flex justify-center space-x-4 mt-6">
+              <button
+                className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-800"
+                onClick={() => navigate('/submit-plan')}
+              >
+                Cancel
+              </button>
+              
+              <button
+                className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-800"
+                onClick={handleSubmitConfirmation}
+              >
+                Confirm
+              </button>
+              
+            </div>
+          )}
         </div>
       )}
     </div>

@@ -28,11 +28,11 @@ function Navbar() {
                 <div className="text-xl font-semibold">GEMINI5</div>
 
                 <div className="space-x-6 flex items-center text-sm font-medium">
-                    <Link to="/home" className="hover:underline">Home</Link>
-                    <Link to="/show-list" className="hover:underline">Science Plan List</Link>
-                    <Link to="/createSciPlan" className="hover:underline">Create Science Plan</Link>
-                    <Link to="/validate-plan" className="hover:underline">Validate Science Plan</Link>
-                    <Link to="/submit-plan" className="hover:underline">Submit Science Plan</Link>
+                    <Link to="/" className="hover:underline">Home</Link>
+                    <Link to="/sciencePlans" className="hover:underline">Science Plan List</Link>
+                    <Link to="/createSciencePlan" className="hover:underline">Create Science Plan</Link>
+                    <Link to="/validateSciencePlan" className="hover:underline">Validate Science Plan</Link>
+                    <Link to="/submitSciencePlan" className="hover:underline">Submit Science Plan</Link>
                     <button 
                         onClick={handleLogout} 
                         className="ml-4 bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-full transition"

@@ -4,13 +4,13 @@ import { Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-// import Menu from "./pages/Menu";
 import CreateSciPlan from "./pages/CreateSciPlan";
-import DataProcessing from "./pages/DataProcessing"
-import Submit from './pages/submit';  
+import Submit from './pages/Submit';  
 import ValidatePlan from "./pages/ValidatePlan";
 import SciencePlanList from "./pages/SciencePlanList";
 import Navbar from "./components/Navbar";
+import Detail from "./pages/detail";
+
 
 
 
@@ -24,19 +24,17 @@ function App() {
       >
         <Navbar />
           <Routes>
-            <Route path="/" element={<Navigate to="/login" replace />} />
-              <Route path="/home" element={ <Home />} />
+            {/* <Route path="/" element={<Navigate to="/login" replace />} /> */}
+              <Route path="/" element={ <Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              {/* <Route path="/menu" element={<Menu />} /> */}
-              <Route path="/createSciPlan" element={<CreateSciPlan />} />
-              <Route path="/submit-plan/:id" element={<Submit />} />
-              <Route path="/submit-plan" element={<Submit />} />
-              <Route path="/validate-plan" element={<ValidatePlan />} />
-              <Route path="/validate-plan/:id" element={<ValidatePlan />} />
-              <Route path="/show-list" element={<SciencePlanList />} />
-
-              <Route path="/dataProcessing" element={<DataProcessing />} />
+              <Route path="/sciencePlans" element={<SciencePlanList />} />
+              <Route path="/createSciencePlan" element={<CreateSciPlan />} />
+              <Route path="/submitSciencePlan/:id" element={<Submit />} />
+              <Route path="/submitSciencePlan" element={<Submit />} />
+              <Route path="/validateSciencePlan" element={<ValidatePlan />} />
+              <Route path="/validateSciencePlan/:id" element={<ValidatePlan />} />
+              <Route path="/detail/:id" element={<Detail />} />
           </Routes>
       </Router>
 

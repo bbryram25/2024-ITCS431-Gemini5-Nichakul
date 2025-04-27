@@ -4,64 +4,57 @@ import { sciencePlan } from "../data/sciencePlan";
 import { useNavigate } from 'react-router-dom';
 
 function ValidatePlan() {
-  const { id } = useParams();
+  const { planID } = useParams();
   const [submittedPlans, setSubmittedPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [validationMessage, setValidationMessage] = useState("");
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   document.title = "Validate Science Plan | GEMINI5";
-  //   fetchPlans();
-  // }, []);
-
-  // useEffect(() => {
-  //   document.title = "Validate Science Plan | GEMINI5";
-  //   fetchPlanById();
-  // }, [id]);
 
   useEffect(() => {
     document.title = "Validate Science Plan | GEMINI5";
+    if (!id) setSelectedPlan(null);
     const fetchPlans = async () => {
-      try {
-        const response = await fetch("http://localhost:8080/api/science-plans");
-        const data = await response.json();
-        const submitted = data.filter((plan) => plan.status === "SUBMITTED");
-        setSubmittedPlans(submitted);
-      } catch (error) {
-        console.error("Error fetching all plans:", error);
-        setSubmittedPlans(
-          sciencePlan.filter((plan) => plan.status === "SUBMITTED")
-        );
-      }
+      // try {
+      //   const response = await fetch("http://localhost:8080/api/science-plans");
+      //   const data = await response.json();
+      //   const submitted = data.filter((plan) => plan.status === "SUBMITTED");
+      //   setSubmittedPlans(submitted);
+      // } catch (error) {
+      //   console.error("Error fetching all plans:", error);
+      //   setSubmittedPlans(
+      //     sciencePlan.filter((plan) => plan.status === "SUBMITTED")
+      //   );
+      // }
+      setSubmittedPlans(sciencePlan.filter((plan) => plan.status === "SUBMITTED"));
     };
 
     const fetchPlanById = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/api/science-plans/${id}`);
-        const data = await response.json();
-        setSelectedPlan(data);
-        setSubmittedPlans([data]);
-      } catch (error) {
-        console.error("Error fetching plan by ID:", error);
-        const fallback = sciencePlan.find((p) => p.planID.toString() === id);
-        if (fallback) {
-          setSelectedPlan(fallback);
-          setSubmittedPlans([fallback]);
-        } else {
-          setSelectedPlan(null);
-          setSubmittedPlans([]);
-        }
-      }
+      // try {
+      //   const response = await fetch(`http://localhost:8080/api/science-plans/${id}`);
+      //   const data = await response.json();
+      //   setSelectedPlan(data);
+      //   setSubmittedPlans([data]);
+      // } catch (error) {
+      //   console.error("Error fetching plan by ID:", error);
+      //   const fallback = sciencePlan.find((p) => p.planID.toString() === id);
+      //   if (fallback) {
+      //     setSelectedPlan(fallback);
+      //     setSubmittedPlans([fallback]);
+      //   } else {
+      //     setSelectedPlan(null);
+      //     setSubmittedPlans([]);
+      //   }
+      // }
     };
 
-    if (id) {
-      fetchPlanById();
-    } else {
-      fetchPlans();
-    }
-  }, [id]);
+      if (planID) {
+        fetchPlanById();
+      } else {
+        fetchPlans();
+      }
+  }, [planID]);
 
   const handleSelectPlan = (plan) => {
     setSelectedPlan(plan);
@@ -97,7 +90,7 @@ function ValidatePlan() {
       "creator",
       "funding",
       "objective",
-      "starSystem",
+      "target",
       "startDate",
       "endDate",
       "assignedTelescope",
@@ -143,6 +136,23 @@ function ValidatePlan() {
       return !value;
     });
 
+    if (selectedPlan.startDate && selectedPlan.endDate) {
+      const start = new Date(selectedPlan.startDate);
+      const end = new Date(selectedPlan.endDate);
+      if (start >= end) {
+        alert("Start Date cannot be after the End Date.");
+        setValidationMessage(
+          <>
+            <div className="text-red-600 font-bold">Validate failed.</div>
+            <div>SStart Date cannot be after the End Date.</div>
+          </>
+        );
+        setSelectedPlan((prev) => ({ ...prev, status: "INVALIDATED" }));
+        setIsEditing(true);
+        return;
+      }
+    }
+
     if (missingFields.length > 0) {
       const missingFieldsList = missingFields.map((field) => field.replace("dataProcessing.", "")).join(", ");
       alert(`The following fields are missing: ${missingFieldsList}`);
@@ -161,6 +171,7 @@ function ValidatePlan() {
       setIsEditing(false);
     }
   };
+  
 
   const toggleEditMode = () => {
     setIsEditing((prev) => !prev);
@@ -170,21 +181,23 @@ function ValidatePlan() {
   return (
     <div className="w-screen min-h-screen p-6 bg-gradient-to-b from-gray-900 to-indigo-900 text-white">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">Science Plans</h2>
-        {submittedPlans.length !== 0 && (
-          <button
-            className="text-blue-600 hover:underline focus:outline-none"
-            onClick={() => navigate('/validate-plan')}
-          >
-            All Plans
-          </button>
-        )}
+        {/* <h2 className="text-xl font-bold">Submitted Plans</h2>
+        {submittedPlans.length !== 0 
+        // && (
+          // <button
+          //   className="text-blue-600 hover:underline focus:outline-none"
+          //   onClick={() => navigate('/validate-plan')}
+          // >
+          //   All Plans
+          // </button>
+        // )
+        }
       </div>
 
 
       {submittedPlans.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-full">
-          <p>No submitted science plans.</p>
+          <p>There are currently no submitted science plans.</p>
         </div>
       ) : (
 
@@ -214,12 +227,50 @@ function ValidatePlan() {
                   >
                     Review
                   </button>
-                </td>
+                </td> */}
+        <h2 className="text-xl font-bold">Validate Science Plan</h2>
+      </div>
+
+
+      {submittedPlans.length === 0 ? 
+        (
+          <div className="flex flex-col items-center justify-center h-full">
+            <p>No submitted science plans.</p>
+          </div>
+        ) : (
+          <table className="w-full table-auto text-black bg-white rounded-xl mb-6">
+            <thead>
+              <tr className="text-center">
+                <th className="p-2">Plan ID</th>
+                <th className="p-2">Plan Name</th>
+                <th className="p-2">Creator</th>
+                <th className="p-2">Funding</th>
+                <th className="p-2">Status</th>
+                <th className="p-2">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+            </thead>
+            <tbody>
+              {submittedPlans.map((plan) => (
+                <tr key={plan.planID} className="text-center">
+                  <td className="p-2">{plan.planID}</td>
+                  <td className="p-2">{plan.planName}</td>
+                  <td className="p-2">{plan.creator || "-"}</td>
+                  <td className="p-2">${parseFloat(plan.funding).toFixed(2)}</td>
+                  <td className="p-2">{plan.status}</td>
+                  <td className="p-2">
+                    <button
+                      className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-800"
+                      onClick={() => handleSelectPlan(plan)}
+                    >
+                      Review
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )
+      }
 
       {selectedPlan && (
         <div className="bg-white text-black p-6 rounded-xl shadow-md space-y-4">
@@ -297,7 +348,7 @@ function ValidatePlan() {
               <h4 className="text-lg font-semibold mb-2">Star System (Target)</h4>
               <input
                 type="text"
-                name="starSystem"
+                name="target"
                 value={selectedPlan.target || ""}
                 onChange={handleChange}
                 disabled={!isEditing}
@@ -375,7 +426,7 @@ function ValidatePlan() {
                 <div className="flex flex-col">
                   <label className="font-semibold mb-1">File Quality</label>
                   <select
-                    name="dataProcessing.quality"
+                    name="dataProcessing.fileQuality"
                     value={selectedPlan.dataProcessing?.fileQuality || ""}
                     onChange={handleChange}
                     disabled={!isEditing}

@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { sciencePlan } from "../data/sciencePlan";
+import { sciencePlan } from "../data/sciencePlan"; // Optional fallback data for development
 
 function SciencePlanList() {
   const navigate = useNavigate();
   const [plans, setPlans] = useState([]);
   const [filteredPlans, setFilteredPlans] = useState([]);
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("ALL");
   const [loading, setLoading] = useState(true);
   const [searchId, setSearchId] = useState("");
 
-  // const statusOptions = ["all", "created", "tested", "submitted", "validated", "executed"];
   const statusOptions = [
-    "Select Filter",
+    // "Select Filter",
     "ALL",
     "CREATED",
     "TESTED",
@@ -22,49 +21,49 @@ function SciencePlanList() {
     "EXECUTED"
   ];
 
+  // Set document title
   useEffect(() => {
     document.title = "Science Plan List | GEMINI5";
     fetchPlans();
   }, []);
 
-  // useEffect(() => {
-  //   console.log("Status Filter Changed:", statusFilter);
-  //   if (statusFilter === "ALL") {
-  //     setFilteredPlans(plans);
-  //   } else {
-  //     setFilteredPlans(plans.filter((plan) => plan.status === statusFilter));
-  //   }
-  // }, [statusFilter, plans]);
-
+  // Filter the plans based on both the search ID and status filter
   useEffect(() => {
-    // Filter based on both searchId and statusFilter
     const filtered = plans.filter((plan) => {
       const statusMatch =
-        statusFilter === "" || plan.status === statusFilter || statusFilter === "ALL"; // No status selected or match found
-      const idMatch = searchId === "" || plan.planID.toString().includes(searchId); // Search by ID or show all if empty
+        statusFilter === "ALL" || plan.status === statusFilter;
+      const idMatch = !searchId || plan.planID.toString().includes(searchId);
       return statusMatch && idMatch;
     });
     setFilteredPlans(filtered);
   }, [statusFilter, searchId, plans]);
 
-  // useEffect(() => {
-  //   console.log("Plans:", plans);
-  //   console.log("Filtered Plans:", filteredPlans);
-  // }, [plans, filteredPlans]);
-
+  // Fetch science plans from the API
   const fetchPlans = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/science-plans");
-      console.log("Fetched plans:", response.data); // Log fetched data
+      console.log("Fetched plans:", response.data);
       setPlans(response.data);
-      setFilteredPlans(response.data); // set both full and filtered list initially
+      setFilteredPlans(response.data); // Set both full and filtered list initially
     } catch (error) {
       console.error("Error fetching science plans:", error);
-      setPlans(sciencePlan);
+      setPlans(sciencePlan); // Fallback to local data during development
       setFilteredPlans(sciencePlan);
     } finally {
       setLoading(false);
     }
+  };
+
+  // Format date
+  const formatDate = (date) => {
+    return new Date(date).toLocaleString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).replace(",", "");
   };
 
   return (
@@ -73,19 +72,8 @@ function SciencePlanList() {
         <h2 className="text-center text-xl font-semibold mb-6">
           Science Plan List
         </h2>
-        {/* <div className="flex justify-center mb-6">
-        <select
-          className="text-black p-2 rounded-md"
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-        >
-          {statusOptions.map((status) => (
-            <option key={status} value={status}>
-              {status.charAt(0).toUpperCase() + status.slice(1)}
-            </option>
-          ))}
-        </select>
-      </div> */}
+
+        {/* Filter by Status */}
         <div className="flex items-center gap-4 mb-4">
           <label htmlFor="statusFilter" className="w-32 font-medium text-black">
             Filter by Status :
@@ -103,6 +91,8 @@ function SciencePlanList() {
             ))}
           </select>
         </div>
+
+        {/* Search by ID */}
         <div className="flex items-center gap-4 mb-4">
           <label htmlFor="searchId" className="w-32 font-medium text-black">
             Search by ID :
@@ -117,53 +107,43 @@ function SciencePlanList() {
           />
         </div>
 
+        {/* Loading or Plan Display */}
         {loading ? (
           <p className="text-center">Loading...</p>
         ) : filteredPlans.length > 0 ? (
           <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
             {filteredPlans.map((plan) => (
-              // <li key={plan.planId} className="p-4 border rounded-lg ">
               <div key={plan.planID} className="p-4 border rounded-lg bg-white shadow">
                 <p><strong>ID:</strong> {plan.planID}</p>
                 <p><strong>Name:</strong> {plan.planName}</p>
                 <p><strong>Creator:</strong> {plan.creator}</p>
                 <p><strong>Funding:</strong> ${Number(plan.funding).toFixed(2)}</p>
                 <p><strong>Objective:</strong> {plan.objective}</p>
-                {/* <p><strong>Start Date:</strong> {new Date(plan.startDate).toISOString().slice(0, 16)}</p>
-                <p><strong>End Date:</strong> {new Date(plan.endDate).toISOString().slice(0, 16)}</p> */}
-                <p><strong>Start Date:</strong> {new Date(plan.startDate).toLocaleString("en-GB", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: false
-                }).replace(',', '')}</p>
-                <p><strong>End Date:</strong> {new Date(plan.endDate).toLocaleString("en-GB", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: false
-                }).replace(',', '')}</p>
-
+                <p><strong>Start Date:</strong> {formatDate(plan.startDate)}</p>
+                <p><strong>End Date:</strong> {formatDate(plan.endDate)}</p>
                 <p><strong>Star System (Target):</strong> {plan.target}</p>
                 <p><strong>Assigned Telescope:</strong> {plan.assignedTelescope}</p>
                 <p><strong>Status:</strong> {plan.status}</p>
 
                 <div className="flex justify-end pt-2">
                   <div className="flex gap-2">
-                  {plan.status === "SUBMITTED" && (
                     <button
-                      onClick={() => navigate(`/validate-plan/${plan.planID}`)}
+                      onClick={() => navigate(`/detail/${plan.planID}`)}
                       className="bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600 transition"
                     >
-                      Validate
+                      Detail
                     </button>
-                  )}
 
-                    {plan.status !== "SUBMITTED" && (
+                    {plan.status === "SUBMITTED" && (
+                      <button
+                        onClick={() => navigate(`/validate-plan/${plan.planID}`)}
+                        className="bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600 transition"
+                      >
+                        Validate
+                      </button>
+                    )}
+
+                    {plan.status === "TESTED" && (
                       <button
                         onClick={() => navigate(`/submit-plan/${plan.planID}`)}
                         className="bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600 transition"

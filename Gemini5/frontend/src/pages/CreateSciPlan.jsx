@@ -40,6 +40,7 @@ export default function CreatePlan() {
     const colorTypes = ["Color mode", "B&W mode"];
 
     useEffect(() => {
+        document.title = "Create Science Plan | GEMINI5"; 
         const fetchTelescopes = async () => {
             try {
                 const response = await fetch("http://localhost:8080/api/enums/assigned-telescope");
