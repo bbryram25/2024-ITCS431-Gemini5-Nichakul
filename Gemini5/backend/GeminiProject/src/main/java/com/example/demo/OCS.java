@@ -106,7 +106,7 @@ public class OCS {
       String[] oplists = this.insertSciencePlanToDB(sp);
       System.out.println(oplists[0]);
       System.out.println(oplists[1]);
-      return oplists[0] + "\n" + oplists[1];
+      return oplists[0] + "/n" + oplists[1];
    }
 
    public String submitSciencePlan(SciencePlan sp) {
@@ -164,7 +164,7 @@ public class OCS {
          int result = chkSDate.compareTo(chkEDate);
          if (result < 0) {
             String JDBC_DRIVER = "org.h2.Driver";
-            String DB_URL = "jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
+            String DB_URL = "jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
             String USER = "sa";
             String PASS = "";
             Connection conn = null;
@@ -172,7 +172,7 @@ public class OCS {
 
             try {
                Class.forName("org.h2.Driver");
-               conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
+               conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
                stmt = conn.createStatement();
                String sql = "SELECT MAX(planNo) FROM masSciencePlan";
                ResultSet rs = stmt.executeQuery(sql);
@@ -207,10 +207,10 @@ public class OCS {
                   sp.setStatus(STATUS.SAVED);
                   sciencePlans.add(sp);
                   slists[0] = "planNo = " + String.valueOf(curplanNo);
-                  slists[1] = "Your science plan has been saved.\n";
+                  slists[1] = "Your science plan has been saved./n";
                } else {
                   slists[0] = "-1";
-                  slists[1] = "Funding cannot be negative.\n";
+                  slists[1] = "Funding cannot be negative./n";
                }
             } catch (SQLException var49) {
                slists[0] = "-1";
@@ -239,11 +239,11 @@ public class OCS {
             }
          } else {
             slists[0] = "-1";
-            slists[1] = "The start date must be before the end date\n";
+            slists[1] = "The start date must be before the end date/n";
          }
       } else {
          slists[0] = "-1";
-         slists[1] = errDateformat + "\n";
+         slists[1] = errDateformat + "/n";
       }
 
       return slists;
@@ -251,7 +251,7 @@ public class OCS {
 
    public boolean updateSciencePlanStatus(int planno, SciencePlan.STATUS stssp) {
       String JDBC_DRIVER = "org.h2.Driver";
-      String DB_URL = "jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
+      String DB_URL = "jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
       String USER = "sa";
       String PASS = "";
       Connection conn = null;
@@ -260,7 +260,7 @@ public class OCS {
       boolean var10;
       try {
          Class.forName("org.h2.Driver");
-         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
+         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
          stmt = conn.createStatement();
          String sql = "";
          String var10000 = String.valueOf(stssp);
@@ -272,22 +272,22 @@ public class OCS {
          boolean var11;
          if (sp != null) {
             sp.setStatus(stssp);
-            System.out.println("Updated status of '" + String.valueOf(stssp) + "' successfully...\n");
+            System.out.println("Updated status of '" + String.valueOf(stssp) + "' successfully.../n");
             var11 = true;
             return var11;
          }
 
          System.out.println("Update status of '" + String.valueOf(stssp) + "' is unsuccessful...");
-         System.out.println("Not found planNo: " + planno + "\n");
+         System.out.println("Not found planNo: " + planno + "/n");
          var11 = false;
          return var11;
       } catch (SQLException var30) {
          var30.printStackTrace();
-         System.out.println("Update Status '" + String.valueOf(stssp) + "' failed...\n");
+         System.out.println("Update Status '" + String.valueOf(stssp) + "' failed.../n");
          var10 = false;
       } catch (Exception var31) {
          var31.printStackTrace();
-         System.out.println("Update Status '" + String.valueOf(stssp) + "' failed...\n");
+         System.out.println("Update Status '" + String.valueOf(stssp) + "' failed.../n");
          var10 = false;
          return var10;
       } finally {
@@ -312,7 +312,7 @@ public class OCS {
    }
 
    public String testSciencePlan(SciencePlan sp) {
-      System.out.println("\nSTART Testing.......");
+      System.out.println("/nSTART Testing.......");
       String[] r1 = this.testSelectedStarSystem(sp, 5L);
       String[] r2 = this.testImgProcessingConfig(sp, 5L);
       String[] r3 = this.testTelescopeLocation(sp, 5L);
@@ -320,10 +320,10 @@ public class OCS {
       String error;
       if (r1[0].equals("0") && r2[0].equals("0") && r3[0].equals("0") && r4[0].equals("0")) {
          this.updateSciencePlanStatus(sp.getPlanNo(), STATUS.TESTED);
-         error = "\nTEST RESULTS:\n" + r1[1] + "\n" + r2[1] + "\n" + r3[1] + "\n" + r4[1] + "\n";
+         error = "/nTEST RESULTS:/n" + r1[1] + "/n" + r2[1] + "/n" + r3[1] + "/n" + r4[1] + "/n";
          return error;
       } else {
-         error = "\nTEST RESULTS:\n" + r1[1] + "\n" + r2[1] + "\n" + r3[1] + "\n" + r4[1] + "\n";
+         error = "/nTEST RESULTS:/n" + r1[1] + "/n" + r2[1] + "/n" + r3[1] + "/n" + r4[1] + "/n";
          return error;
       }
    }
@@ -569,7 +569,7 @@ public class OCS {
          results[0] = "";
          results[1] = "";
          String JDBC_DRIVER = "org.h2.Driver";
-         String DB_URL = "jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
+         String DB_URL = "jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
          String USER = "sa";
          String PASS = "";
          Connection conn = null;
@@ -578,7 +578,7 @@ public class OCS {
          String[] var14;
          try {
             Class.forName("org.h2.Driver");
-            conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
+            conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
             stmt = conn.createStatement();
             String spStartDate = sp.getStartDate();
             String spEndDate = sp.getEndDate();
@@ -641,7 +641,7 @@ public class OCS {
    private void getSciencePlansFromDB() {
       sciencePlans.clear();
       String JDBC_DRIVER = "org.h2.Driver";
-      String DB_URL = "jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
+      String DB_URL = "jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
       String USER = "sa";
       String PASS = "";
       Connection conn = null;
@@ -650,7 +650,7 @@ public class OCS {
 
       try {
          Class.forName("org.h2.Driver");
-         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
+         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
          stmt = conn.createStatement();
          String sql = "";
          sql = "SELECT * FROM masSciencePlan";
@@ -717,7 +717,7 @@ public class OCS {
 
    public void deleteAllSciencePlans() {
       String JDBC_DRIVER = "org.h2.Driver";
-      String DB_URL = "jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
+      String DB_URL = "jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
       String USER = "sa";
       String PASS = "";
       Connection conn = null;
@@ -725,7 +725,7 @@ public class OCS {
 
       try {
          Class.forName("org.h2.Driver");
-         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
+         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
          stmt = conn.createStatement();
          String sql = "";
          sql = " DELETE FROM masSciencePlan; ";
@@ -758,7 +758,7 @@ public class OCS {
 
    public boolean deleteSciencePlanByNo(int planNo) {
       String JDBC_DRIVER = "org.h2.Driver";
-      String DB_URL = "jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
+      String DB_URL = "jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
       String USER = "sa";
       String PASS = "";
       Connection conn = null;
@@ -766,7 +766,7 @@ public class OCS {
 
       try {
          Class.forName("org.h2.Driver");
-         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
+         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
          stmt = conn.createStatement();
          String sql = "";
          sql = " DELETE FROM masSciencePlan WHERE planNo = " + planNo + ";";
@@ -806,7 +806,7 @@ public class OCS {
       SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
       String undate = formatter.format(datevalue);
       String JDBC_DRIVER = "org.h2.Driver";
-      String DB_URL = "jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
+      String DB_URL = "jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
       String USER = "sa";
       String PASS = "";
       Connection conn = null;
@@ -814,7 +814,7 @@ public class OCS {
 
       try {
          Class.forName("org.h2.Driver");
-         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
+         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
          stmt = conn.createStatement();
          String sql = "SELECT * FROM masUnavailableDates WHERE unavailabledates = '" + undate + "'";
          ResultSet rs = stmt.executeQuery(sql);
@@ -826,9 +826,9 @@ public class OCS {
          if (dateid == 0) {
             sql = " INSERT INTO masUnavailableDates(unavailabledates) VALUES ('" + undate + "');";
             stmt.executeUpdate(sql);
-            msgtext = "Your unavailable date has been saved.\n";
+            msgtext = "Your unavailable date has been saved./n";
          } else {
-            msgtext = "Unavailable date is exist.\n";
+            msgtext = "Unavailable date is exist./n";
          }
 
          conn.close();
@@ -864,7 +864,7 @@ public class OCS {
       SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
       String undate = formatter.format(datevalue);
       String JDBC_DRIVER = "org.h2.Driver";
-      String DB_URL = "jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
+      String DB_URL = "jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
       String USER = "sa";
       String PASS = "";
       Connection conn = null;
@@ -872,7 +872,7 @@ public class OCS {
 
       try {
          Class.forName("org.h2.Driver");
-         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
+         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
          stmt = conn.createStatement();
          String sql = "SELECT * FROM masUnavailableDates WHERE unavailabledates = '" + undate + "'";
          ResultSet rs = stmt.executeQuery(sql);
@@ -884,9 +884,9 @@ public class OCS {
          if (dateid > 0) {
             sql = " DELETE FROM masUnavailableDates WHERE unavailabledates = '" + undate + "'";
             stmt.executeUpdate(sql);
-            msgtext = "Your unavailable date has been deleted.\n";
+            msgtext = "Your unavailable date has been deleted./n";
          } else {
-            msgtext = "Your unavailable date is not exist.\n";
+            msgtext = "Your unavailable date is not exist./n";
          }
 
          conn.close();
@@ -929,7 +929,7 @@ public class OCS {
    private ArrayList<Date> getObservationScheduleFromDB() {
       ArrayList<Date> unavailabledatelist = new ArrayList();
       String JDBC_DRIVER = "org.h2.Driver";
-      String DB_URL = "jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
+      String DB_URL = "jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
       String USER = "sa";
       String PASS = "";
       Connection conn = null;
@@ -938,7 +938,7 @@ public class OCS {
 
       try {
          Class.forName("org.h2.Driver");
-         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
+         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
          stmt = conn.createStatement();
          String sql = "";
          sql = "SELECT * FROM masUnavailableDates";
@@ -978,7 +978,7 @@ public class OCS {
 
    private void H2GenFirstTimeDB() {
       String JDBC_DRIVER = "org.h2.Driver";
-      String DB_URL = "jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
+      String DB_URL = "jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
       String USER = "sa";
       String PASS = "";
       Connection conn = null;
@@ -987,7 +987,7 @@ public class OCS {
       try {
          Class.forName("org.h2.Driver");
          System.out.println("Connecting to database...");
-         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
+         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
          System.out.println("Connected database successfully...");
          stmt = conn.createStatement();
          String sql = "";
@@ -1019,7 +1019,7 @@ public class OCS {
          stmt.executeUpdate(sql);
          sql = " CREATE TABLE IF NOT EXISTS masAstronomicalData  (planNo INT not NULL,  seq INT,  imgURL VARCHAR(200),  )";
          stmt.executeUpdate(sql);
-         sql = " INSERT INTO masSciencePlan VALUES ( 1,'John Doe','John Doe',1000,'1. To explore Neptune.\n2. To collect astronomical data for future research.','Andromeda','2021-04-15 09:00:00','2021-04-15 10:00:00','HAWAII','SAVED' );  INSERT INTO trDataProcRequirement VALUES ( 1,'PNG','Fine','B&W mode',20,0,0,10,15,5,7,10,0,0 );  INSERT INTO masObservingProgram VALUES(1,'N','GNZ',2.4,16.0,37,'CASSEGRAIN_FOCUS' ,3,'Xenon','CerroPachonSkyEmission',False); INSERT INTO masTelePositionPair VALUES(1,135,44); INSERT INTO masTelePositionPair VALUES(1,90,65); INSERT INTO masTelePositionPair VALUES(1,210,35); INSERT INTO masSciencePlan VALUES ( 2,'Jane Dunn','Andrew Griffin',2500,'1. To explore Mars.\n2. To collect astronomical data for future research.','Antlia','2021-05-15 13:00:00','2021-05-15 15:00:00','CHILE','SAVED' ); INSERT INTO trDataProcRequirement VALUES ( 2,'JPEG','Low','Color mode',11,10,5,0,7,0,0,0,10,8 ); INSERT INTO masObservingProgram VALUES(2,'S','GSZ',5.5,12.0,40,'REFLECTIVE_CONVERGING_BEAM' ,1,'Argon','MaunaKeaSkyEmission',False); INSERT INTO masTelePositionPair VALUES(2,90,34); INSERT INTO masTelePositionPair VALUES(2,210,70);";
+         sql = " INSERT INTO masSciencePlan VALUES ( 1,'John Doe','John Doe',1000,'1. To explore Neptune./n2. To collect astronomical data for future research.','Andromeda','2021-04-15 09:00:00','2021-04-15 10:00:00','HAWAII','SAVED' );  INSERT INTO trDataProcRequirement VALUES ( 1,'PNG','Fine','B&W mode',20,0,0,10,15,5,7,10,0,0 );  INSERT INTO masObservingProgram VALUES(1,'N','GNZ',2.4,16.0,37,'CASSEGRAIN_FOCUS' ,3,'Xenon','CerroPachonSkyEmission',False); INSERT INTO masTelePositionPair VALUES(1,135,44); INSERT INTO masTelePositionPair VALUES(1,90,65); INSERT INTO masTelePositionPair VALUES(1,210,35); INSERT INTO masSciencePlan VALUES ( 2,'Jane Dunn','Andrew Griffin',2500,'1. To explore Mars./n2. To collect astronomical data for future research.','Antlia','2021-05-15 13:00:00','2021-05-15 15:00:00','CHILE','SAVED' ); INSERT INTO trDataProcRequirement VALUES ( 2,'JPEG','Low','Color mode',11,10,5,0,7,0,0,0,10,8 ); INSERT INTO masObservingProgram VALUES(2,'S','GSZ',5.5,12.0,40,'REFLECTIVE_CONVERGING_BEAM' ,1,'Argon','MaunaKeaSkyEmission',False); INSERT INTO masTelePositionPair VALUES(2,90,34); INSERT INTO masTelePositionPair VALUES(2,210,70);";
          stmt.executeUpdate(sql);
          ArrayList<String> Astrodatalist = this.getAstronomicalList();
          int seq = 1;
@@ -1067,7 +1067,7 @@ public class OCS {
    private ArrayList<String> getAstronomicalDataFromDB(SciencePlan sp) throws IOException {
       ArrayList<String> AstroList = new ArrayList();
       String JDBC_DRIVER = "org.h2.Driver";
-      String DB_URL = "jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
+      String DB_URL = "jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
       String USER = "sa";
       String PASS = "";
       Connection conn = null;
@@ -1076,7 +1076,7 @@ public class OCS {
 
       try {
          Class.forName("org.h2.Driver");
-         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
+         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
          stmt = conn.createStatement();
          String sql = "";
          sql = "SELECT * FROM masAstronomicalData WHERE planNo = " + sp.getPlanNo();
@@ -1122,7 +1122,7 @@ public class OCS {
          astroList.remove(index);
          this.DeleteAstronomicalFromDB(sp.getPlanNo());
          String JDBC_DRIVER = "org.h2.Driver";
-         String DB_URL = "jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
+         String DB_URL = "jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
          String USER = "sa";
          String PASS = "";
          Connection conn = null;
@@ -1131,7 +1131,7 @@ public class OCS {
 
          try {
             Class.forName("org.h2.Driver");
-            conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
+            conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
             stmt = conn.createStatement();
             String sql = "";
             int seq = 1;
@@ -1175,7 +1175,7 @@ public class OCS {
 
    private void DeleteAstronomicalFromDB(int planNo) {
       String JDBC_DRIVER = "org.h2.Driver";
-      String DB_URL = "jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
+      String DB_URL = "jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
       String USER = "sa";
       String PASS = "";
       Connection conn = null;
@@ -1184,12 +1184,12 @@ public class OCS {
 
       try {
          Class.forName("org.h2.Driver");
-         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
+         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
          stmt = conn.createStatement();
          String sql = "";
          sql = "DELETE FROM masAstronomicalData WHERE planNo = " + planNo;
          stmt.executeUpdate(sql);
-         System.out.println("Your AstronomicalData has been deleted.\n");
+         System.out.println("Your AstronomicalData has been deleted./n");
          stmt.close();
          conn.close();
       } catch (SQLException var25) {
@@ -1303,7 +1303,7 @@ public class OCS {
                return ran == 1 ? "BAD" : "WARNING";
             }
          } else if (command.equals("START")) {
-            return "Starting the virtual telescope ...\nTelescope is pointing to: " + lat + ": " + lon;
+            return "Starting the virtual telescope .../nTelescope is pointing to: " + lat + ": " + lon;
          } else if (command.equals("STOP")) {
             return "Stopping the virtual telescope ...";
          } else if (command.equals("UP")) {
@@ -1345,7 +1345,7 @@ public class OCS {
 
    public String getConfigurations() {
       String JDBC_DRIVER = "org.h2.Driver";
-      String DB_URL = "jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
+      String DB_URL = "jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
       String USER = "sa";
       String PASS = "";
       Connection conn = null;
@@ -1354,7 +1354,7 @@ public class OCS {
 
       try {
          Class.forName("org.h2.Driver");
-         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
+         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
          stmt = conn.createStatement();
          ResultSet rs = stmt.executeQuery(sql1);
 
@@ -1373,7 +1373,7 @@ public class OCS {
 
    public boolean addConfiguration(String confFilePath) {
       String JDBC_DRIVER = "org.h2.Driver";
-      String DB_URL = "jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
+      String DB_URL = "jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
       String USER = "sa";
       String PASS = "";
       Connection conn = null;
@@ -1382,7 +1382,7 @@ public class OCS {
 
       try {
          Class.forName("org.h2.Driver");
-         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
+         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
          stmt = conn.createStatement();
          stmt.executeUpdate(sql1);
          conn.close();
@@ -1395,7 +1395,7 @@ public class OCS {
 
    public boolean removeConfiguration(int confNo) {
       String JDBC_DRIVER = "org.h2.Driver";
-      String DB_URL = "jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
+      String DB_URL = "jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
       String USER = "sa";
       String PASS = "";
       Connection conn = null;
@@ -1403,7 +1403,7 @@ public class OCS {
 
       try {
          Class.forName("org.h2.Driver");
-         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
+         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
          stmt = conn.createStatement();
          String sql = " DELETE FROM opTable WHERE id = " + confNo + ";";
          stmt.executeUpdate(sql);
@@ -1458,7 +1458,7 @@ public class OCS {
       ObservingProgramConfigs.CalibrationUnit calibrationUnit = op.getCalibrationUnit();
       ObservingProgramConfigs.LightType lightType = op.getLightType();
       String JDBC_DRIVER = "org.h2.Driver";
-      String DB_URL = "jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
+      String DB_URL = "jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
       String USER = "sa";
       String PASS = "";
       Connection conn = null;
@@ -1467,7 +1467,7 @@ public class OCS {
 
       try {
          Class.forName("org.h2.Driver");
-         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
+         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
          stmt = conn.createStatement();
          String sql = "SELECT * FROM masSciencePlan WHERE planNo = " + planNo;
          ResultSet rs = stmt.executeQuery(sql);
@@ -1552,7 +1552,7 @@ public class OCS {
       String shortTelescopeLocation = String.valueOf(spTelescopeLocation) == "HAWAII" ? "N" : "S";
       int id = sp.getPlanNo();
       String JDBC_DRIVER = "org.h2.Driver";
-      String DB_URL = "jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
+      String DB_URL = "jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
       String USER = "sa";
       String PASS = "";
       Connection conn = null;
@@ -1561,7 +1561,7 @@ public class OCS {
 
       try {
          Class.forName("org.h2.Driver");
-         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
+         conn = DriverManager.getConnection("jdbc:h2:file:C:/Users/ming/Desktop/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs", "sa", "");
          stmt = conn.createStatement();
          String sql = "";
          sql = "SELECT * FROM masObservingProgram WHERE planNo = " + sp.getPlanNo();
@@ -1635,7 +1635,7 @@ public class OCS {
       if (inputStream == null) {
          System.out.println("File not found in resources!");
       } else {
-         String jsonText = (String)(new BufferedReader(new InputStreamReader(inputStream))).lines().collect(Collectors.joining("\n"));
+         String jsonText = (String)(new BufferedReader(new InputStreamReader(inputStream))).lines().collect(Collectors.joining("/n"));
          JSONObject json = new JSONObject(jsonText);
          String userHome = System.getProperty("user.home");
          File downloads = new File(userHome, "Downloads");
@@ -1698,7 +1698,7 @@ public class OCS {
             return;
          }
 
-         String jsonText = (String)(new BufferedReader(new InputStreamReader(inputStream))).lines().collect(Collectors.joining("\n"));
+         String jsonText = (String)(new BufferedReader(new InputStreamReader(inputStream))).lines().collect(Collectors.joining("/n"));
          JSONObject json = new JSONObject(jsonText);
          String userHome = System.getProperty("user.home");
          File downloads = new File(userHome, "Downloads");
@@ -1736,7 +1736,7 @@ public class OCS {
       String userHome = System.getProperty("user.home");
       File downloads = new File(userHome, "Downloads/gemini_config_current.json");
       InputStream inputStream = new FileInputStream(downloads);
-      String jsonText = (String)(new BufferedReader(new InputStreamReader(inputStream))).lines().collect(Collectors.joining("\n"));
+      String jsonText = (String)(new BufferedReader(new InputStreamReader(inputStream))).lines().collect(Collectors.joining("/n"));
       boolean jsonValid = this.isJSONValid(jsonText);
       if (!jsonValid) {
          msg = "FAILED: The provided Gemini configuration is in a wrong format. Please reupload the correctly formatted configuration file again.";
