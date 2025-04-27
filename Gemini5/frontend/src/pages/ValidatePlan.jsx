@@ -152,7 +152,7 @@ function ValidatePlan() {
         setValidationMessage(
           <>
             <div className="text-red-600 font-bold">Validate failed.</div>
-            <div>Start Date must be earlier than End Date.</div>
+            <div>SStart Date cannot be after the End Date.</div>
           </>
         );
         setSelectedPlan((prev) => ({ ...prev, status: "INVALIDATED" }));
@@ -205,7 +205,7 @@ function ValidatePlan() {
 
       {submittedPlans.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-full">
-          <p>No submitted science plans.</p>
+          <p>There are currently no submitted science plans.</p>
         </div>
       ) : (
 

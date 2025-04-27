@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 
 function DataProcessing() {
     const [form, setForm] = useState({
-        dataProcessingID: "",
+        // dataProcessingID: "",
+        dataProcessingName: "",
         fileType: "",
         fileQuality: "",
         colorType: "",
@@ -23,13 +24,13 @@ function DataProcessing() {
     const [fileTypes, setFileTypes] = useState([]);
     const [fileQualities, setFileQualities] = useState([]);
     const [colorTypes, setColorTypes] = useState([]);
-    const isColorMode = form.colorType === "Color";
-    const isBWMode = form.colorType === "BlackAndWhite";
+    const isColorMode = form.colorType === "Color mode";
+    const isBWMode = form.colorType === "Black and White mode";
 
     const fallbackEnums = {
         fileTypes: ["PNG", "JPEG", "RAW"],
         fileQualities: ["Low", "Fine"],
-        colorTypes: ["Color", "BlackAndWhite"],
+        colorTypes: ["Color mode", "Black and White mode"],
     };
 
     // useEffect(() => {
@@ -119,13 +120,25 @@ function DataProcessing() {
             >
                 <h2 className="text-xl font-semibold text-center mb-6">Create Data Processing</h2>
 
-                <div className="flex items-center gap-4 mb-4">
+                {/* <div className="flex items-center gap-4 mb-4">
                     <label htmlFor="dataProcessingID" className="w-48 font-medium">Data Processing ID</label>
                     <input
                         id="dataProcessingID"
                         name="dataProcessingID"
                         type="text"
                         value={form.dataProcessingID}
+                        onChange={handleChange}
+                        className="flex-1 px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-500"
+                        required
+                    />
+                </div> */}
+                <div className="flex items-center gap-4 mb-4">
+                    <label htmlFor="dataProcessingID" className="w-48 font-medium">Data Processing Name</label>
+                    <input
+                        id="dataProcessingName"
+                        name="dataProcessingName"
+                        type="text"
+                        value={form.dataProcessingName}
                         onChange={handleChange}
                         className="flex-1 px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-500"
                         required
