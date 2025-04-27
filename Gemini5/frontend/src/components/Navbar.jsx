@@ -21,6 +21,14 @@ function Navbar() {
         navigate("/login");
     };
 
+    const handleUnauthorizedClick = (message) => {
+        alert(message);
+    };
+
+    const hasPermission = (requiredRole) => {
+        return user && user.role === requiredRole;
+    };
+
     // If the user is on /login or /register, show a minimal navbar
     if (location.pathname === "/login" || location.pathname === "/register") {
         return (
@@ -38,35 +46,72 @@ function Navbar() {
                 <div className="text-xl font-semibold">GEMINI5</div>
 
                 <div className="space-x-6 flex items-center text-sm font-medium">
-                    <Link to="/home" className="hover:underline">Home</Link>
-                    <Link to="/show-list" className="hover:underline">Science Plan List</Link>
+                    <span
+                        onClick={() => navigate("/home")}
+                        className="text-gray-900 hover:text-blue-500 hover:underline cursor-pointer"
+                    >
+                        Home
+                    </span>
 
-                    {/* Show Create Science Plan link if the user is an Astronomer */}
-                    {user && user.role === "Astronomer" && (
-                        <Link to="/createSciPlan" className="hover:underline">Create Science Plan</Link>
-                    )}
+                    <span
+                        onClick={() => navigate("/show-list")}
+                        className="text-gray-900 hover:text-blue-500 hover:underline cursor-pointer"
+                    >
+                        Science Plan List
+                    </span>
 
-                    {/* Show Validate and Submit Plan links based on role */}
-                    {user && user.role === "ScienceObserver" && (
-                        <Link to="/validate-plan" className="hover:underline">Validate Science Plan</Link>
-                    )}
+                    <span
+                        onClick={() => {
+                            if (hasPermission("Astronomer")) {
+                                navigate("/createSciPlan");
+                            } else {
+                                handleUnauthorizedClick("Only Astronomers can create science plans.");
+                            }
+                        }}
+                        className="text-gray-900 hover:text-blue-500 hover:underline cursor-pointer"
+                    >
+                        Create Science Plan
+                    </span>
 
-                    {user && user.role === "Astronomer" && (
-                        <Link to="/submit-plan" className="hover:underline">Submit Science Plan</Link>
-                    )}
+                    <span
+                        onClick={() => {
+                            if (hasPermission("ScienceObserver")) {
+                                navigate("/validate-plan");
+                            } else {
+                                handleUnauthorizedClick("Only ScienceObservers can validate plans.");
+                            }
+                        }}
+                        className="text-gray-900 hover:text-blue-500 hover:underline cursor-pointer"
+                    >
+                        Validate Science Plan
+                    </span>
 
-                    {/* Logout button */}
-                    {user && (
-                        <button
-                            onClick={handleLogout}
-                            className="ml-4 bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-full transition"
-                        >
-                            Logout
-                        </button>
-                    )}
+                    <span
+                        onClick={() => {
+                            if (hasPermission("Astronomer")) {
+                                navigate("/submit-plan");
+                            } else {
+                                handleUnauthorizedClick("Only Astronomers can submit plans.");
+                            }
+                        }}
+                        className="text-gray-900 hover:text-blue-500 hover:underline cursor-pointer"
+                    >
+                        Submit Science Plan
+                    </span>
                 </div>
+
+                {/* Logout button */}
+                {user && (
+                    <button
+                        onClick={handleLogout}
+                        className="ml-4 bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-full transition"
+                    >
+                        Logout
+                    </button>
+                )}
             </div>
         </nav>
     );
 }
+
 export default Navbar;

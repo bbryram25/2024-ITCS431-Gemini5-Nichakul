@@ -156,7 +156,7 @@ function SciencePlanList() {
                     {plan.status === "SUBMITTED" && (
                       <button
                         // onClick={() => navigate(`/validate-plan/${plan.planID}`)}
-                        onClick={() => handleButtonClick(["Observer"], "ScienceObserver", plan.planID, "validate-plan")}
+                        onClick={() => handleButtonClick(["ScienceObserver"], "ScienceObserver", plan.planID, "validate-plan")}
                         className="bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600 transition"
                       >
                         Validate
