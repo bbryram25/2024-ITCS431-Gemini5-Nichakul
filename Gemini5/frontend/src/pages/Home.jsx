@@ -9,14 +9,27 @@ function Home() {
     //     return <Navigate to="/login" replace />;
     // }
     const navigate = useNavigate();
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
         document.title = "Home | GEMINI5";
+        const storedUser = JSON.parse(localStorage.getItem("user"));
+        if (storedUser) {
+            setUser(storedUser);
+        }
     }, []);
 
-    const handleNavigation = (path) => {
-        navigate(path);
+    // const handleNavigation = (path) => {
+    //     navigate(path);
+    // };
+    const handleNavigation = (path, allowedRoles) => {
+        if (allowedRoles.includes(user.role)) {
+            navigate(path);
+        } else {
+            alert(`Only ${allowedRoles.join(" or ")} can access.`);
+        }
     };
+    if (!user) return null;    
 
     // useEffect(() => {
     //     document.title = "GEMINI5";
@@ -42,27 +55,36 @@ function Home() {
                 <h2 className="text-center text-xl font-semibold mb-6">
                     Home
                 </h2>
+                {/* Welcome message */}
+                {user && (
+                    <p className="text-center text-m text-gray-700 mb-6">
+                        Welcome {user.firstName} {user.lastName}, our {user.role}!
+                    </p>
+                )}
                 <div className="space-y-4">
                     <button
-                        onClick={() => handleNavigation("/show-list")}
+                        onClick={() => navigate("/show-list")}
                         className="w-full py-2 rounded-full bg-black text-white font-semibold hover:opacity-90 transition"
                     >
                         Show Science Plan List
                     </button>
                     <button
-                        onClick={() => handleNavigation("/CreateSciPlan")}
+                        // onClick={() => handleNavigation("/CreateSciPlan")}
+                        onClick={() => handleNavigation("/CreateSciPlan", ["Astronomer"])}
                         className="w-full py-2 rounded-full bg-black text-white font-semibold hover:opacity-90 transition"
                     >
                         Create Science Plan
                     </button>
                     <button
-                        onClick={() => handleNavigation("/validate-plan")}
+                        // onClick={() => handleNavigation("/validate-plan")}
+                        onClick={() => handleNavigation("/validate-plan", ["ScienceObserver"])}
                         className="w-full py-2 rounded-full bg-black text-white font-semibold hover:opacity-90 transition"
                     >
                         Validate Science Plan
                     </button>
                     <button
-                        onClick={() => handleNavigation("/submit-plan")}
+                        // onClick={() => handleNavigation("/submit-plan")}
+                        onClick={() => handleNavigation("/submit-plan", ["Astronomer"])}
                         className="w-full py-2 rounded-full bg-black text-white font-semibold hover:opacity-90 transition"
                     >
                         Submit Science Plan
