@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface StaffRepository extends JpaRepository<Staff, String> {
     Optional<Staff> findByUsername(String username);
 
-    @Query("SELECT s.staffId FROM Staff s ORDER BY s.staffId DESC LIMIT 1")
+    @Query("SELECT s.staffId FROM Staff s ORDER BY CAST(SUBSTRING(s.staffId, LOCATE('-', s.staffId) + 1) AS int) DESC LIMIT 1")
     Optional<String> findMaxStaffId();
 
     @Query("SELECT s FROM Staff s")

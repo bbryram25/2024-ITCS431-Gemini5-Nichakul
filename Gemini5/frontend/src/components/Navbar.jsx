@@ -20,7 +20,7 @@ function Navbar() {
         return user && user.role === requiredRole;
     };
 
-    // If the user is on /login or /register, show a minimal navbar
+    // Show minimal navbar on login/register page
     if (location.pathname === "/login" || location.pathname === "/register") {
         return (
             <nav className="bg-white shadow-md font-sans text-gray-900">
@@ -52,7 +52,7 @@ function Navbar() {
                     </div>
                 )}
 
-                {/* Logout button */}
+                {/* Logout Button */}
                 {user && (
                     <button
                         onClick={handleLogout}

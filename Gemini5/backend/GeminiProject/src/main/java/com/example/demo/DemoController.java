@@ -136,6 +136,13 @@ public class DemoController {
         return ResponseEntity.ok(ResponseWrapper.success(staff, "Staff deleted successfully", HttpStatus.OK));
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @DeleteMapping("/deleteStaffs")
+    public ResponseEntity<?> deleteAllStaff() {
+        staffRepository.deleteAll();
+        return ResponseEntity.ok(ResponseWrapper.success(null, "All staffs deleted successfully", HttpStatus.OK));
+    }
+
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @PostMapping("/createSciencePlan")
@@ -226,6 +233,7 @@ public class DemoController {
         }
         
         ArrayList<SciencePlan> sciencePlans = o.getAllSciencePlans();
+        o.updateSciencePlanStatus(sciencePlans.size(), SciencePlan.STATUS.TESTED);
         SciencePlan createdSciencePlan = o.getSciencePlanByNo(sciencePlans.size());
 
         return ResponseEntity.ok(ResponseWrapper.success(createdSciencePlan, "Science plan created successfully", HttpStatus.CREATED));
@@ -272,6 +280,39 @@ public class DemoController {
         OCS o = new OCS();
         o.deleteAllSciencePlans();
         return ResponseEntity.ok(ResponseWrapper.success(null, "All science plans deleted successfully", HttpStatus.OK));
+    } 
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @GetMapping("/submitSciencePlan/{id}")
+    public ResponseEntity<?> submitSciencePlan(@PathVariable("id") int id) {
+        OCS o = new OCS();
+        SciencePlan sciencePlan = o.getSciencePlanByNo(id);
+
+        if (sciencePlan == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseWrapper.notFound("Science plan not found", HttpStatus.NOT_FOUND));
+        }
+
+        String message = o.submitSciencePlan(sciencePlan);
+        sciencePlan = o.getSciencePlanByNo(id);
+        if (message.contains("submitted")) {
+            return ResponseEntity.ok(ResponseWrapper.success(sciencePlan, "Science plan submitted successfully", HttpStatus.OK));
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseWrapper.error(message, HttpStatus.BAD_REQUEST));
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @GetMapping("/validateSciencePlan/{id}")
+    public ResponseEntity<?> validateSciencePlan(@PathVariable("id") int id){
+        OCS o = new OCS();
+        SciencePlan sciencePlan = o.getSciencePlanByNo(id);
+
+        if (sciencePlan == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseWrapper.notFound("Science plan not found", HttpStatus.NOT_FOUND));
+        }
+
+        o.updateSciencePlanStatus(id, SciencePlan.STATUS.VALIDATED);
+        sciencePlan = o.getSciencePlanByNo(id);
+        return ResponseEntity.ok(ResponseWrapper.success(sciencePlan, "Science plan validated successfully", HttpStatus.OK));
     }
 
 }
