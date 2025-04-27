@@ -144,6 +144,23 @@ function ValidatePlan() {
       return !value;
     });
 
+    if (selectedPlan.startDate && selectedPlan.endDate) {
+      const start = new Date(selectedPlan.startDate);
+      const end = new Date(selectedPlan.endDate);
+      if (start >= end) {
+        alert("Start Date must be earlier than End Date.");
+        setValidationMessage(
+          <>
+            <div className="text-red-600 font-bold">Validate failed.</div>
+            <div>Start Date must be earlier than End Date.</div>
+          </>
+        );
+        setSelectedPlan((prev) => ({ ...prev, status: "INVALIDATED" }));
+        setIsEditing(true);
+        return;
+      }
+    }
+
     if (missingFields.length > 0) {
       const missingFieldsList = missingFields.map((field) => field.replace("dataProcessing.", "")).join(", ");
       alert(`The following fields are missing: ${missingFieldsList}`);
@@ -162,6 +179,7 @@ function ValidatePlan() {
       setIsEditing(false);
     }
   };
+  
 
   const toggleEditMode = () => {
     setIsEditing((prev) => !prev);
