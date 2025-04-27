@@ -83,7 +83,7 @@ function CreatePlan() {
         const end = new Date(form.endDate);
 
         if (start >= end) {
-        alert("Start Date must be before End Date.");
+        alert("Start Date cannot be after the End Date.");
         return;
     }
         console.log("Saving form:", form);
