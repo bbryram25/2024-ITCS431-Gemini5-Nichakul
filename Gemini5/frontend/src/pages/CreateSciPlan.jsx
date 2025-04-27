@@ -20,6 +20,10 @@ function CreatePlan() {
     const [statuses, setStatuses] = useState([]);
     const [dataProcessingOptions, setDataProcessingOptions] = useState([]);
 
+    useEffect(() => {
+        document.title = "Create Science Plan | GEMINI5";
+    }, []);
+
     const fallbackTelescopes = ["Hawaii", "Chile"];
     const fallbackStatuses = ["CREATED", "TESTED", "SUBMITTED", "VALIDATED", "RUNNING", "INVALIDATED", "COMPLETE"];
 
