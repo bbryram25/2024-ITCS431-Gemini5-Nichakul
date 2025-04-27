@@ -136,6 +136,13 @@ public class DemoController {
         return ResponseEntity.ok(ResponseWrapper.success(staff, "Staff deleted successfully", HttpStatus.OK));
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @DeleteMapping("/deleteStaffs")
+    public ResponseEntity<?> deleteAllStaff() {
+        staffRepository.deleteAll();
+        return ResponseEntity.ok(ResponseWrapper.success(null, "All staffs deleted successfully", HttpStatus.OK));
+    }
+
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @PostMapping("/createSciencePlan")
