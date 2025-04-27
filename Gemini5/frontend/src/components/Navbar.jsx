@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { logout } from "../auth";
 
 function Navbar() {
@@ -8,16 +8,20 @@ function Navbar() {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        // Retrieve user data from localStorage or API
         const storedUser = JSON.parse(localStorage.getItem("user"));
-        if (storedUser) {
-            setUser(storedUser);
-        }
-    }, []);
+        setUser(storedUser);
+    
+        const interval = setInterval(() => {
+            const updatedUser = JSON.parse(localStorage.getItem("user"));
+            setUser(updatedUser);
+        }, 500); // check every 500ms
+    
+        return () => clearInterval(interval); // cleanup
+    }, []);    
 
     const handleLogout = () => {
         logout();
-        localStorage.removeItem("user"); // Remove user from localStorage on logout
+        localStorage.removeItem("user");
         navigate("/login");
     };
 
@@ -29,7 +33,7 @@ function Navbar() {
         return user && user.role === requiredRole;
     };
 
-    // If the user is on /login or /register, show a minimal navbar
+    // Show minimal navbar on login/register page
     if (location.pathname === "/login" || location.pathname === "/register") {
         return (
             <nav className="bg-white shadow-md font-sans text-gray-900">
@@ -62,11 +66,9 @@ function Navbar() {
 
                     <span
                         onClick={() => {
-                            if (hasPermission("Astronomer")) {
-                                navigate("/createSciPlan");
-                            } else {
-                                handleUnauthorizedClick("Only Astronomers can create science plans.");
-                            }
+                            hasPermission("Astronomer")
+                                ? navigate("/createSciPlan")
+                                : handleUnauthorizedClick("Only Astronomers can create science plans.");
                         }}
                         className="text-gray-900 hover:text-blue-500 hover:underline cursor-pointer"
                     >
@@ -75,11 +77,9 @@ function Navbar() {
 
                     <span
                         onClick={() => {
-                            if (hasPermission("ScienceObserver")) {
-                                navigate("/validate-plan");
-                            } else {
-                                handleUnauthorizedClick("Only ScienceObservers can validate plans.");
-                            }
+                            hasPermission("ScienceObserver")
+                                ? navigate("/validate-plan")
+                                : handleUnauthorizedClick("Only ScienceObservers can validate plans.");
                         }}
                         className="text-gray-900 hover:text-blue-500 hover:underline cursor-pointer"
                     >
@@ -88,11 +88,9 @@ function Navbar() {
 
                     <span
                         onClick={() => {
-                            if (hasPermission("Astronomer")) {
-                                navigate("/submit-plan");
-                            } else {
-                                handleUnauthorizedClick("Only Astronomers can submit plans.");
-                            }
+                            hasPermission("Astronomer")
+                                ? navigate("/submit-plan")
+                                : handleUnauthorizedClick("Only Astronomers can submit plans.");
                         }}
                         className="text-gray-900 hover:text-blue-500 hover:underline cursor-pointer"
                     >
@@ -100,7 +98,7 @@ function Navbar() {
                     </span>
                 </div>
 
-                {/* Logout button */}
+                {/* Logout Button */}
                 {user && (
                     <button
                         onClick={handleLogout}
