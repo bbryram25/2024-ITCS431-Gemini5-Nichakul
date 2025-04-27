@@ -207,12 +207,15 @@ public class DemoController {
         
         String message = o.createSciencePlan(sciencePlan);
 
-        // if (!message.isEmpty()){
-        //     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        //         .body(ResponseWrapper.error(message, HttpStatus.BAD_REQUEST));
-        // }
+        if (!(message.equals("-1\nreferences\\images.txt (The system cannot find the path specified)"))){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ResponseWrapper.error(message, HttpStatus.BAD_REQUEST));
+        }
+        
+        ArrayList<SciencePlan> sciencePlans = o.getAllSciencePlans();
+        SciencePlan createdSciencePlan = o.getSciencePlanByNo(sciencePlans.size());
 
-        return ResponseEntity.ok(ResponseWrapper.success(sciencePlan, "Science plan created successfully", HttpStatus.CREATED));
+        return ResponseEntity.ok(ResponseWrapper.success(createdSciencePlan, "Science plan created successfully", HttpStatus.CREATED));
 
     }
 }
