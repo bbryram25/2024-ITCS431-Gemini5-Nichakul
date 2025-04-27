@@ -115,13 +115,24 @@ public class DemoController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
-    @GetMapping("/staff/{id}")
+    @GetMapping("/staffId/{id}")
     public ResponseEntity<?> getStaffById(@PathVariable("id") String id) {
         Staff staff = staffRepository.getStaffById(id).orElse(null);
         if (staff == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseWrapper.notFound("Staff not found", HttpStatus.NOT_FOUND));
         }
         return ResponseEntity.ok(ResponseWrapper.success(staff, "Staff retrieved successfully", HttpStatus.OK));
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @GetMapping("/staffName/{name}")
+    public ResponseEntity<?> getStaffByFullName(@PathVariable("name") String name) {
+        String[] names = name.split(" ");
+        Staff staff = staffRepository.getStaffByFullName(names[0], names[1]).orElse(null);
+        if (staff != null) {
+            return ResponseEntity.ok(ResponseWrapper.success(staff, "Staff retrieved successfully", HttpStatus.OK));
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseWrapper.notFound("Staff not found", HttpStatus.NOT_FOUND));
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
@@ -134,6 +145,7 @@ public class DemoController {
         staffRepository.delete(staff);
         return ResponseEntity.ok(ResponseWrapper.success(staff, "Staff deleted successfully", HttpStatus.OK));
     }
+
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @PostMapping("/createSciencePlan")
@@ -168,7 +180,6 @@ public class DemoController {
         dataProcRequirement.setLuminance(luminance);
         dataProcRequirement.setHue(hue);
 
-
         String creator = body.get("creator").toString();
         String submitter = body.get("submitter").toString();
         double funding = Double.parseDouble(body.get("funding").toString());
@@ -177,6 +188,18 @@ public class DemoController {
         String telescopeLocation = body.get("telescopeLocation").toString();
         String startDate = body.get("startDate").toString();
         String endDate = body.get("endDate").toString();
+
+        Staff creatorStaff = staffRepository.getStaffByFullName(creator.split(" ")[0], creator.split(" ")[1]).orElse(null);
+        if (creatorStaff == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ResponseWrapper.error("The provided creator is not valid", HttpStatus.BAD_REQUEST));
+        }
+
+        Staff submitterStaff = staffRepository.getStaffByFullName(submitter.split(" ")[0], submitter.split(" ")[1]).orElse(null);
+        if (submitterStaff == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ResponseWrapper.error("The provided submitter is not valid", HttpStatus.BAD_REQUEST));
+        }
 
         StarSystem.CONSTELLATIONS starSystemEnum = null;
         try {
