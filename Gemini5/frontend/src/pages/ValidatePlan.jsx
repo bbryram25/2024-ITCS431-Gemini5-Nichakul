@@ -504,9 +504,7 @@ function ValidatePlan() {
             </div>
           </div>
 
-          <div className="flex justify-center gap-4 mt-6">
-          
-
+          {/* <div className="flex justify-center gap-4 mt-6">
             <button
               onClick={toggleEditMode}
               className={`px-6 py-2 rounded text-white font-semibold ${isEditing ? "bg-indigo-500 hover:bg-indigo-700" : "bg-emerald-500 hover:bg-emerald-700"
@@ -520,7 +518,27 @@ function ValidatePlan() {
             >
               {isEditing ? "Validate Again" : "Validate Plan"}
             </button>
-          </div>
+          </div> */}
+
+
+<div className="flex justify-center gap-4 mt-4">
+  <button
+    className="px-6 py-3 !bg-red-700 text-white rounded hover:!bg-red-800 font-semibold"
+    onClick={() => {
+      alert(`Science Plan ID ${selectedPlan.planID} has been marked as INVALID.`);
+      setSelectedPlan((prev) => ({ ...prev, status: "INVALID" }));
+      setValidationMessage(`Science Plan ID ${selectedPlan.planID} marked as INVALIDATED`);
+    }}
+  >
+    Invalidated
+  </button>
+  <button
+    className="px-6 py-3 !bg-blue-900 text-white rounded hover:!bg-green-800 font-semibold"
+    onClick={handleValidate}
+  >
+    Validate
+  </button>
+</div>
 
           {validationMessage && (
             <div className="text-center mt-4 text-lg font-medium">
