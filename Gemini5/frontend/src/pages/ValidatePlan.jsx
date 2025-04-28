@@ -177,6 +177,7 @@ function ValidatePlan() {
       setValidationMessage(`Validate Science Plan Succeed ID: ${selectedPlan.planID}`);
       setSelectedPlan((prev) => ({ ...prev, status: "VALIDATED" }));
       setIsEditing(false);
+      alert(`Science Plan ID ${selectedPlan.planID} has been successfully validated.`);
     }
   };
   
