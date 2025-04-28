@@ -13,9 +13,9 @@ function Detail() {
 
     const fetchPlanById = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/science-plans/${id}`);
+        const response = await fetch(`http://localhost:8080/api/sciencePlan/${id}`);
         const data = await response.json();
-        setSelectedPlan(data);
+        setSelectedPlan(data.data);
       } catch (error) {
         console.error("Error fetching plan by ID:", error);
         const fallback = sciencePlan.find((p) => p.planID.toString() === id);
@@ -68,17 +68,17 @@ function Detail() {
 
             <div className="bg-white text-black p-6 rounded-xl shadow-md w-full max-w-3xl">
               <h3 className="text-xl font-semibold mb-2">
-                {selectedPlan.planName} (ID: {selectedPlan.planID})
+                Plan No.: {selectedPlan.planNo}
               </h3>
               <div className="space-y-2">
               <div>
                 <strong>Creator:</strong> {selectedPlan.creator || "N/A"}
               </div>
               <div>
-                <strong>Funding:</strong> ${parseFloat(selectedPlan.funding).toFixed(2)}
+                <strong>Funding:</strong> ${parseFloat(selectedPlan.fundingInUSD).toFixed(2)}
               </div>
               <div>
-                <strong>Objective:</strong> {selectedPlan.objective || "N/A"}
+                <strong>Objective:</strong> {selectedPlan.objectives || "N/A"}
               </div>
               <div>
                 <strong>Status:</strong> 
@@ -93,59 +93,59 @@ function Detail() {
                 <strong>End Date:</strong> {new Date(selectedPlan.endDate).toLocaleString()}
               </div>
               <div>
-                <strong>Star System (Target):</strong> {selectedPlan.target || "N/A"}
+                <strong>Star System (Target):</strong> {selectedPlan.starSystem || "N/A"}
               </div>
               <div>
-                <strong>Telescope Assigned:</strong> {selectedPlan.assignedTelescope || "N/A"}
+                <strong>Telescope Assigned:</strong> {selectedPlan.telescopeLocation || "N/A"}
               </div>
               <div>
-                <strong>File Type:</strong> {selectedPlan.dataProcessing?.fileType || "N/A"}
+                <strong>File Type:</strong> {selectedPlan.dataProcRequirements?.[0]?.fileType || "N/A"}
               </div>
               <div>
-                <strong>File Quality:</strong> {selectedPlan.dataProcessing?.fileQuality || "N/A"}
+                <strong>File Quality:</strong> {selectedPlan.dataProcRequirements?.[0]?.fileQuality || "N/A"}
               </div>
               <div>
-                <strong>Color Type:</strong> {selectedPlan.dataProcessing?.colorType || "N/A"}
+                <strong>Color Type:</strong> {selectedPlan.dataProcRequirements?.[0]?.colorType || "N/A"}
               </div>
               <div>
-                <strong>Contrast:</strong> {selectedPlan.dataProcessing?.contrast || "N/A"}
+                <strong>Contrast:</strong> {selectedPlan.dataProcRequirements?.[0]?.contrast || "N/A"}
               </div>
               <div>
-                <strong>Exposure:</strong> {selectedPlan.dataProcessing?.exposure || "N/A"}
+                <strong>Exposure:</strong> {selectedPlan.dataProcRequirements?.[0]?.exposure || "N/A"}
               </div>
 
               {/* Show only for Color mode */}
-              {selectedPlan.dataProcessing?.colorType === "Color mode" && (
+              {selectedPlan.dataProcRequirements?.colorType === "Color mode" && (
                 <>
                   <div>
-                    <strong>Brightness:</strong> {selectedPlan.dataProcessing?.brightness || "N/A"}
+                    <strong>Brightness:</strong> {selectedPlan.dataProcRequirements?.[0]?.brightness || "N/A"}
                   </div>
                   <div>
-                    <strong>Saturation:</strong> {selectedPlan.dataProcessing?.saturation || "N/A"}
+                    <strong>Saturation:</strong> {selectedPlan.dataProcRequirements?.[0]?.saturation || "N/A"}
                   </div>
                   <div>
-                    <strong>Luminance:</strong> {selectedPlan.dataProcessing?.luminance || "N/A"}
+                    <strong>Luminance:</strong> {selectedPlan.dataProcRequirements?.[0]?.luminance || "N/A"}
                   </div>
                   <div>
-                    <strong>Hue:</strong> {selectedPlan.dataProcessing?.hue || "N/A"}
+                    <strong>Hue:</strong> {selectedPlan.dataProcRequirements?.[0]?.hue || "N/A"}
                   </div>
                 </>
               )}
 
               {/* Show only for Black and White mode */}
-              {selectedPlan.dataProcessing?.colorType === "B&W mode" && (
+              {selectedPlan.dataProcRequirements?.[0]?.colorType === "B&W mode" && (
                 <>
                   <div>
-                    <strong>Highlights:</strong> {selectedPlan.dataProcessing?.highlights || "N/A"}
+                    <strong>Highlights:</strong> {selectedPlan.dataProcRequirements?.[0]?.highlights || "N/A"}
                   </div>
                   <div>
-                    <strong>Shadows:</strong> {selectedPlan.dataProcessing?.shadows || "N/A"}
+                    <strong>Shadows:</strong> {selectedPlan.dataProcRequirements?.[0]?.shadows || "N/A"}
                   </div>
                   <div>
-                    <strong>Whites:</strong> {selectedPlan.dataProcessing?.whites || "N/A"}
+                    <strong>Whites:</strong> {selectedPlan.dataProcRequirements?.[0]?.whites || "N/A"}
                   </div>
                   <div>
-                    <strong>Blacks:</strong> {selectedPlan.dataProcessing?.blacks || "N/A"}
+                    <strong>Blacks:</strong> {selectedPlan.dataProcRequirements?.[0]?.blacks || "N/A"}
                   </div>
                 </>
               )}

@@ -372,7 +372,7 @@ export default function CreatePlan() {
                     </div>
 
                     <div>
-                        <label className="block mb-1 font-medium">Assigned Telescope</label>
+                        <label className="block mb-1 font-medium">Telescope Location</label>
                         <div className="flex flex-wrap gap-3">
                             {telescopes.map((telescope) => (
                                 <label key={telescope} className="flex items-center gap-1">

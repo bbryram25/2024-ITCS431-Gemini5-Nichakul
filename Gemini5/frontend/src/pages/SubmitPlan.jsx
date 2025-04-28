@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { sciencePlan } from "../data/sciencePlan";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 function submit() {
   const { id } = useParams();
@@ -21,11 +21,15 @@ function submit() {
     if (!id) setSelectedPlan(null);
     const fetchPlans = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/science-plans");
+        const response = await fetch("http://localhost:8080/api/sciencePlans");
         const data = await response.json();
+        const plans = data.data;
         // const notSubmitted = data.filter((plan) => plan.status !== "SUBMITTED");
-        const filtered = sciencePlan.filter((plan) =>
-          statusFilter === "ALL" || statusFilter === "" || plan.status === statusFilter
+        const filtered = plans.filter(
+          (plan) =>
+            statusFilter === "ALL" ||
+            statusFilter === "" ||
+            plan.status === statusFilter
         );
         setNotSubmittedPlans(filtered);
       } catch (error) {
@@ -34,8 +38,11 @@ function submit() {
         //   sciencePlan.filter((plan) => plan.status !== "SUBMITTED")
         // );
         // const fallbackData = sciencePlan.filter((plan) => plan.status !== "SUBMITTED");
-        const filteredFallback = sciencePlan.filter((plan) =>
-          statusFilter === "ALL" || statusFilter === "" || plan.status === statusFilter
+        const filteredFallback = sciencePlan.filter(
+          (plan) =>
+            statusFilter === "ALL" ||
+            statusFilter === "" ||
+            plan.status === statusFilter
         );
         setNotSubmittedPlans(filteredFallback);
       }
@@ -43,13 +50,16 @@ function submit() {
 
     const fetchPlanById = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/science-plans/${id}`);
+        const response = await fetch(
+          `http://localhost:8080/api/sciencePlan/${id}`
+        );
         const data = await response.json();
-        setSelectedPlan(data);
-        setNotSubmittedPlans([data]);
+        const plan = data.data;
+        setSelectedPlan(plan);
+        setNotSubmittedPlans([plan]);
       } catch (error) {
-        console.error("Error fetching plan by ID:", error);
-        const fallback = sciencePlan.find((p) => p.planID.toString() === id);
+        console.error("Error fetching plan by No.:", error);
+        const fallback = sciencePlan.find((p) => p.planNo.toString() === id);
         if (fallback) {
           setSelectedPlan(fallback);
           setNotSubmittedPlans([fallback]);
@@ -74,7 +84,7 @@ function submit() {
     // }
     setSelectedPlan(plan);
     window.scrollTo({ top: 0, behavior: "smooth" });
-    navigate(`/submitSciencePlan/${plan.planID}`);
+    navigate(`/submitSciencePlan/${plan.planNo}`);
   };
 
   const handleSubmitConfirmation = async () => {
@@ -82,30 +92,54 @@ function submit() {
       alert("No plan selected!");
       return;
     }
-    
+
     if (selectedPlan.status === "TESTED") {
-      
-    }
-    else if (selectedPlan.status !== "SAVED" || selectedPlan.status !== "CREATED") {
+    } else if (
+      selectedPlan.status !== "SAVED" ||
+      selectedPlan.status !== "CREATED"
+    ) {
       alert("Please test the science plan first before submitting.");
       return;
-    } 
-    else {
+    } else {
       alert("This plan is already tested.");
       return;
     }
-  
+
     const confirmed = window.confirm("Do you want to submit this plan?");
     if (confirmed) {
       alert("Plan is submitted successfully!");
-      navigate('/sciencePlans');
-      // TODO: add API call to update plan status here
+      // navigate('/sciencePlans');
+      const updatedPlan = { ...selectedPlan, status: "SUBMITTED" };
+
+      // Make the API call to update the plan status on the server
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/sciencePlan/${selectedPlan.planNo}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedPlan),
+          }
+        );
+
+        if (response.ok) {
+          setSelectedPlan(updatedPlan); // Update the state with the new status
+          alert("Plan is submitted successfully!");
+          navigate("/sciencePlans"); // Navigate to the science plans page
+        } else {
+          alert("Failed to submit the plan. Please try again.");
+        }
+      } catch (error) {
+        console.error("Error updating plan status:", error);
+        alert("Error submitting plan. Please try again later.");
+      }
     } else {
       alert("Plan is not submitted!");
-      navigate('/submitSciencePlan');
+      navigate("/submitSciencePlan");
     }
   };
-  
 
   return (
     <div className="w-screen min-h-screen p-6 bg-gradient-to-b from-gray-900 to-indigo-900 text-white">
@@ -121,7 +155,10 @@ function submit() {
         )} */}
         {!id && (
           <div className="flex flex-col">
-            <label htmlFor="statusFilter" className="mb-1 font-medium text-white-700">
+            <label
+              htmlFor="statusFilter"
+              className="mb-1 font-medium text-white-700"
+            >
               Status
             </label>
             <select value={statusFilter} onChange={handleStatusFilterChange}>
@@ -134,7 +171,7 @@ function submit() {
               <option value="EXECUTED">EXECUTED</option>
             </select>
           </div>
-        )} 
+        )}
         {/* {id && selectedPlan && (
           <div className="flex justify-start mb-4">
             <button
@@ -152,7 +189,7 @@ function submit() {
           <p>There is no plan.</p>
           <button
             className="text-blue-600 hover:underline focus:outline-none"
-            onClick={() => navigate('/createSciPlan')}
+            onClick={() => navigate("/createSciPlan")}
           >
             Create a New Plan
           </button>
@@ -161,8 +198,8 @@ function submit() {
         <table className="w-full table-auto text-black bg-white rounded-xl mb-6">
           <thead>
             <tr className="text-center">
-              <th className="p-2">Plan ID</th>
-              <th className="p-2">Plan Name</th>
+              <th className="p-2">Plan No.</th>
+              {/* <th className="p-2">Plan Name</th> */}
               <th className="p-2">Creator</th>
               <th className="p-2">Funding</th>
               <th className="p-2">Status</th>
@@ -171,11 +208,13 @@ function submit() {
           </thead>
           <tbody>
             {notSubmittedPlans.map((plan) => (
-              <tr key={plan.planID} className="text-center">
-                <td className="p-2">{plan.planID}</td>
-                <td className="p-2">{plan.planName}</td>
+              <tr key={plan.planNo} className="text-center">
+                <td className="p-2">{plan.planNo}</td>
+                {/* <td className="p-2">{plan.planName}</td> */}
                 <td className="p-2">{plan.creator || "-"}</td>
-                <td className="p-2">${parseFloat(plan.funding).toFixed(2)}</td>
+                <td className="p-2">
+                  ${parseFloat(plan.fundingInUSD).toFixed(2)}
+                </td>
                 <td className="p-2">{plan.status}</td>
                 <td className="p-2">
                   <button
@@ -193,19 +232,20 @@ function submit() {
 
       {selectedPlan && (
         <div className="bg-white text-black p-6 rounded-xl shadow-md space-y-4">
-          <h3 className="text-xl font-semibold mb-2">
-            Reviewing Plan</h3>
+          <h3 className="text-xl font-semibold mb-2">Reviewing Plan</h3>
           <div className="grid grid-cols-2 gap-6">
             {/* Plan Metadata */}
             <div className="col-span-2 border border-gray-300 rounded p-4 bg-gray-50">
-              <h4 className="text-lg font-semibold mb-2">(ID: {selectedPlan.planID}) {selectedPlan.planName}</h4>
+              <h4 className="text-lg font-semibold mb-2">
+                Plan No.: {selectedPlan.planNo}
+              </h4>
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col">
                   <label className="font-semibold">Creator</label>
                   <input
                     type="text"
                     name="creator"
-                    value={selectedPlan.creator || ""}
+                    defaultValue={selectedPlan.creator || ""}
                     className="p-1 border rounded"
                   />
                 </div>
@@ -214,7 +254,12 @@ function submit() {
                   <input
                     type="text"
                     name="funding"
-                    value={(selectedPlan.funding || "")}
+                    // value={(selectedPlan.fundingInUSD || "")}
+                    defaultValue={
+                      selectedPlan.fundingInUSD
+                        ? selectedPlan.fundingInUSD.toFixed(2)
+                        : ""
+                    }
                     className="p-1 border rounded"
                   />
                 </div>
@@ -222,7 +267,7 @@ function submit() {
                   <label className="font-semibold">Objective</label>
                   <textarea
                     name="objective"
-                    value={selectedPlan.objective || ""}
+                    defaultValue={selectedPlan.objectives || ""}
                     className="p-2 border rounded resize-none overflow-hidden"
                   />
                 </div>
@@ -231,25 +276,31 @@ function submit() {
 
             {/* Star System */}
             <div className="col-span-2 border border-gray-300 rounded p-4 bg-gray-50">
-              <h4 className="text-lg font-semibold mb-2">Star System (Target)</h4>
+              <h4 className="text-lg font-semibold mb-2">
+                Star System (Target)
+              </h4>
               <input
                 type="text"
                 name="starSystem"
-                value={selectedPlan.target || ""}
+                defaultValue={selectedPlan.starSystem || ""}
                 className="w-full p-1 border rounded"
               />
             </div>
 
             {/* Schedule Availability */}
             <div className="col-span-2 border border-gray-300 rounded p-4 bg-gray-50">
-              <h4 className="text-lg font-semibold mb-2">Schedule Availability</h4>
+              <h4 className="text-lg font-semibold mb-2">
+                Schedule Availability
+              </h4>
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col">
                   <label className="font-semibold mb-1">Start Date</label>
                   <input
                     type="datetime-local"
                     name="startDate"
-                    value={new Date(selectedPlan.startDate).toISOString().slice(0, 16)}
+                    defaultValue={new Date(selectedPlan.startDate)
+                      .toISOString()
+                      .slice(0, 16)}
                     className="p-1 border rounded"
                   />
                 </div>
@@ -258,7 +309,9 @@ function submit() {
                   <input
                     type="datetime-local"
                     name="endDate"
-                    value={new Date(selectedPlan.endDate).toISOString().slice(0, 16)}
+                    defaultValue={new Date(selectedPlan.endDate)
+                      .toISOString()
+                      .slice(0, 16)}
                     className="p-1 border rounded"
                   />
                 </div>
@@ -267,11 +320,11 @@ function submit() {
 
             {/* Telescope Assigned */}
             <div className="col-span-2 border border-gray-300 rounded p-4 bg-gray-50">
-              <h4 className="text-lg font-semibold mb-2">Telescope Assigned</h4>
+              <h4 className="text-lg font-semibold mb-2">Telescope Location</h4>
               <input
                 type="text"
                 name="assignedTelescope"
-                value={selectedPlan.assignedTelescope || ""}
+                defaultValue={selectedPlan.telescopeLocation || ""}
                 className="w-full p-1 border rounded"
               />
             </div>
@@ -285,8 +338,10 @@ function submit() {
                   <label className="font-semibold mb-1">File Type</label>
                   <input
                     type="text"
-                    name="dataProcessing.fileType"
-                    value={selectedPlan.dataProcessing?.fileType || ""}
+                    name="dataProcRequirements.fileType"
+                    defaultValue={
+                      selectedPlan.dataProcRequirements?.[0]?.fileType || ""
+                    }
                     className="w-full p-1 border rounded"
                   />
                 </div>
@@ -296,8 +351,10 @@ function submit() {
                   <label className="font-semibold mb-1">File Quality</label>
                   <input
                     type="text"
-                    name="dataProcessing.fileQuality"
-                    value={selectedPlan.dataProcessing?.fileQuality || ""}
+                    name="dataProcRequirements.fileQuality"
+                    defaultValue={
+                      selectedPlan.dataProcRequirements?.[0]?.fileQuality || ""
+                    }
                     className="w-full p-1 border rounded"
                   />
                 </div>
@@ -307,8 +364,10 @@ function submit() {
                   <label className="font-semibold mb-1">Color Type</label>
                   <input
                     type="text"
-                    name="dataProcessing.colorType"
-                    value={selectedPlan.dataProcessing?.colorType || ""}
+                    name="dataProcRequirements.colorType"
+                    defaultValue={
+                      selectedPlan.dataProcRequirements?.[0]?.colorType || ""
+                    }
                     className="w-full p-1 border rounded"
                   />
                 </div>
@@ -318,8 +377,10 @@ function submit() {
                   <label className="font-semibold mb-1">Contrast</label>
                   <input
                     type="number"
-                    name="dataProcessing.contrast"
-                    value={selectedPlan.dataProcessing?.contrast || ""}
+                    name="dataProcRequirements.contrast"
+                    defaultValue={
+                      selectedPlan.dataProcRequirements?.[0]?.contrast || ""
+                    }
                     className="p-1 border rounded"
                   />
                 </div>
@@ -329,47 +390,61 @@ function submit() {
                   <label className="font-semibold mb-1">Exposure</label>
                   <input
                     type="number"
-                    name="dataProcessing.exposure"
-                    value={selectedPlan.dataProcessing?.exposure || ""}
+                    name="dataProcRequirements.exposure"
+                    defaultValue={
+                      selectedPlan.dataProcRequirements?.[0]?.exposure || ""
+                    }
                     className="p-1 border rounded"
                   />
                 </div>
 
                 {/* Show only for Color mode */}
-                {selectedPlan.dataProcessing?.colorType === "Color mode" && (
+                {selectedPlan.dataProcRequirements?.[0]?.colorType ===
+                  "Color mode" && (
                   <>
-                    {["brightness", "saturation", "luminance", "hue"].map((field) => (
-                      <div className="flex flex-col" key={field}>
-                        <label className="font-semibold mb-1">
-                          {field.charAt(0).toUpperCase() + field.slice(1)}
-                        </label>
-                        <input
-                          type="number"
-                          name={`dataProcessing.${field}`}
-                          value={selectedPlan.dataProcessing?.[field] || ""}
-                          className="p-1 border rounded"
-                        />
-                      </div>
-                    ))}
+                    {["brightness", "saturation", "luminance", "hue"].map(
+                      (field) => (
+                        <div className="flex flex-col" key={field}>
+                          <label className="font-semibold mb-1">
+                            {field.charAt(0).toUpperCase() + field.slice(1)}
+                          </label>
+                          <input
+                            type="number"
+                            name={`dataProcRequirements.${field}`}
+                            defaultValue={
+                              selectedPlan.dataProcRequirements?.[0]?.[field] ||
+                              ""
+                            }
+                            className="p-1 border rounded"
+                          />
+                        </div>
+                      )
+                    )}
                   </>
                 )}
 
                 {/* Show only for Black and White mode */}
-                {selectedPlan.dataProcessing?.colorType === "Black and White mode" && (
+                {selectedPlan.dataProcRequirements?.[0]?.colorType ===
+                  "Black and White mode" && (
                   <>
-                    {["highlights", "shadows", "whites", "blacks"].map((field) => (
-                      <div className="flex flex-col" key={field}>
-                        <label className="font-semibold mb-1">
-                          {field.charAt(0).toUpperCase() + field.slice(1)}
-                        </label>
-                        <input
-                          type="number"
-                          name={`dataProcessing.${field}`}
-                          value={selectedPlan.dataProcessing?.[field] || ""}
-                          className="p-1 border rounded"
-                        />
-                      </div>
-                    ))}
+                    {["highlights", "shadows", "whites", "blacks"].map(
+                      (field) => (
+                        <div className="flex flex-col" key={field}>
+                          <label className="font-semibold mb-1">
+                            {field.charAt(0).toUpperCase() + field.slice(1)}
+                          </label>
+                          <input
+                            type="number"
+                            name={`dataProcRequirements.${field}`}
+                            defaultValue={
+                              selectedPlan.dataProcRequirements?.[0]?.[field] ||
+                              ""
+                            }
+                            className="p-1 border rounded"
+                          />
+                        </div>
+                      )
+                    )}
                   </>
                 )}
               </div>
@@ -379,18 +454,17 @@ function submit() {
             <div className="flex justify-center space-x-4 mt-6">
               <button
                 className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-800"
-                onClick={() => navigate('/submitSciencePlan')}
+                onClick={() => navigate("/submitSciencePlan")}
               >
                 Cancel
               </button>
-              
+
               <button
                 className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-800"
                 onClick={handleSubmitConfirmation}
               >
                 Confirm
               </button>
-              
             </div>
           )}
         </div>

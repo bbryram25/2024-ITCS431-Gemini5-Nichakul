@@ -20,7 +20,7 @@ function SciencePlanList() {
     "TESTED",
     "SUBMITTED",
     "VALIDATED",
-    "EXECUTED"
+    "EXECUTED",
   ];
 
   // Set document title
@@ -28,9 +28,9 @@ function SciencePlanList() {
     document.title = "Science Plan List | GEMINI5";
     const currentUser = getUser();
     if (currentUser) {
-        setUser(currentUser);
+      setUser(currentUser);
     } else {
-        navigate('/login');
+      navigate("/login");
     }
     fetchPlans();
 
@@ -45,7 +45,7 @@ function SciencePlanList() {
     const filtered = plans.filter((plan) => {
       const statusMatch =
         statusFilter === "ALL" || plan.status === statusFilter;
-      const idMatch = !searchId || plan.planID.toString().includes(searchId);
+      const idMatch = !searchId || plan.planNo.toString().includes(searchId);
       return statusMatch && idMatch;
     });
     setFilteredPlans(filtered);
@@ -54,9 +54,11 @@ function SciencePlanList() {
   // Fetch science plans from the API
   const fetchPlans = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/science-plans");
+      const response = await axios.get(
+        "http://localhost:8080/api/sciencePlans"
+      );
       console.log("Fetched plans:", response.data);
-      setPlans(response.data);
+      setPlans(response.data.data);
       setFilteredPlans(response.data); // Set both full and filtered list initially
     } catch (error) {
       console.error("Error fetching science plans:", error);
@@ -69,28 +71,30 @@ function SciencePlanList() {
 
   // Format date
   const formatDate = (date) => {
-    return new Date(date).toLocaleString("en-GB", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    }).replace(",", "");
+    return new Date(date)
+      .toLocaleString("en-GB", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      })
+      .replace(",", "");
   };
 
-  // Check if the user has the required role to access 
+  // Check if the user has the required role to access
   const hasRoleAccess = (allowedRoles) => {
     return user && allowedRoles.includes(user.role);
   };
 
-  const handleButtonClick = (allowedRoles, roleRequired, planID, path) => {
-    if (!hasRoleAccess(allowedRoles)) {
-      alert(`Only ${roleRequired} can access this.`);
-      return;
-    }
-    navigate(`/${path}/${planID}`);
-  };
+  // const handleButtonClick = (allowedRoles, roleRequired, planNo, path) => {
+  //   if (!hasRoleAccess(allowedRoles)) {
+  //     alert(`Only ${roleRequired} can access this.`);
+  //     return;
+  //   }
+  //   navigate(`/${path}/${planNo}`);
+  // };
 
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-b from-gray-900 to-indigo-900 overflow-auto p-4">
@@ -121,14 +125,14 @@ function SciencePlanList() {
         {/* Search by ID */}
         <div className="flex items-center gap-4 mb-4">
           <label htmlFor="searchId" className="w-32 font-medium text-black">
-            Search by ID :
+            Search by Plan No. :
           </label>
           <input
             id="searchId"
             type="text"
             value={searchId}
             onChange={(e) => setSearchId(e.target.value)}
-            placeholder="Enter Plan ID"
+            placeholder="Enter Plan No."
             className="flex-1 text-black px-4 py-2 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500"
           />
         </div>
@@ -139,22 +143,68 @@ function SciencePlanList() {
         ) : filteredPlans.length > 0 ? (
           <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
             {filteredPlans.map((plan) => (
-              <div key={plan.planID} className="p-4 border rounded-lg bg-white shadow">
-                <p><strong>ID:</strong> {plan.planID}</p>
-                <p><strong>Name:</strong> {plan.planName}</p>
-                <p><strong>Creator:</strong> {plan.creator}</p>
-                <p><strong>Funding:</strong> ${Number(plan.funding).toFixed(2)}</p>
-                <p><strong>Objective:</strong> {plan.objective}</p>
-                <p><strong>Start Date:</strong> {formatDate(plan.startDate)}</p>
-                <p><strong>End Date:</strong> {formatDate(plan.endDate)}</p>
-                <p><strong>Star System (Target):</strong> {plan.target}</p>
-                <p><strong>Assigned Telescope:</strong> {plan.assignedTelescope}</p>
-                <p><strong>Status:</strong> {plan.status}</p>
+              <div
+                key={plan.planNo}
+                className="p-4 border rounded-lg bg-white shadow"
+              >
+                <p>
+                  <strong>Plan No.:</strong> {plan.planNo}
+                </p>
+                {/* <p><strong>Name:</strong> {plan.planName}</p> */}
+                <p>
+                  <strong>Creator:</strong> {plan.creator}
+                </p>
+                <p>
+                  <strong>Funding:</strong> $
+                  {Number(plan.fundingInUSD).toFixed(2)}
+                </p>
+                <p>
+                  <strong>Objective:</strong> {plan.objectives}
+                </p>
+                <p>
+                  <strong>Start Date:</strong> {formatDate(plan.startDate)}
+                </p>
+                <p>
+                  <strong>End Date:</strong> {formatDate(plan.endDate)}
+                </p>
+                <p>
+                  <strong>Star System (Target):</strong> {plan.starSystem}
+                </p>
+                <p>
+                  <strong>Telescope Location:</strong> {plan.telescopeLocation}
+                </p>
+                <p>
+                  <strong>Status:</strong> {plan.status}
+                </p>
+                {plan.dataProcRequirements &&
+                  plan.dataProcRequirements.length > 0 && (
+                    <div className="mt-2">
+                      <p>
+                        <strong>Data Processing:</strong>
+                      </p>
+                      <div className="ml-4">
+                        <p>
+                          <strong>File Type:</strong>{" "}
+                          {plan.dataProcRequirements[0].fileType}
+                        </p>
+                        <p>
+                          <strong>File Quality:</strong>{" "}
+                          {plan.dataProcRequirements[0].fileQuality}
+                        </p>
+                        <p>
+                          <strong>Color Type:</strong>{" "}
+                          {plan.dataProcRequirements[0].colorType}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                {/* </div>
+          )} */}
 
                 <div className="flex justify-end pt-2">
                   <div className="flex gap-2">
                     <button
-                      onClick={() => navigate(`/detail/${plan.planID}`)}
+                      onClick={() => navigate(`/detail/${plan.planNo}`)}
                       className="bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600 transition"
                     >
                       Detail
