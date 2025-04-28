@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RestController
@@ -236,8 +238,7 @@ public class DemoController {
         o.updateSciencePlanStatus(sciencePlans.size(), SciencePlan.STATUS.TESTED);
         SciencePlan createdSciencePlan = o.getSciencePlanByNo(sciencePlans.size());
 
-        return ResponseEntity.ok(ResponseWrapper.success(createdSciencePlan, "Science plan created successfully", HttpStatus.CREATED));
-
+        return ResponseEntity.status(HttpStatus.CREATED).body(ResponseWrapper.success(createdSciencePlan, "Science plan created successfully", HttpStatus.CREATED));
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
@@ -248,6 +249,7 @@ public class DemoController {
         if (sciencePlans.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseWrapper.notFound("No science plans found", HttpStatus.NOT_FOUND));
         }
+        
         return ResponseEntity.ok(ResponseWrapper.success(sciencePlans, "Science plans retrieved successfully", HttpStatus.OK));
     }
 
@@ -294,6 +296,7 @@ public class DemoController {
 
         String message = o.submitSciencePlan(sciencePlan);
         sciencePlan = o.getSciencePlanByNo(id);
+
         if (message.contains("submitted")) {
             return ResponseEntity.ok(ResponseWrapper.success(sciencePlan, "Science plan submitted successfully", HttpStatus.OK));
         }
