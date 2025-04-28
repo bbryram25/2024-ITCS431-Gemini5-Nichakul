@@ -72,6 +72,8 @@ function ValidatePlan() {
     navigate(`/validateSciencePlan/${plan.planID}`);
   };
 
+  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "funding") {
@@ -230,6 +232,7 @@ function ValidatePlan() {
                 <td className="p-2">${parseFloat(plan.funding).toFixed(2)}</td>
                 <td className="p-2">{plan.status}</td>
                 <td className="p-2">
+                  
                   <button
                     className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-800"
                     onClick={() => handleSelectPlan(plan)}
@@ -268,7 +271,8 @@ function ValidatePlan() {
                   <input
                     type="text"
                     name="funding"
-                    value={(selectedPlan.funding || "")}
+                    // value={(selectedPlan.funding || "")}
+                    value = {selectedPlan.funding ? `$${parseFloat(selectedPlan.funding).toFixed(2)}` : ""}
                     // onChange={handleChange}
                     onChange={(e) => {
                       let inputValue = e.target.value;
@@ -501,6 +505,8 @@ function ValidatePlan() {
           </div>
 
           <div className="flex justify-center gap-4 mt-6">
+          
+
             <button
               onClick={toggleEditMode}
               className={`px-6 py-2 rounded text-white font-semibold ${isEditing ? "bg-indigo-500 hover:bg-indigo-700" : "bg-emerald-500 hover:bg-emerald-700"
