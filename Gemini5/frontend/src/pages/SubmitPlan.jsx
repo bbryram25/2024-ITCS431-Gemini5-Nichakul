@@ -82,18 +82,27 @@ function submit() {
       alert("No plan selected!");
       return;
     }
-  
-    if (selectedPlan.status !== "TESTED") {
+    
+    if (selectedPlan.status === "TESTED") {
+      
+    }
+    else if (selectedPlan.status !== "SAVED" || selectedPlan.status !== "CREATED") {
       alert("Please test the science plan first before submitting.");
+      return;
+    } 
+    else {
+      alert("This plan is already tested.");
       return;
     }
   
     const confirmed = window.confirm("Do you want to submit this plan?");
     if (confirmed) {
       alert("Plan is submitted successfully!");
+      navigate('/sciencePlans');
       // TODO: add API call to update plan status here
     } else {
       alert("Plan is not submitted!");
+      navigate('/submitSciencePlan');
     }
   };
   

@@ -75,7 +75,7 @@ export default function CreatePlan() {
                 }
             } catch (error) {
                 console.error("Error fetching staff data:", error);
-                // setError("Failed to load user data. Please try again.");
+                // window.alert("Failed to load user data. Please try again.");
             }
         };
 
@@ -103,22 +103,39 @@ export default function CreatePlan() {
 
         const emptyFields = requiredFields.filter(field => !form[field]);
         if (emptyFields.length > 0) {
-            setError(`Please fill in: ${emptyFields.join(", ")}`);
+            window.alert(`Please fill in: ${emptyFields.join(", ")}`);
             return false;
         }
 
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0); // Reset time to start of day
+
         const start = new Date(form.startDate);
         const end = new Date(form.endDate);
+
+        // Check if start date is before current date
+        if (start < currentDate) {
+            window.alert("Start date cannot be in the past");
+            return false;
+        }
+
+        // Check if end date is before current date
+        if (end < currentDate) {
+            window.alert("End date cannot be in the past");
+            return false;
+        }
+
+        // Check if end date is before start date
         if (end <= start) {
-            setError("End date must be after start date");
+            window.alert("End date must be after start date");
             return false;
         }
 
         if (parseFloat(form.fundingInUSD) <= 0) {
-            setError("Funding must be greater than 0");
+            window.alert("Funding must be greater than 0");
             return false;
         }
-
+        
         return true;
     };
 
@@ -178,19 +195,17 @@ export default function CreatePlan() {
                 credentials: 'include',
                 body: JSON.stringify(submissionData),
             });
-
-            const result = await response.text();
-            
-            if (result.includes("Your science plan has been saved")) {
+            console.log(response.status);
+            if (response.status === 201) {
                 // Success case
-                console.log("Success:", result);
+                window.alert("Success: Science plan created with status CREATED");
                 navigate("/sciencePlans");
             } else {
                 // Error case
-                throw new Error(result);
+                throw new Error("Failed to create science plan.");
             }
         } catch (err) {
-            setError(err.message || "Failed to create science plan. Please try again.");
+            window.alert("Failed to create science plan. Please try again.");
             console.error("Error:", err);
         } finally {
             setIsSubmitting(false);
@@ -228,6 +243,11 @@ export default function CreatePlan() {
         }
 
         return commonFields;
+    };
+
+    const getCurrentDateTime = () => {
+        const now = new Date();
+        return now.toISOString().slice(0, 16); // Format: YYYY-MM-DDThh:mm
     };
 
     return (
@@ -297,6 +317,7 @@ export default function CreatePlan() {
                                 name="startDate"
                                 type="datetime-local"
                                 value={form.startDate}
+                                min={getCurrentDateTime()}
                                 onChange={handleChange}
                                 className="w-full px-4 py-2 border rounded-md"
                                 required
@@ -308,6 +329,7 @@ export default function CreatePlan() {
                                 name="endDate"
                                 type="datetime-local"
                                 value={form.endDate}
+                                min={getCurrentDateTime()}
                                 onChange={handleChange}
                                 className="w-full px-4 py-2 border rounded-md"
                                 required
