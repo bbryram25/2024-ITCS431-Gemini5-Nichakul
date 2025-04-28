@@ -58,8 +58,16 @@ export default function CreatePlan() {
                     }
                 });
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch user data');
+                if (!response) {
+                    console.log('response not ok');
+                    const currentUser = getUser();
+                    const fullName = currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : '';
+                    
+                    setForm(prev => ({
+                        ...prev,
+                        creator: fullName,
+                        submitter: fullName
+                    }));
                 }
 
                 const data = await response.json();
@@ -75,6 +83,14 @@ export default function CreatePlan() {
                 }
             } catch (error) {
                 console.error("Error fetching staff data:", error);
+                const currentUser = getUser();
+                const fullName = currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : '';
+                    
+                setForm(prev => ({
+                    ...prev,
+                    creator: fullName,
+                    submitter: fullName
+                }));
                 // window.alert("Failed to load user data. Please try again.");
             }
         };
@@ -195,7 +211,7 @@ export default function CreatePlan() {
                 credentials: 'include',
                 body: JSON.stringify(submissionData),
             });
-            console.log(response.status);
+
             if (response.status === 201) {
                 // Success case
                 window.alert("Success: Science plan created with status CREATED");
