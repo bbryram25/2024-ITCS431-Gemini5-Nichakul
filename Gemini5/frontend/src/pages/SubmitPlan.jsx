@@ -93,18 +93,15 @@ function submit() {
       return;
     }
 
-    if (selectedPlan.status === "TESTED") {
-    } else if (
-      selectedPlan.status !== "SAVED" ||
-      selectedPlan.status !== "CREATED"
-    ) {
+    if (selectedPlan.status === "CREATED") {
       alert("Please test the science plan first before submitting.");
       return;
-    } else {
-      alert("This plan is already tested.");
+    }else if(selectedPlan.status === "SUBMITTED" || selectedPlan.status === "VALIDATED" || selectedPlan.status === "RUNNING" || selectedPlan.status === "INVALIDATED" || selectedPlan.status === "COMPLETED"){
+      alert("This plan is already submitted.");
       return;
+    }else if(selectedPlan.status === "TESTED"){
     }
-
+    
     const confirmed = window.confirm("Do you want to submit this plan?");
     if (confirmed) {
       alert("Plan is submitted successfully!");
@@ -114,22 +111,19 @@ function submit() {
       // Make the API call to update the plan status on the server
       try {
         const response = await fetch(
-          `http://localhost:8080/api/sciencePlan/${selectedPlan.planNo}`,
+          `http://localhost:8080/api/submitSciencePlan/${selectedPlan.planNo}`,
           {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(updatedPlan),
+            method: "GET",
+            credentials: "include",
           }
         );
 
         if (response.ok) {
           setSelectedPlan(updatedPlan); // Update the state with the new status
-          alert("Plan is submitted successfully!");
+          // alert("Plan is submitted successfully!");
           navigate("/sciencePlans"); // Navigate to the science plans page
         } else {
-          alert("Failed to submit the plan. Please try again.");
+          // alert("Failed to submit the plan. Please try again.");
         }
       } catch (error) {
         console.error("Error updating plan status:", error);

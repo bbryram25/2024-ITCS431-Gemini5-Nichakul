@@ -66,7 +66,7 @@ function ValidatePlan() {
     navigate(`/validateSciencePlan/${plan.planNo}`);
   };
 
-  const handleValidate = () => {
+  const handleValidate = async () => {
     const baseRequiredFields = [
       "creator",
       "fundingInUSD",
@@ -164,14 +164,29 @@ function ValidatePlan() {
       setSelectedPlan((prev) => ({ ...prev, status: "INVALIDATED" }));
       // setIsEditing(true);
     } else {
-      setValidationMessage(
-        `Validate Science Plan Succeed ID: ${selectedPlan.planNo}`
-      );
-      setSelectedPlan((prev) => ({ ...prev, status: "VALIDATED" }));
-      // setIsEditing(false);
-      alert(
-        `Science Plan ID ${selectedPlan.planNo} has been successfully validated.`
-      );
+      try {
+        const response = await fetch(`http://localhost:8080/api/validateSciencePlan/${selectedPlan.planNo}`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to validate science plan.");
+        }
+
+        alert(
+          `Science Plan ID ${selectedPlan.planNo} has been successfully validated.`
+        );
+        setValidationMessage(
+          `Validate Science Plan Succeed ID: ${selectedPlan.planNo}`
+        );
+        setSelectedPlan((prev) => ({ ...prev, status: "VALIDATED" }));
+      } catch (error) {
+        console.error(error);
+        alert("Error validating the science plan.");
+      }
     }
   };
 
@@ -485,7 +500,7 @@ function ValidatePlan() {
           </div>
 
           <div className="flex justify-center gap-4 mt-4">
-            <button
+            {/* <button
               className="px-6 py-3 !bg-red-700 text-white rounded hover:!bg-red-800 font-semibold"
               onClick={() => {
                 alert(
@@ -498,7 +513,38 @@ function ValidatePlan() {
               }}
             >
               Invalidated
+            </button> */}
+            <button
+              className="px-6 py-3 !bg-red-700 text-white rounded hover:!bg-red-800 font-semibold"
+              onClick={async () => {
+                try {
+                  const response = await fetch(`http://localhost:8080/api/invalidateSciencePlan/${selectedPlan.planNo}`,
+                    {
+                      method: "GET",
+                      credentials: "include",
+                    }
+                  );
+
+                  if (!response.ok) {
+                    throw new Error("Failed to validate science plan.");
+                  }
+
+                  alert(
+                    `Science Plan No ${selectedPlan.planNo} has been marked as INVALIDATED.`
+                  );
+                  setSelectedPlan((prev) => ({ ...prev, status: "INVALID" }));
+                  setValidationMessage(
+                    `Science Plan No ${selectedPlan.planNo} marked as INVALIDATED`
+                  );
+                } catch (error) {
+                  console.error(error);
+                  alert("Error validating the science plan.");
+                }
+              }}
+            >
+              Invalidated
             </button>
+
             <button
               className="px-6 py-3 !bg-blue-900 text-white rounded hover:!bg-green-800 font-semibold"
               onClick={handleValidate}
