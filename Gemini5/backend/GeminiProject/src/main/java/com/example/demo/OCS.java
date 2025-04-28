@@ -46,7 +46,7 @@ import org.json.JSONObject;
 public class OCS {
    private static ArrayList<SciencePlan> sciencePlans = new ArrayList();
    private static int MAX_TELE_POSITION_PAIRS = 5;
-   private static String connectdb = "jdbc:h2:file:C:/Users/Jui/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
+   private static String connectdb = "jdbc:h2:file:C:/Users/ASUS/Documents/GitHub/2024-ITCS431-Gemini5/Gemini5/backend/GeminiProject/ocs";
 
    public OCS() {
       this.populateSciencePlans();
