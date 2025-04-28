@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { starSystem } from "../data/starSystem"; 
+import { getUser } from "../auth";
 
 export default function CreatePlan() {
     const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
+    const [telescopes, setTelescopes] = useState(["HAWAII", "CHILE"]);
     
+    // Initialize form with empty values
     const [form, setForm] = useState({
-        // Science plan information
-        creator: "astro.user",
+        creator: "",
         submitter: "",
         fundingInUSD: "",
         objectives: "",
@@ -17,7 +19,6 @@ export default function CreatePlan() {
         startDate: "",
         endDate: "",
         telescopeLocation: "",
-        // Data processing information
         fileType: "",
         fileQuality: "",
         colorType: "",
@@ -33,28 +34,53 @@ export default function CreatePlan() {
         hue: 0
     });
 
-    const [telescopes, setTelescopes] = useState([]);
-
-    // Predefined options for data processing
+    // Predefined options
     const fileTypes = ["PNG", "JPEG", "RAW"];
     const fileQualities = ["Fine", "Low"];
     const colorTypes = ["Color mode", "B&W mode"];
 
     useEffect(() => {
-        document.title = "Create Science Plan | GEMINI5"; 
-        const fetchTelescopes = async () => {
-            // try {
-            //     const response = await fetch("http://localhost:8080/api/enums/assigned-telescope");
-            //     if (!response.ok) throw new Error("Failed to fetch telescopes");
-            //     const data = await response.json();
-            //     setTelescopes(data);
-            // } catch (err) {
-            setTelescopes(["HAWAII", "CHILE"]);
-            // }
+        document.title = "Create Science Plan | GEMINI5";
+        
+        const initializeUser = async () => {
+            const currentUser = getUser();
+            
+            if (!currentUser) {
+                navigate('/login');
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:8080/api/staffId/${currentUser.staffId}`, {
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user data');
+                }
+
+                const data = await response.json();
+                if (data.success && data.data) {
+                    const staffData = data.data;
+                    const fullName = `${staffData.firstName} ${staffData.lastName}`;
+                    
+                    setForm(prev => ({
+                        ...prev,
+                        creator: fullName,
+                        submitter: fullName
+                    }));
+                }
+            } catch (error) {
+                console.error("Error fetching staff data:", error);
+                // setError("Failed to load user data. Please try again.");
+            }
         };
 
-        fetchTelescopes();
-    }, []);
+        initializeUser();
+    }, [navigate]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -96,6 +122,19 @@ export default function CreatePlan() {
         return true;
     };
 
+    const formatDateForBackend = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleString('en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        }).replace(',', '');
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
@@ -106,165 +145,88 @@ export default function CreatePlan() {
 
         setIsSubmitting(true);
 
-        // Prepare the submission data
-        const submissionData = JSON.stringify({
-            // Science plan information
-            creator: form.creator,
-            submitter: form.creator,
-            fundingInUSD: parseFloat(form.fundingInUSD),
-            objectives: form.objectives,
-            starSystem: form.starSystem,
-            startDate: formatDate(new Date(form.startDate).toISOString()),
-            endDate: formatDate(new Date(form.endDate).toISOString()),
-            telescopeLocation: form.telescopeLocation,
-
-            // Data processing information
-            fileType: form.fileType,
-            fileQuality: form.fileQuality,
-            colorType: form.colorType,
-
-            // Common fields
-            contrast: parseFloat(form.contrast),
-            exposure: parseFloat(form.exposure),
-            // Color mode specific fields
-            brightness: form.colorType === "Color mode" ? parseFloat(form.brightness) : 0,
-            saturation: form.colorType === "Color mode" ? parseFloat(form.saturation) : 0,
-            luminance: form.colorType === "Color mode" ? parseFloat(form.luminance) : 0,
-            hue: form.colorType === "Color mode" ? parseFloat(form.hue) : 0,
-            // B&W mode specific fields
-            highlights: form.colorType === "B&W mode" ? parseFloat(form.highlights) : 0,
-            shadows: form.colorType === "B&W mode" ? parseFloat(form.shadows) : 0,
-            whites: form.colorType === "B&W mode" ? parseFloat(form.whites) : 0,
-            blacks: form.colorType === "B&W mode" ? parseFloat(form.blacks) : 0
-        });
-
         try {
-            console.log("SubmissionData:", submissionData);
+            const submissionData = {
+                creator: form.creator,
+                submitter: form.submitter,
+                fundingInUSD: parseFloat(form.fundingInUSD),
+                objectives: form.objectives,
+                starSystem: form.starSystem,
+                startDate: formatDateForBackend(form.startDate),
+                endDate: formatDateForBackend(form.endDate),
+                telescopeLocation: form.telescopeLocation,
+                fileType: form.fileType,
+                fileQuality: form.fileQuality,
+                colorType: form.colorType,
+                contrast: form.contrast ? parseFloat(form.contrast) : 0,
+                exposure: form.exposure ? parseFloat(form.exposure) : 0,
+                brightness: form.colorType === "Color mode" ? (form.brightness ? parseFloat(form.brightness) : 0) : 0,
+                saturation: form.colorType === "Color mode" ? (form.saturation ? parseFloat(form.saturation) : 0) : 0,
+                luminance: form.colorType === "Color mode" ? (form.luminance ? parseFloat(form.luminance) : 0) : 0,
+                hue: form.colorType === "Color mode" ? (form.hue ? parseFloat(form.hue) : 0) : 0,
+                highlights: form.colorType === "B&W mode" ? (form.highlights ? parseFloat(form.highlights) : 0) : 0,
+                shadows: form.colorType === "B&W mode" ? (form.shadows ? parseFloat(form.shadows) : 0) : 0,
+                whites: form.colorType === "B&W mode" ? (form.whites ? parseFloat(form.whites) : 0) : 0,
+                blacks: form.colorType === "B&W mode" ? (form.blacks ? parseFloat(form.blacks) : 0) : 0
+            };
+
             const response = await fetch("http://localhost:8080/api/createSciencePlan", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: submissionData,
+                credentials: 'include',
+                body: JSON.stringify(submissionData),
             });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            const result = await response.text();
             
-            const result = await response.json();
-            navigate("/science-plans");
+            if (result.includes("Your science plan has been saved")) {
+                // Success case
+                console.log("Success:", result);
+                navigate("/sciencePlans");
+            } else {
+                // Error case
+                throw new Error(result);
+            }
         } catch (err) {
-            setError("Failed to create science plan. Please try again.");
+            setError(err.message || "Failed to create science plan. Please try again.");
             console.error("Error:", err);
         } finally {
             setIsSubmitting(false);
         }
     };
 
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     setError(null);
+    // Add loading state display if needed
+    if (error) {
+        return <div className="text-red-500">{error}</div>;
+    }
 
-    //     if (!validateForm()) {
-    //         return;
-    //     }
-
-    //     setIsSubmitting(true);
-
-    //     try {
-    //         const response = await fetch("http://localhost:8080/api/science-plans", {
-    //             method: "POST",
-    //             headers: {
-    //                 "Content-Type": "application/json",
-    //             },
-    //             body: JSON.stringify({
-    //                 // Science plan information
-    //                 creator: form.creator,
-    //                 submitter: form.submitter,
-    //                 fundingInUSD: parseFloat(form.fundingInUSD),
-    //                 objectives: form.objectives,
-    //                 starSystem: form.starSystem,
-    //                 startDate: new Date(form.startDate).toISOString(),
-    //                 endDate: new Date(form.endDate).toISOString(),
-    //                 telescopeLocation: form.telescopeLocation,
-
-    //                 // Data processing information
-    //                 fileType: form.fileType,
-    //                 fileQuality: form.fileQuality,
-    //                 colorType: form.colorType,
-
-    //                 // Common fields
-    //                 contrast: parseFloat(form.contrast),
-    //                 exposure: parseFloat(form.exposure),
-    //                 // Conditional fields based on color type
-    //                 ...(form.colorType === "Color mode" 
-    //                     ? {
-    //                         brightness: parseFloat(form.brightness),
-    //                         saturation: parseFloat(form.saturation),
-    //                         luminance: parseFloat(form.luminance),
-    //                         hue: parseFloat(form.hue),
-    //                         // Set B&W mode fields to 0
-    //                         highlights: 0,
-    //                         shadows: 0,
-    //                         whites: 0,
-    //                         blacks: 0
-    //                     } 
-    //                     : {
-    //                         highlights: parseFloat(form.highlights),
-    //                         shadows: parseFloat(form.shadows),
-    //                         whites: parseFloat(form.whites),
-    //                         blacks: parseFloat(form.blacks),
-    //                         // Set Color mode fields to 0
-    //                         brightness: 0,
-    //                         saturation: 0,
-    //                         luminance: 0,
-    //                         hue: 0
-    //                     }
-    //                 ),
-    //             }),
-    //         });
-
-    //         if (!response.ok) {
-    //             throw new Error(`HTTP error! status: ${response.status}`);
-    //         }
-
-    //         const result = await response.json();
-    //         navigate("/science-plans");
-    //     } catch (err) {
-    //         setError("Failed to create science plan. Please try again.");
-    //         console.error("Error:", err);
-    //     } finally {
-    //         setIsSubmitting(false);
-    //     }
-    // };
-
-    // Define the fields to show based on color type
+    // Add this function to get the appropriate processing fields based on color type
     const getProcessingFields = () => {
         const commonFields = [
             { name: "contrast", label: "Contrast" },
             { name: "exposure", label: "Exposure" }
         ];
 
-        const colorModeFields = [
-            { name: "brightness", label: "Brightness" },
-            { name: "saturation", label: "Saturation" },
-            { name: "luminance", label: "Luminance" },
-            { name: "hue", label: "Hue" }
-        ];
-
-        const bwModeFields = [
-            { name: "highlights", label: "Highlights" },
-            { name: "shadows", label: "Shadows" },
-            { name: "whites", label: "Whites" },
-            { name: "blacks", label: "Blacks" }
-        ];
-
         if (form.colorType === "Color mode") {
-            return [...commonFields, ...colorModeFields];
+            return [
+                ...commonFields,
+                { name: "brightness", label: "Brightness" },
+                { name: "saturation", label: "Saturation" },
+                { name: "luminance", label: "Luminance" },
+                { name: "hue", label: "Hue" }
+            ];
         } else if (form.colorType === "B&W mode") {
-            return [...commonFields, ...bwModeFields];
+            return [
+                ...commonFields,
+                { name: "highlights", label: "Highlights" },
+                { name: "shadows", label: "Shadows" },
+                { name: "whites", label: "Whites" },
+                { name: "blacks", label: "Blacks" }
+            ];
         }
+
         return commonFields;
     };
 
@@ -469,27 +431,24 @@ export default function CreatePlan() {
                 
                 <br />
 
-                <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className={`w-full py-2 rounded-full bg-black text-white font-semibold 
-                        ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'} transition`}
-                >
-                    {isSubmitting ? 'Creating...' : 'Create Science Plan'}
-                </button>
+                {/* Submit Button */}
+                <div className="flex justify-end space-x-4">
+                    <button
+                        type="button"
+                        onClick={() => navigate('/sciencePlans')}
+                        className="px-6 py-2 border border-gray-300 rounded-md hover:bg-gray-100 text-white"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-300"
+                    >
+                        {isSubmitting ? 'Creating...' : 'Create Plan'}
+                    </button>
+                </div>
             </form>
         </div>
     );
-}
-
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
-    const year = date.getFullYear();
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-
-    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 }

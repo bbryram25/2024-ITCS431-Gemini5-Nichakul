@@ -181,7 +181,7 @@ public class DemoController {
 
         String creator = body.get("creator").toString();
         String submitter = body.get("submitter").toString();
-        double funding = Double.parseDouble(body.get("funding").toString());
+        double funding = Double.parseDouble(body.get("fundingInUSD").toString());
         String objectives = body.get("objectives").toString();
         String starSystem = body.get("starSystem").toString();
         String telescopeLocation = body.get("telescopeLocation").toString();
