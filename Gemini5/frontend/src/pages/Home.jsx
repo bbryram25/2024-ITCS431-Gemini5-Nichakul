@@ -65,7 +65,7 @@ function Home() {
                     </button>
                     <button
                         // onClick={() => handleNavigation("/validate-plan")}
-                        onClick={() => handleNavigation("/validateSciencePlan", ["ScienceObserver"])}
+                        onClick={() => handleNavigation("/validateSciencePlan", ["Science_Observer"])}
                         className="w-full py-2 rounded-full bg-black text-white font-semibold hover:opacity-90 transition"
                     >
                         Validate Science Plan

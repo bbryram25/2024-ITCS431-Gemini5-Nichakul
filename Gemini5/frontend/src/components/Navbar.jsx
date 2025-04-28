@@ -43,7 +43,7 @@ function Navbar() {
                         {hasPermission("Astronomer") && (
                             <Link to="/createSciencePlan" className="hover:underline">Create Science Plan</Link>
                         )}
-                        {hasPermission("ScienceObserver") && (
+                        {hasPermission("Science_Observer") && (
                             <Link to="/validateSciencePlan" className="hover:underline">Validate Science Plan</Link>
                         )}
                         {hasPermission("Astronomer") && (
