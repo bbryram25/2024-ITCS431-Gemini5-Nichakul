@@ -43,15 +43,14 @@ export default function CreatePlan() {
     useEffect(() => {
         document.title = "Create Science Plan | GEMINI5"; 
         const fetchTelescopes = async () => {
-            try {
-                const response = await fetch("http://localhost:8080/api/enums/assigned-telescope");
-                if (!response.ok) throw new Error("Failed to fetch telescopes");
-                const data = await response.json();
-                setTelescopes(data);
-            } catch (err) {
-                console.error("Error fetching telescopes:", err);
-                setTelescopes(["HAWAII", "CHILE"]);
-            }
+            // try {
+            //     const response = await fetch("http://localhost:8080/api/enums/assigned-telescope");
+            //     if (!response.ok) throw new Error("Failed to fetch telescopes");
+            //     const data = await response.json();
+            //     setTelescopes(data);
+            // } catch (err) {
+            setTelescopes(["HAWAII", "CHILE"]);
+            // }
         };
 
         fetchTelescopes();
@@ -141,7 +140,7 @@ export default function CreatePlan() {
 
         try {
             console.log("SubmissionData:", submissionData);
-            const response = await fetch("http://localhost:8080/api/science-plans", {
+            const response = await fetch("http://localhost:8080/api/createSciencePlan", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
