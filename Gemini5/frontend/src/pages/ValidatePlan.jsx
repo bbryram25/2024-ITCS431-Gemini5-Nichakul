@@ -525,7 +525,7 @@ function ValidatePlan() {
   <button
     className="px-6 py-3 !bg-red-700 text-white rounded hover:!bg-red-800 font-semibold"
     onClick={() => {
-      alert(`Science Plan ID ${selectedPlan.planID} has been marked as INVALID.`);
+      alert(`Science Plan ID ${selectedPlan.planID} has been marked as INVALIDATED.`);
       setSelectedPlan((prev) => ({ ...prev, status: "INVALID" }));
       setValidationMessage(`Science Plan ID ${selectedPlan.planID} marked as INVALIDATED`);
     }}
