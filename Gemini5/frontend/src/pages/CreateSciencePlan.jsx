@@ -526,7 +526,7 @@ export default function CreatePlan() {
                                         name={name}
                                         value={form[name]}
                                         onChange={handleChange}
-                                        step="1"
+                                        step="0.01"
                                         min="0"
                                         max={getLimitForField(name)}
                                         className="w-full px-4 py-2 border rounded-md"
