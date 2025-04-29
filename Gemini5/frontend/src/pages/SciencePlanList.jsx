@@ -23,7 +23,8 @@ function SciencePlanList() {
     "RUNNING",
     "EXECUTED",
     "COMPLETE",
-    "INVALIDATED"
+    "INVALIDATED",
+    "CANCELLED"
   ];
 
   // Set document title

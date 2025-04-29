@@ -96,8 +96,12 @@ function submit() {
     if (selectedPlan.status === "SAVED") {
       alert("Please test the science plan first before submitting.");
       return;
-    }else if(selectedPlan.status === "SUBMITTED" || selectedPlan.status === "VALIDATED" || selectedPlan.status === "RUNNING" || selectedPlan.status === "INVALIDATED" || selectedPlan.status === "COMPLETE"){
+    }else if(selectedPlan.status === "SUBMITTED" || selectedPlan.status === "VALIDATED" || selectedPlan.status === "RUNNING" || 
+      selectedPlan.status === "INVALIDATED" || selectedPlan.status === "COMPLETE" ){
       alert("This plan is already submitted.");
+      return;
+    }else if(selectedPlan.status === "CANCELLED"){
+      alert("This plan is already cancelled.");
       return;
     }else if(selectedPlan.status === "TESTED"){
     }
@@ -175,6 +179,7 @@ function submit() {
               <option value="EXECUTED">EXECUTED</option>
               <option value="COMPLETED">COMPLETED</option>
               <option value="INVALIDATED">INVALIDATED</option>
+              <option value="CANCELLED">CANCELLED</option>
             </select>
           </div>
         )}
