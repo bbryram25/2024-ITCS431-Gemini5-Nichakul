@@ -96,7 +96,7 @@ function submit() {
     if (selectedPlan.status === "SAVED") {
       alert("Please test the science plan first before submitting.");
       return;
-    }else if(selectedPlan.status === "SUBMITTED" || selectedPlan.status === "VALIDATED" || selectedPlan.status === "RUNNING" || selectedPlan.status === "INVALIDATED" || selectedPlan.status === "COMPLETED"){
+    }else if(selectedPlan.status === "SUBMITTED" || selectedPlan.status === "VALIDATED" || selectedPlan.status === "RUNNING" || selectedPlan.status === "INVALIDATED" || selectedPlan.status === "COMPLETE"){
       alert("This plan is already submitted.");
       return;
     }else if(selectedPlan.status === "TESTED"){
@@ -111,10 +111,17 @@ function submit() {
       // Make the API call to update the plan status on the server
       try {
         const response = await fetch(
-          `http://localhost:8080/api/submitSciencePlan/${selectedPlan.planNo}`,
+          "http://localhost:8080/api/updateSciencePlanStatus",
           {
-            method: "GET",
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
             credentials: "include",
+            body: JSON.stringify({
+              planID: selectedPlan.planNo,
+              status: "SUBMITTED",
+            }),
           }
         );
 
