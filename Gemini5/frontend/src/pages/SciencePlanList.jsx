@@ -22,7 +22,7 @@ function SciencePlanList() {
     "VALIDATED",
     "RUNNING",
     "EXECUTED",
-    "COMPLETED",
+    "COMPLETE",
     "INVALIDATED"
   ];
 
