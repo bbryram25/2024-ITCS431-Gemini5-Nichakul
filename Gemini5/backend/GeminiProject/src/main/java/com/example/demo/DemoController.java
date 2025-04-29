@@ -27,8 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RestController
@@ -235,7 +233,6 @@ public class DemoController {
         }
         
         ArrayList<SciencePlan> sciencePlans = o.getAllSciencePlans();
-        // o.updateSciencePlanStatus(sciencePlans.size(), SciencePlan.STATUS.TESTED);
         SciencePlan createdSciencePlan = o.getSciencePlanByNo(sciencePlans.size());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(ResponseWrapper.success(createdSciencePlan, "Science plan created successfully", HttpStatus.CREATED));

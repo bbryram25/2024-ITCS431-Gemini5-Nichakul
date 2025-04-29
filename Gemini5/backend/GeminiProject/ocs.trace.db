@@ -2120,3 +2120,18 @@ Caused by: org.h2.mvstore.MVStoreException: The write format 1 is smaller than t
 	at org.h2.mvstore.MVStore$Builder.open(MVStore.java:4082)
 	at org.h2.mvstore.db.Store.<init>(Store.java:136)
 	... 62 more
+2568-04-29 16:15:22 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement " INSERT INTO MASSCIENCEPLAN VALUES (1,'Alex Martin','Liam Johnson',150000.0,'Observe and analyze the Andromeda galaxy's spiral arms.','Andromeda','2025-05-15 22:00:00','2025-05-22 04:00:00','HAWAII','SAVED[*]' );"; SQL statement:
+ INSERT INTO MASSCIENCEPLAN VALUES (1,'Alex Martin','Liam Johnson',150000.0,'Observe and analyze the Andromeda galaxy's spiral arms.','Andromeda','2025-05-15 22:00:00','2025-05-22 04:00:00','HAWAII','SAVED' ); [42000-192]
+2568-04-29 16:15:53 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement " INSERT INTO MASSCIENCEPLAN VALUES (1,'Alex Martin','Liam Johnson',1500.0,'Observe and analyze the Andromeda galaxy's spiral arms.','Andromeda','2025-05-15 22:00:00','2025-05-22 04:00:00','HAWAII','SAVED[*]' );"; SQL statement:
+ INSERT INTO MASSCIENCEPLAN VALUES (1,'Alex Martin','Liam Johnson',1500.0,'Observe and analyze the Andromeda galaxy's spiral arms.','Andromeda','2025-05-15 22:00:00','2025-05-22 04:00:00','HAWAII','SAVED' ); [42000-192]
+2568-04-29 16:17:06 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement " INSERT INTO MASSCIENCEPLAN VALUES (1,'Alex Martin','Liam Johnson',1500.0,'Observe and analyze the Andromeda galaxy's spiral arms.','Andromeda','2025-05-15 22:00:00','2025-05-22 04:00:00','HAWAII','SAVED[*]' );"; SQL statement:
+ INSERT INTO MASSCIENCEPLAN VALUES (1,'Alex Martin','Liam Johnson',1500.0,'Observe and analyze the Andromeda galaxy's spiral arms.','Andromeda','2025-05-15 22:00:00','2025-05-22 04:00:00','HAWAII','SAVED' ); [42000-192]
+2568-04-29 16:19:57 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement " INSERT INTO MASSCIENCEPLAN VALUES (18,'Liam Johnson','Ethan Brown',170000.0,'Track Jupiter's moons and their shadows.','Andromeda','2025-11-25 16:15:00','2025-12-02 22:15:00','HAWAII','SAVED[*]' );"; SQL statement:
+ INSERT INTO MASSCIENCEPLAN VALUES (18,'Liam Johnson','Ethan Brown',170000.0,'Track Jupiter's moons and their shadows.','Andromeda','2025-11-25 16:15:00','2025-12-02 22:15:00','HAWAII','SAVED' ); [42000-192]
+2568-04-29 16:21:23 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement " INSERT INTO MASSCIENCEPLAN VALUES (21,'Alex Martin','Liam Johnson',118000.0,'Study the Triangulum Galaxy's structure.','Triangulum','2026-01-14 17:00:00','2026-01-21 23:00:00','CHILE','SAVED[*]' );"; SQL statement:
+ INSERT INTO MASSCIENCEPLAN VALUES (21,'Alex Martin','Liam Johnson',118000.0,'Study the Triangulum Galaxy's structure.','Triangulum','2026-01-14 17:00:00','2026-01-21 23:00:00','CHILE','SAVED' ); [42000-192]
