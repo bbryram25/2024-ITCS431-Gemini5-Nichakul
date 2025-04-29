@@ -68,7 +68,7 @@ function Detail() {
 
             <div className="bg-white text-black p-6 rounded-xl shadow-md w-full max-w-3xl">
               <h3 className="text-xl font-semibold mb-2">
-                Plan No.: {selectedPlan.planNo}
+                Plan No.{selectedPlan.planNo}
               </h3>
               <div className="space-y-2">
               <div>
@@ -115,7 +115,7 @@ function Detail() {
               </div>
 
               {/* Show only for Color mode */}
-              {selectedPlan.dataProcRequirements?.colorType === "Color mode" && (
+              {selectedPlan.dataProcRequirements?.[0]?.colorType === "Color mode" && (
                 <>
                   <div>
                     <strong>Brightness:</strong> {selectedPlan.dataProcRequirements?.[0]?.brightness || "N/A"}

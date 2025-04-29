@@ -38,13 +38,13 @@ function submit() {
         //   sciencePlan.filter((plan) => plan.status !== "SUBMITTED")
         // );
         // const fallbackData = sciencePlan.filter((plan) => plan.status !== "SUBMITTED");
-        const filteredFallback = sciencePlan.filter(
-          (plan) =>
-            statusFilter === "ALL" ||
-            statusFilter === "" ||
-            plan.status === statusFilter
-        );
-        setNotSubmittedPlans(filteredFallback);
+        // const filteredFallback = sciencePlan.filter(
+        //   (plan) =>
+        //     statusFilter === "ALL" ||
+        //     statusFilter === "" ||
+        //     plan.status === statusFilter
+        // );
+        // setNotSubmittedPlans(filteredFallback);
       }
     };
 
@@ -93,7 +93,7 @@ function submit() {
       return;
     }
 
-    if (selectedPlan.status === "CREATED") {
+    if (selectedPlan.status === "SAVED") {
       alert("Please test the science plan first before submitting.");
       return;
     }else if(selectedPlan.status === "SUBMITTED" || selectedPlan.status === "VALIDATED" || selectedPlan.status === "RUNNING" || selectedPlan.status === "INVALIDATED" || selectedPlan.status === "COMPLETED"){
@@ -104,7 +104,7 @@ function submit() {
     
     const confirmed = window.confirm("Do you want to submit this plan?");
     if (confirmed) {
-      alert("Plan is submitted successfully!");
+      
       // navigate('/sciencePlans');
       const updatedPlan = { ...selectedPlan, status: "SUBMITTED" };
 
@@ -118,10 +118,13 @@ function submit() {
           }
         );
 
-        if (response.ok) {
+        console.log("Response:", response);
+        if (response.status === 200) {
           setSelectedPlan(updatedPlan); // Update the state with the new status
           // alert("Plan is submitted successfully!");
+          alert("Plan is submitted successfully!");          
           navigate("/sciencePlans"); // Navigate to the science plans page
+
         } else {
           // alert("Failed to submit the plan. Please try again.");
         }

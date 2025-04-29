@@ -179,9 +179,10 @@ function ValidatePlan() {
         alert(
           `Science Plan ID ${selectedPlan.planNo} has been successfully validated.`
         );
-        setValidationMessage(
-          `Validate Science Plan Succeed ID: ${selectedPlan.planNo}`
-        );
+        // setValidationMessage(
+        //   `Validate Science Plan Succeed ID: ${selectedPlan.planNo}`
+        // );
+        navigate("/sciencePlans");
         setSelectedPlan((prev) => ({ ...prev, status: "VALIDATED" }));
       } catch (error) {
         console.error(error);
@@ -542,11 +543,11 @@ function ValidatePlan() {
                 }
               }}
             >
-              Invalidated
+              Invalidate
             </button>
 
             <button
-              className="px-6 py-3 !bg-blue-900 text-white rounded hover:!bg-green-800 font-semibold"
+              className="px-6 py-3 !bg-black text-white rounded hover:!bg-green-800 font-semibold"
               onClick={handleValidate}
             >
               Validate

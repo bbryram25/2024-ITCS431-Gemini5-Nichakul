@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { sciencePlan } from "../data/sciencePlan"; // Optional fallback data for development
+// import { sciencePlan } from "../data/sciencePlan"; // Optional fallback data for development
 import { getUser } from "../auth";
 
 function SciencePlanList() {
@@ -62,8 +62,8 @@ function SciencePlanList() {
       setFilteredPlans(response.data); // Set both full and filtered list initially
     } catch (error) {
       console.error("Error fetching science plans:", error);
-      setPlans(sciencePlan); // Fallback to local data during development
-      setFilteredPlans(sciencePlan);
+      // setPlans(sciencePlan); // Fallback to local data during development
+      // setFilteredPlans(sciencePlan);
     } finally {
       setLoading(false);
     }

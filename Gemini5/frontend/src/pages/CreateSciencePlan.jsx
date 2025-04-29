@@ -98,9 +98,60 @@ export default function CreatePlan() {
         initializeUser();
     }, [navigate]);
 
+    const getLimitForField = (fieldName) => {
+        switch (fieldName) {
+            case "contrast":
+                return 5.0;
+            case "hue":
+            case "exposure":
+            case "highlights":
+            case "shadows":
+            case "whites":
+            case "blacks":
+            case "brightness":
+            case "saturation":
+            case "luminance":
+                return 50.0;
+            default:
+                return 50.0;
+        }
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setForm(prev => ({ ...prev, [name]: value }));
+        
+        if (["contrast", "exposure", "highlights", "shadows", "whites", "blacks", 
+             "brightness", "saturation", "luminance", "hue"].includes(name)) {
+            // Allow empty string
+            if (value === "") {
+                setForm(prev => ({
+                    ...prev,
+                    [name]: ""
+                }));
+                return;
+            }
+            
+            let numValue = parseFloat(value);
+            
+            // Only process if it's a valid number
+            if (!isNaN(numValue)) {
+                // Get the limit for this field
+                const limit = getLimitForField(name);
+                
+                // Clamp the value between 0 and the limit
+                numValue = Math.max(0, Math.min(numValue, limit));
+                
+                setForm(prev => ({
+                    ...prev,
+                    [name]: numValue
+                }));
+            }
+        } else {
+            setForm(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        }
     };
 
     const validateForm = () => {
@@ -172,6 +223,23 @@ export default function CreatePlan() {
         e.preventDefault();
         setError(null);
 
+        // Convert any empty numeric fields to 0 before validation
+        const formWithDefaults = {
+            ...form,
+            contrast: form.contrast === "" ? 0 : parseFloat(form.contrast),
+            exposure: form.exposure === "" ? 0 : parseFloat(form.exposure),
+            highlights: form.highlights === "" ? 0 : parseFloat(form.highlights),
+            shadows: form.shadows === "" ? 0 : parseFloat(form.shadows),
+            whites: form.whites === "" ? 0 : parseFloat(form.whites),
+            blacks: form.blacks === "" ? 0 : parseFloat(form.blacks),
+            brightness: form.brightness === "" ? 0 : parseFloat(form.brightness),
+            saturation: form.saturation === "" ? 0 : parseFloat(form.saturation),
+            luminance: form.luminance === "" ? 0 : parseFloat(form.luminance),
+            hue: form.hue === "" ? 0 : parseFloat(form.hue)
+        };
+
+        setForm(formWithDefaults);
+
         if (!validateForm()) {
             return;
         }
@@ -211,7 +279,7 @@ export default function CreatePlan() {
                 credentials: 'include',
                 body: JSON.stringify(submissionData),
             });
-
+            console.log("Response:", response);
             if (response.status === 201) {
                 // Success case
                 window.alert("Success: Science plan created with status CREATED");
@@ -450,15 +518,17 @@ export default function CreatePlan() {
                         <div className="grid grid-cols-2 gap-4">
                             {getProcessingFields().map(({ name, label }) => (
                                 <div key={name}>
-                                    <label className="block mb-1 font-medium">{label}</label>
+                                    <label className="block mb-1 font-medium">
+                                        {label} (0-{getLimitForField(name)})
+                                    </label>
                                     <input
                                         type="number"
                                         name={name}
                                         value={form[name]}
                                         onChange={handleChange}
-                                        step="0.1"
+                                        step="1"
                                         min="0"
-                                        max={name === "hue" ? "1" : "2"}
+                                        max={getLimitForField(name)}
                                         className="w-full px-4 py-2 border rounded-md"
                                     />
                                 </div>
