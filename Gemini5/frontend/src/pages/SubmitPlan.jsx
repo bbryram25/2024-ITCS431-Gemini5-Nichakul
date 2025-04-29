@@ -160,7 +160,7 @@ function submit() {
             </label>
             <select value={statusFilter} onChange={handleStatusFilterChange}>
               <option value="ALL">ALL</option>
-              <option value="SAVED">CREATED</option>
+              <option value="SAVED">SAVED</option>
               <option value="TESTED">TESTED</option>
               <option value="SUBMITTED">SUBMITTED</option>
               <option value="VALIDATED">VALIDATED</option>
