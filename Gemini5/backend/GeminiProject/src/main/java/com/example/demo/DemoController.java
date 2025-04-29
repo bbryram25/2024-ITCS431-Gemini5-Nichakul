@@ -340,7 +340,7 @@ public class DemoController {
 
         o.updateSciencePlanStatus(Integer.parseInt(body.get("planID").toString()), status);
         sciencePlan = o.getSciencePlanByNo(planId);
-        return ResponseEntity.ok(ResponseWrapper.success(sciencePlan, "Update status successfully", HttpStatus.OK));
+        return ResponseEntity.ok(ResponseWrapper.success(sciencePlan, "Update status successfully: " + status, HttpStatus.OK));
     }
 
 }
