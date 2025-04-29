@@ -128,7 +128,7 @@ function SciencePlanList() {
         {/* Search by ID */}
         <div className="flex items-center gap-4 mb-4">
           <label htmlFor="searchId" className="w-32 font-medium text-black">
-            Search by Plan No. :
+            Search by Plan Number :
           </label>
           <input
             id="searchId"
@@ -151,7 +151,7 @@ function SciencePlanList() {
                 className="p-4 border rounded-lg bg-white shadow"
               >
                 <p>
-                  <strong>Plan No.:</strong> {plan.planNo}
+                  <strong>Plan No:</strong> {plan.planNo}
                 </p>
                 {/* <p><strong>Name:</strong> {plan.planName}</p> */}
                 <p>
