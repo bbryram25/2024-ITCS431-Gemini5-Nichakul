@@ -16,11 +16,14 @@ function SciencePlanList() {
   const statusOptions = [
     // "Select Filter",
     "ALL",
-    "CREATED",
+    "SAVED",
     "TESTED",
     "SUBMITTED",
     "VALIDATED",
+    "RUNNING",
     "EXECUTED",
+    "COMPLETED",
+    "INVALIDATED"
   ];
 
   // Set document title
