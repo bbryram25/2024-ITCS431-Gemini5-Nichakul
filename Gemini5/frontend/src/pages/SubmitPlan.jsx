@@ -177,7 +177,7 @@ function submit() {
               <option value="VALIDATED">VALIDATED</option>
               <option value="RUNNING">RUNNING</option>
               <option value="EXECUTED">EXECUTED</option>
-              <option value="COMPLETED">COMPLETED</option>
+              <option value="COMPLETE">COMPLETE</option>
               <option value="INVALIDATED">INVALIDATED</option>
               <option value="CANCELLED">CANCELLED</option>
             </select>
