@@ -165,7 +165,8 @@ function ValidatePlan() {
       // setIsEditing(true);
     } else {
       try {
-        const response = await fetch(`http://localhost:8080/api/validateSciencePlan/${selectedPlan.planNo}`,
+        const response = await fetch(
+          `http://localhost:8080/api/validateSciencePlan/${selectedPlan.planNo}`,
           {
             method: "GET",
             credentials: "include",
@@ -255,55 +256,23 @@ function ValidatePlan() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col">
                   <label className="font-semibold">Creator</label>
-                  <input
-                    type="text"
-                    name="creator"
-                    defaultValue={selectedPlan.creator || ""}
-                    // onChange={handleChange}
-                    // disabled={!isEditing}
-                    className="p-1 border rounded"
-                  />
+                  {selectedPlan.creator || ""}
                 </div>
                 <div className="flex flex-col">
                   <label className="font-semibold">Funding (USD)</label>
-                  <input
-                    type="text"
-                    name="funding"
-                    // value={(selectedPlan.funding || "")}
-                    defaultValue={
-                      selectedPlan.fundingInUSD
-                        ? `$${parseFloat(selectedPlan.fundingInUSD).toFixed(2)}`
-                        : ""
-                    }
-                    className="p-1 border rounded"
-                  />
+                  {selectedPlan.fundingInUSD ? `$${parseFloat(selectedPlan.fundingInUSD).toFixed(2)}`  : ""}
                 </div>
+                <label className="font-semibold">Objective</label>
                 <div className="col-span-2 flex flex-col">
-                  <label className="font-semibold">Objective</label>
-                  <textarea
-                    name="objectives"
-                    defaultValue={selectedPlan.objectives || ""}
-                    // onChange={handleChange}
-                    // disabled={!isEditing}
-                    className="p-2 border rounded resize-none overflow-hidden"
-                  />
+                  {selectedPlan.objectives || ""}
                 </div>
               </div>
             </div>
 
             {/* Star System */}
             <div className="col-span-2 border border-gray-300 rounded p-4 bg-gray-50">
-              <h4 className="text-lg font-semibold mb-2">
-                Star System (Target)
-              </h4>
-              <input
-                type="text"
-                name="starSystem"
-                defaultValue={selectedPlan.starSystem || ""}
-                // onChange={handleChange}
-                // disabled={!isEditing}
-                className="w-full p-1 border rounded"
-              />
+              <h4 className="text-lg font-semibold mb-2">Star System (Target)</h4>
+              {selectedPlan.starSystem || ""}
             </div>
 
             {/* Schedule Availability */}
@@ -314,29 +283,11 @@ function ValidatePlan() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col">
                   <label className="font-semibold mb-1">Start Date</label>
-                  <input
-                    type="datetime-local"
-                    name="startDate"
-                    defaultValue={new Date(selectedPlan.startDate)
-                      .toISOString()
-                      .slice(0, 16)}
-                    // onChange={handleChange}
-                    // disabled={!isEditing}
-                    className="p-1 border rounded"
-                  />
+                  {new Date(selectedPlan.startDate).toLocaleString()}
                 </div>
                 <div className="flex flex-col">
                   <label className="font-semibold mb-1">End Date</label>
-                  <input
-                    type="datetime-local"
-                    name="endDate"
-                    defaultValue={new Date(selectedPlan.endDate)
-                      .toISOString()
-                      .slice(0, 16)}
-                    // onChange={handleChange}
-                    // disabled={!isEditing}
-                    className="p-1 border rounded"
-                  />
+                  {new Date(selectedPlan.endDate).toLocaleString()}
                 </div>
               </div>
             </div>
@@ -344,17 +295,7 @@ function ValidatePlan() {
             {/* Telescope Assigned */}
             <div className="col-span-2 border border-gray-300 rounded p-4 bg-gray-50">
               <h4 className="text-lg font-semibold mb-2">Telescope Location</h4>
-              <select
-                name="assignedTelescope"
-                defaultValue={selectedPlan.telescopeLocation || ""}
-                // onChange={handleChange}
-                // disabled={!isEditing}
-                className="w-full p-1 border rounded"
-              >
-                {/* <option value="">Select Location</option> */}
-                <option value="Hawaii">Hawaii</option>
-                <option value="Chile">Chile</option>
-              </select>
+              {selectedPlan.telescopeLocation || ""}
             </div>
 
             {/* Data Processing */}
@@ -364,81 +305,31 @@ function ValidatePlan() {
                 {/* File Type */}
                 <div className="flex flex-col">
                   <label className="font-semibold mb-1">File Type</label>
-                  <input
-                    type="text"
-                    name="fileType"
-                    defaultValue={
-                      selectedPlan.dataProcRequirements?.[0]?.fileType || ""
-                    }
-                    // onChange={handleChange}
-                    // disabled={!isEditing}
-                    className="p-1 border rounded"
-                    placeholder="Enter File Type"
-                  />
+                  {selectedPlan.dataProcRequirements?.[0]?.fileType || ""}
                 </div>
 
                 {/* File Quality */}
                 <div className="flex flex-col">
                   <label className="font-semibold mb-1">File Quality</label>
-                  <input
-                    type="text"
-                    name="fileQuality"
-                    defaultValue={
-                      selectedPlan.dataProcRequirements?.[0]?.fileQuality || ""
-                    }
-                    // onChange={handleChange}
-                    // disabled={!isEditing}
-                    className="p-1 border rounded"
-                    placeholder="Enter File Quality"
-                  />
+                  {selectedPlan.dataProcRequirements?.[0]?.fileQuality || ""}
                 </div>
 
                 {/* Color Type */}
                 <div className="flex flex-col">
                   <label className="font-semibold mb-1">Color Type</label>
-                  <input
-                    type="text"
-                    name="colorType"
-                    defaultValue={
-                      selectedPlan.dataProcRequirements?.[0]?.colorType || ""
-                    }
-                    // onChange={handleChange}
-                    // disabled={!isEditing}
-                    className="p-1 border rounded"
-                    placeholder="Enter Color Type"
-                  />
+                  {selectedPlan.dataProcRequirements?.[0]?.colorType || ""}
                 </div>
 
                 {/* Contrast */}
                 <div className="flex flex-col">
                   <label className="font-semibold mb-1">Contrast</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    name="dataProcRequirements.contrast"
-                    defaultValue={
-                      selectedPlan.dataProcRequirements?.[0]?.contrast || ""
-                    }
-                    // onChange={handleChange}
-                    // disabled={!isEditing}
-                    className="p-1 border rounded"
-                  />
+                  {selectedPlan.dataProcRequirements?.[0]?.contrast || ""}
                 </div>
 
                 {/* Exposure */}
                 <div className="flex flex-col">
                   <label className="font-semibold mb-1">Exposure</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    name="dataProcRequirements.exposure"
-                    defaultValue={
-                      selectedPlan.dataProcRequirements?.[0]?.exposure || ""
-                    }
-                    // onChange={handleChange}
-                    // disabled={!isEditing}
-                    className="p-1 border rounded"
-                  />
+                  {selectedPlan.dataProcRequirements?.[0]?.exposure || ""}
                 </div>
 
                 {/* Show only for Color mode */}
@@ -451,18 +342,8 @@ function ValidatePlan() {
                           <label className="font-semibold mb-1">
                             {field.charAt(0).toUpperCase() + field.slice(1)}
                           </label>
-                          <input
-                            type="number"
-                            step="0.01"
-                            name={`dataProcRequirements.${field}`}
-                            defaultValue={
-                              selectedPlan.dataProcRequirements?.[0]?.[field] ||
-                              ""
-                            }
-                            // onChange={handleChange}
-                            // disabled={!isEditing}
-                            className="p-1 border rounded"
-                          />
+                          {selectedPlan.dataProcRequirements?.[0]?.[field] ||
+                            ""}
                         </div>
                       )
                     )}
@@ -471,7 +352,7 @@ function ValidatePlan() {
 
                 {/* Show only for Black and White mode */}
                 {selectedPlan.dataProcRequirements?.[0]?.colorType ===
-                  "Black and White mode" && (
+                  "B&W mode" && (
                   <>
                     {["highlights", "shadows", "whites", "blacks"].map(
                       (field) => (
@@ -479,18 +360,8 @@ function ValidatePlan() {
                           <label className="font-semibold mb-1">
                             {field.charAt(0).toUpperCase() + field.slice(1)}
                           </label>
-                          <input
-                            type="number"
-                            step="0.01"
-                            name={`dataProcRequirements.${field}`}
-                            defaultValue={
-                              selectedPlan.dataProcRequirements?.[0]?.[field] ||
-                              ""
-                            }
-                            // onChange={handleChange}
-                            // disabled={!isEditing}
-                            className="p-1 border rounded"
-                          />
+                          {selectedPlan.dataProcRequirements?.[0]?.[field] ||
+                            ""}
                         </div>
                       )
                     )}
@@ -519,7 +390,8 @@ function ValidatePlan() {
               className="px-6 py-3 !bg-red-700 text-white rounded hover:!bg-red-800 font-semibold"
               onClick={async () => {
                 try {
-                  const response = await fetch(`http://localhost:8080/api/invalidateSciencePlan/${selectedPlan.planNo}`,
+                  const response = await fetch(
+                    `http://localhost:8080/api/invalidateSciencePlan/${selectedPlan.planNo}`,
                     {
                       method: "GET",
                       credentials: "include",

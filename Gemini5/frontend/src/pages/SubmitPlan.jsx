@@ -237,93 +237,48 @@ function submit() {
                 Plan No.: {selectedPlan.planNo}
               </h4>
               <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col">
+              <div className="flex flex-col">
                   <label className="font-semibold">Creator</label>
-                  <input
-                    type="text"
-                    name="creator"
-                    defaultValue={selectedPlan.creator || ""}
-                    className="p-1 border rounded"
-                  />
+                  {selectedPlan.creator || ""}
                 </div>
                 <div className="flex flex-col">
                   <label className="font-semibold">Funding (USD)</label>
-                  <input
-                    type="text"
-                    name="funding"
-                    // value={(selectedPlan.fundingInUSD || "")}
-                    defaultValue={
-                      selectedPlan.fundingInUSD
-                        ? selectedPlan.fundingInUSD.toFixed(2)
-                        : ""
-                    }
-                    className="p-1 border rounded"
-                  />
+                  {selectedPlan.fundingInUSD ? `$${parseFloat(selectedPlan.fundingInUSD).toFixed(2)}`  : ""}
                 </div>
+                <label className="font-semibold">Objective</label>
                 <div className="col-span-2 flex flex-col">
-                  <label className="font-semibold">Objective</label>
-                  <textarea
-                    name="objective"
-                    defaultValue={selectedPlan.objectives || ""}
-                    className="p-2 border rounded resize-none overflow-hidden"
-                  />
+                  {selectedPlan.objectives || ""}
                 </div>
               </div>
             </div>
 
             {/* Star System */}
             <div className="col-span-2 border border-gray-300 rounded p-4 bg-gray-50">
-              <h4 className="text-lg font-semibold mb-2">
-                Star System (Target)
-              </h4>
-              <input
-                type="text"
-                name="starSystem"
-                defaultValue={selectedPlan.starSystem || ""}
-                className="w-full p-1 border rounded"
-              />
+            <h4 className="text-lg font-semibold mb-2">Star System (Target)</h4>
+            {selectedPlan.starSystem || ""}
             </div>
 
             {/* Schedule Availability */}
             <div className="col-span-2 border border-gray-300 rounded p-4 bg-gray-50">
-              <h4 className="text-lg font-semibold mb-2">
+            <h4 className="text-lg font-semibold mb-2">
                 Schedule Availability
               </h4>
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col">
                   <label className="font-semibold mb-1">Start Date</label>
-                  <input
-                    type="datetime-local"
-                    name="startDate"
-                    defaultValue={new Date(selectedPlan.startDate)
-                      .toISOString()
-                      .slice(0, 16)}
-                    className="p-1 border rounded"
-                  />
+                  {new Date(selectedPlan.startDate).toLocaleString()}
                 </div>
                 <div className="flex flex-col">
                   <label className="font-semibold mb-1">End Date</label>
-                  <input
-                    type="datetime-local"
-                    name="endDate"
-                    defaultValue={new Date(selectedPlan.endDate)
-                      .toISOString()
-                      .slice(0, 16)}
-                    className="p-1 border rounded"
-                  />
+                  {new Date(selectedPlan.endDate).toLocaleString()}
                 </div>
               </div>
             </div>
 
             {/* Telescope Assigned */}
             <div className="col-span-2 border border-gray-300 rounded p-4 bg-gray-50">
-              <h4 className="text-lg font-semibold mb-2">Telescope Location</h4>
-              <input
-                type="text"
-                name="assignedTelescope"
-                defaultValue={selectedPlan.telescopeLocation || ""}
-                className="w-full p-1 border rounded"
-              />
+            <h4 className="text-lg font-semibold mb-2">Telescope Location</h4>
+            {selectedPlan.telescopeLocation || ""}
             </div>
 
             {/* Data Processing */}
@@ -332,67 +287,32 @@ function submit() {
               <div className="grid grid-cols-2 gap-4">
                 {/* File Type */}
                 <div className="flex flex-col">
-                  <label className="font-semibold mb-1">File Type</label>
-                  <input
-                    type="text"
-                    name="dataProcRequirements.fileType"
-                    defaultValue={
-                      selectedPlan.dataProcRequirements?.[0]?.fileType || ""
-                    }
-                    className="w-full p-1 border rounded"
-                  />
+                <label className="font-semibold mb-1">File Type</label>
+                {selectedPlan.dataProcRequirements?.[0]?.fileType || ""}
                 </div>
 
-                {/* File Quality */}
-                <div className="flex flex-col">
+               {/* File Quality */}
+               <div className="flex flex-col">
                   <label className="font-semibold mb-1">File Quality</label>
-                  <input
-                    type="text"
-                    name="dataProcRequirements.fileQuality"
-                    defaultValue={
-                      selectedPlan.dataProcRequirements?.[0]?.fileQuality || ""
-                    }
-                    className="w-full p-1 border rounded"
-                  />
+                  {selectedPlan.dataProcRequirements?.[0]?.fileQuality || ""}
                 </div>
 
                 {/* Color Type */}
                 <div className="flex flex-col">
                   <label className="font-semibold mb-1">Color Type</label>
-                  <input
-                    type="text"
-                    name="dataProcRequirements.colorType"
-                    defaultValue={
-                      selectedPlan.dataProcRequirements?.[0]?.colorType || ""
-                    }
-                    className="w-full p-1 border rounded"
-                  />
+                  {selectedPlan.dataProcRequirements?.[0]?.colorType || ""}
                 </div>
 
                 {/* Contrast */}
                 <div className="flex flex-col">
                   <label className="font-semibold mb-1">Contrast</label>
-                  <input
-                    type="number"
-                    name="dataProcRequirements.contrast"
-                    defaultValue={
-                      selectedPlan.dataProcRequirements?.[0]?.contrast || ""
-                    }
-                    className="p-1 border rounded"
-                  />
+                  {selectedPlan.dataProcRequirements?.[0]?.contrast || ""}
                 </div>
 
                 {/* Exposure */}
                 <div className="flex flex-col">
                   <label className="font-semibold mb-1">Exposure</label>
-                  <input
-                    type="number"
-                    name="dataProcRequirements.exposure"
-                    defaultValue={
-                      selectedPlan.dataProcRequirements?.[0]?.exposure || ""
-                    }
-                    className="p-1 border rounded"
-                  />
+                  {selectedPlan.dataProcRequirements?.[0]?.exposure || ""}
                 </div>
 
                 {/* Show only for Color mode */}
@@ -405,15 +325,8 @@ function submit() {
                           <label className="font-semibold mb-1">
                             {field.charAt(0).toUpperCase() + field.slice(1)}
                           </label>
-                          <input
-                            type="number"
-                            name={`dataProcRequirements.${field}`}
-                            defaultValue={
-                              selectedPlan.dataProcRequirements?.[0]?.[field] ||
-                              ""
-                            }
-                            className="p-1 border rounded"
-                          />
+                          {selectedPlan.dataProcRequirements?.[0]?.[field] ||
+                            ""}
                         </div>
                       )
                     )}
@@ -422,7 +335,7 @@ function submit() {
 
                 {/* Show only for Black and White mode */}
                 {selectedPlan.dataProcRequirements?.[0]?.colorType ===
-                  "Black and White mode" && (
+                  "B&W mode" && (
                   <>
                     {["highlights", "shadows", "whites", "blacks"].map(
                       (field) => (
@@ -430,15 +343,8 @@ function submit() {
                           <label className="font-semibold mb-1">
                             {field.charAt(0).toUpperCase() + field.slice(1)}
                           </label>
-                          <input
-                            type="number"
-                            name={`dataProcRequirements.${field}`}
-                            defaultValue={
-                              selectedPlan.dataProcRequirements?.[0]?.[field] ||
-                              ""
-                            }
-                            className="p-1 border rounded"
-                          />
+                          {selectedPlan.dataProcRequirements?.[0]?.[field] ||
+                            ""}
                         </div>
                       )
                     )}
