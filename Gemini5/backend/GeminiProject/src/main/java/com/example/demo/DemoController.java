@@ -235,7 +235,7 @@ public class DemoController {
         }
         
         ArrayList<SciencePlan> sciencePlans = o.getAllSciencePlans();
-        o.updateSciencePlanStatus(sciencePlans.size(), SciencePlan.STATUS.TESTED);
+        // o.updateSciencePlanStatus(sciencePlans.size(), SciencePlan.STATUS.TESTED);
         SciencePlan createdSciencePlan = o.getSciencePlanByNo(sciencePlans.size());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(ResponseWrapper.success(createdSciencePlan, "Science plan created successfully", HttpStatus.CREATED));
@@ -316,6 +316,31 @@ public class DemoController {
         o.updateSciencePlanStatus(id, SciencePlan.STATUS.VALIDATED);
         sciencePlan = o.getSciencePlanByNo(id);
         return ResponseEntity.ok(ResponseWrapper.success(sciencePlan, "Science plan validated successfully", HttpStatus.OK));
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @PostMapping("/updateSciencePlanStatus")
+    public ResponseEntity<?> updateSciencePlanStatus(@RequestBody Map<String, Object> body){
+        OCS o = new OCS();
+        int planId = Integer.parseInt(body.get("planID").toString());
+        SciencePlan sciencePlan = o.getSciencePlanByNo(planId);
+        
+        if (sciencePlan == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseWrapper.notFound("Science plan not found", HttpStatus.NOT_FOUND));
+        }
+
+        SciencePlan.STATUS status = null;
+
+        try {
+            status = SciencePlan.STATUS.valueOf(body.get("status").toString());
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ResponseWrapper.error("The provided status is not valid", HttpStatus.BAD_REQUEST));
+        }
+
+        o.updateSciencePlanStatus(Integer.parseInt(body.get("planID").toString()), status);
+        sciencePlan = o.getSciencePlanByNo(planId);
+        return ResponseEntity.ok(ResponseWrapper.success(sciencePlan, "Update status successfully", HttpStatus.OK));
     }
 
 }
