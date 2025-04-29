@@ -319,6 +319,21 @@ public class DemoController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @GetMapping("/invalidateSciencePlan/{id}")
+    public ResponseEntity<?> invalidateSciencePlan(@PathVariable("id") int id){
+        OCS o = new OCS();
+        SciencePlan sciencePlan = o.getSciencePlanByNo(id);
+
+        if (sciencePlan == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseWrapper.notFound("Science plan not found", HttpStatus.NOT_FOUND));
+        }
+
+        o.updateSciencePlanStatus(id, SciencePlan.STATUS.INVALIDATED);
+        sciencePlan = o.getSciencePlanByNo(id);
+        return ResponseEntity.ok(ResponseWrapper.success(sciencePlan, "Science plan invalidated successfully", HttpStatus.OK));
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @PostMapping("/updateSciencePlanStatus")
     public ResponseEntity<?> updateSciencePlanStatus(@RequestBody Map<String, Object> body){
         OCS o = new OCS();
